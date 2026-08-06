@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Integra App',
         short_name: 'Integra',
         description: 'Integra-App',
-        start_url: '/',
+        start_url: '/inicio',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#000000',
