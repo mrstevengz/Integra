@@ -15,7 +15,7 @@ export default function HomeScreen() {
       <View className="p-4 border-b">
         <Text>{item.titulo}</Text>
         <Text>{item.categoria}</Text>
-        <Text>{item.sintomas?.join(' ')}</Text>
+        <Text>{item.sintomas}</Text>
       </View>
     )}>
 

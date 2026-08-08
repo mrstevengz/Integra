@@ -8,6 +8,48 @@
       "when": 1786081543495,
       "tag": "0000_happy_bill_hollister",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786148171761,
+      "tag": "0001_crear_perfil_al_registrarse",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786148211415,
+      "tag": "0002_steady_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786148317406,
+      "tag": "0003_handle_times_function",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786148480256,
+      "tag": "0004_furry_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786153741228,
+      "tag": "0005_cedula_perfiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786154394652,
+      "tag": "0006_perfil_contacto",
+      "breakpoints": true
     }
   ]
 }
