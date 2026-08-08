@@ -43,6 +43,13 @@
       "when": 1786153741228,
       "tag": "0005_cedula_perfiles",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786154394652,
+      "tag": "0006_perfil_contacto",
+      "breakpoints": true
     }
   ]
 }

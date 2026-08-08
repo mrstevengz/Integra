@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
     "@legendapp/state": "^3.0.0-beta.48",
+    "@react-native-community/datetimepicker": "8.4.4",
     "@supabase/supabase-js": "^2.112.2",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.35",
