@@ -1,7 +1,7 @@
 import {sql} from 'drizzle-orm'
-import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index} from 'drizzle-orm/pg-core'
+import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index, date, pgEnum} from 'drizzle-orm/pg-core'
 //Roles de supabase
-import {anonRole, authenticatedRole} from 'drizzle-orm/supabase'
+import {anonRole, authenticatedRole, authUid, authUsers} from 'drizzle-orm/supabase'
 
 //SINTAXIS BASICA PARA DRIZZLE ORM
 /*
@@ -24,17 +24,24 @@ Constraints (van dsp del tipo):
 
 */
 
+//ENUMS
 
-export const articulo = pgTable('articulo', {
+export const tipoSangreEnum = pgEnum('tipo_sangre', [
+    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',
+])
+
+//Tabla de articulo
+export const articulos = pgTable('articulos', {
     id: uuid('id').primaryKey().defaultRandom(),
     titulo: text('titulo').notNull(),
     categoria: text('categoria').notNull(),
 
-    sintomas: text('sintomas').array().notNull().default(sql`'{}'::text[]`),
-    tratamientos: text('tratamientos').array().notNull().default(sql`'{}'::text[]`),
-    cuidados: text('cuidados').array().notNull().default(sql`'{}'::text[]`),
+    sintomas: text('sintomas').notNull(),
+    tratamientos: text('tratamientos').notNull(),
+    cuidados: text('cuidados').notNull(),
 
     //Requerido para Legend-State (sync offline)
+    //SE PUEDE COPIAR Y PEGAR EN OTRA TABLA SIN PROBLEMA, TODAS TIENEN QUE LLEVARLO
     //Timestamp requiere de configuraciones (se agrega el timezone)
     createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
@@ -51,4 +58,41 @@ export const articulo = pgTable('articulo', {
         using: sql`true`,
     })
     //Habilitar row level security
+]).enableRLS()
+
+//Tabla de perfiles
+
+export const perfiles = pgTable('perfiles', {
+    id: uuid('id').primaryKey().references(() => authUsers.id, {onDelete: "cascade"}),
+    nombre: text('nombre').notNull(),
+    apellidos: text('apellidos').notNull(),
+    email: text('email').notNull(),
+    fechaNacimiento: date('fecha_nacimiento', {mode: 'string'}),
+
+
+    //Nulos, se piden en la seccion de perfil despues
+
+    genero: text('genero'),
+    cedula: text('cedula'),
+    telefono: text('telefono'),
+    tipoSangre: tipoSangreEnum('tipo_sangre'),
+    medicoTratante: text('medico_tratante'),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+    //Politica para insertar
+    pgPolicy('perfiles_select_propio', {
+        for: 'select',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.id}`
+    }),
+    pgPolicy('perfiles_update_propio', {
+        for: 'update',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.id}`,
+        withCheck: sql`${authUid} = ${table.id}`
+    })
 ]).enableRLS()
