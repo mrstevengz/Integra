@@ -1,4 +1,3 @@
-
 import { useLocalSearchParams } from "expo-router"
 import { articulo$ } from "@/state/articulos"
 import { porId } from "@/state/articulos"

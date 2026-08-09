@@ -1,6 +1,4 @@
-import { FlatList, View, Text } from "react-native"
-import { articulo$ } from "@/state/articulos"
-import { useValue } from "@legendapp/state/react"
+import {View} from "react-native"
 import Categorias from "@/features/articulos/CategoriasBox"
 import { SafeAreaView } from "react-native-safe-area-context"
 import DestacadosBox from "@/features/articulos/DestacadosBox"

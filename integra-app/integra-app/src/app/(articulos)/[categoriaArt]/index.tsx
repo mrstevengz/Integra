@@ -1,4 +1,4 @@
-import { articulo$, articuloCat$, porCategoria } from "@/state/articulos"
+import { articulo$, porCategoria } from "@/state/articulos"
 import { useLocalSearchParams, router } from "expo-router"
 import { View, Text, FlatList, Pressable } from "react-native"
 import { useMemo } from "react"

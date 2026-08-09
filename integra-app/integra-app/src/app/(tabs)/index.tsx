@@ -1,9 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import { Text, View, ScrollView, FlatList, Pressable } from "react-native";
 import TopBar from "@/features/topbar/TopBar";
-import {useValue} from '@legendapp/state/react'
-import { articulo$ } from "@/state/articulos";
-import { string } from "zod";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 

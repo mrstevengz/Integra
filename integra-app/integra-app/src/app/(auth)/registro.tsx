@@ -16,7 +16,7 @@ export default function RegistroScreen() {
     const [errorServer, setErrorServer] = useState<string | null>(null)
     const [aviso, setAviso] = useState<string | null>(null)
 
-  const metodos = useForm<RegistroForm>({
+  const {control, handleSubmit, trigger, formState: {isLoading}} = useForm<RegistroForm>({
     resolver: zodResolver(registroSchema),
     defaultValues: {
         nombre: '', apellidos: '', email: '', password: '', confirmar: '', telefono: '', cedula: ''
@@ -24,7 +24,6 @@ export default function RegistroScreen() {
   })
 
   //Trigger: funcion de react-hook-form que determina si los campos son validos, handleSubmit manda el form al API, formState es un objeto que da diferentes estados del form
-  const {trigger, handleSubmit, formState: {isLoading}} = metodos
 
   //Variables para manejar los cambios de pagina
   const actual = PASOS[paso]
@@ -69,7 +68,7 @@ export default function RegistroScreen() {
   return (
     <SafeAreaView className='flex-1 bg-white'>
         <TopBar name='Crear cuenta' canGoBack={true}/>
-        <FormProvider {...metodos}>
+
         <ScrollView contentContainerClassName="flex-1 justify-center px-6">
 
             <View className="flex-row gap-2 mb-8">
@@ -91,24 +90,24 @@ export default function RegistroScreen() {
             <View className=''>
                 {paso === 0 && (
             <>
-                <CampoTexto name='nombre' title='Nombre' placeholder='Nombre' autoComplete='name'/>
-                <CampoTexto name='apellidos' title='Apellidos' placeholder='Apellidos' autoComplete='family-name'/>
-                <CampoTexto name='email'title='Correo electronico' placeholder='correo@ejemplo.com' autoComplete='email' keyboardType='email-address'/>
-                <CampoFecha name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento'/>
+                <CampoTexto name='nombre' control={control} title='Nombre' placeholder='Nombre' autoComplete='name'/>
+                <CampoTexto name='apellidos' control={control} title='Apellidos' placeholder='Apellidos' autoComplete='family-name'/>
+                <CampoTexto name='email' control={control} title='Correo electronico' placeholder='correo@ejemplo.com' autoComplete='email' keyboardType='email-address'/>
+                <CampoFecha control ={control} name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento'/>
             </>
             )}
 
             {paso === 1 && (
             <>
-                <CampoTexto name='password' title = 'Contraseña' placeholder='Minimo 8 caracteres' autoComplete='new-password' secureTextEntry/>
-                <CampoTexto name='confirmar' title ='Confirmar contraseña' placeholder='Confirmar contraseña' autoComplete='new-password'/>
+                <CampoTexto name='password' control={control} title = 'Contraseña' placeholder='Minimo 8 caracteres' autoComplete='new-password' secureTextEntry/>
+                <CampoTexto name='confirmar' control={control} title ='Confirmar contraseña' placeholder='Confirmar contraseña' autoComplete='new-password'/>
             </>
             )}
 
             {paso === 2 && (
             <>
-                <CampoTexto name='telefono' title = 'Telefono' placeholder='+505 8823 2345' autoComplete='tel' keyboardType='phone-pad'/>
-                <CampoTexto name='cedula' title = 'Cedula de identidad' placeholder='(opcional)' autoComplete='off'/>
+                <CampoTexto name='telefono' control={control} title = 'Telefono' placeholder='+505 8823 2345' autoComplete='tel' keyboardType='phone-pad'/>
+                <CampoTexto name='cedula' control={control} title = 'Cedula de identidad' placeholder='(opcional)' autoComplete='off'/>
             </>        
             )}
 
@@ -144,7 +143,6 @@ export default function RegistroScreen() {
 
             </View>
         </ScrollView>
-    </FormProvider>
     </SafeAreaView>
   )
 }
