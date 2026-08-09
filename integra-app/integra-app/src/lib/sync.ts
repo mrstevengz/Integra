@@ -7,7 +7,7 @@ import { supabase } from './supabase'
 //Legend-State plugin config, apunta a los campos que deberia tener cada tabla
 configureSyncedSupabase({
     changesSince: 'last-sync', //Cambios desde ultimo sync, compara el valor de la tabla con el ultimo sync con el servidor
-    fieldCreatedAt: 'created-at',
+    fieldCreatedAt: 'created_at',
     fieldUpdatedAt: 'updated_at',
     fieldDeleted: 'deleted'
 })

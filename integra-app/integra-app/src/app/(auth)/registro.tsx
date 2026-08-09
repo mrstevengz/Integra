@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, Pressable, ActivityIndicator, ScrollView } from 'react-native'
 import { Link } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import {zodResolver} from '@hookform/resolvers/zod'
@@ -8,6 +8,8 @@ import { CampoFecha } from '@/features/auth/CampoFecha'
 import { RegistroForm, registroSchema } from '@/features/auth/registro-schema'
 import { PASOS } from '@/features/auth/pasos'
 import { CampoTexto } from '@/features/auth/CampoTexto'
+import TopBar from '@/features/topbar/TopBar'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function RegistroScreen() {
     const [paso, setPaso] = useState(0)
@@ -22,7 +24,7 @@ export default function RegistroScreen() {
   })
 
   //Trigger: funcion de react-hook-form que determina si los campos son validos, handleSubmit manda el form al API, formState es un objeto que da diferentes estados del form
-  const {trigger, handleSubmit, formState: {isLoading, isSubmitSuccessful}} = metodos
+  const {trigger, handleSubmit, formState: {isLoading}} = metodos
 
   //Variables para manejar los cambios de pagina
   const actual = PASOS[paso]
@@ -65,8 +67,10 @@ export default function RegistroScreen() {
   }
 
   return (
-    <FormProvider {...metodos}>
-        <View className="flex-1 justify-center px-6">
+    <SafeAreaView className='flex-1 bg-white'>
+        <TopBar name='Crear cuenta' canGoBack={true}/>
+        <FormProvider {...metodos}>
+        <ScrollView contentContainerClassName="flex-1 justify-center px-6">
 
             <View className="flex-row gap-2 mb-8">
                     {PASOS.map((_, i) => (
@@ -139,7 +143,8 @@ export default function RegistroScreen() {
             )}
 
             </View>
-        </View>
+        </ScrollView>
     </FormProvider>
+    </SafeAreaView>
   )
 }

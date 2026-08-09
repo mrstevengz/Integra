@@ -1,24 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, ScrollView, FlatList } from "react-native";
+import { Text, View, ScrollView, FlatList, Pressable } from "react-native";
+import TopBar from "@/features/topbar/TopBar";
 import {useValue} from '@legendapp/state/react'
 import { articulo$ } from "@/state/articulos";
+import { string } from "zod";
+import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const articulos = useValue(articulo$)
 
   return (
-    <FlatList
-    className="flex-1"
-    data={Object.values(articulos)}
-    keyExtractor={(a) => a.id}
-    renderItem={({item}) => (
-      <View className="p-4 border-b">
-        <Text>{item.titulo}</Text>
-        <Text>{item.categoria}</Text>
-        <Text>{item.sintomas}</Text>
-      </View>
-    )}>
-
-    </FlatList>
+    <View className="flex-1">
+        <SafeAreaView edges={['top']} className="bg-white">
+            <TopBar name='Inicio' canGoBack={false}/>
+        </SafeAreaView>
+        <View className="flex-1 justify-center items-center">
+            <Pressable
+                onPress={() => router.push("/articulos")}
+                className="bg-transparent border-2 border-black py-4 items-center rounded-lg">
+                <Text>Articulos</Text>
+            </Pressable>
+        </View>
+    </View>
   );
 }
