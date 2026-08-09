@@ -16,5 +16,5 @@ export const supabase = createClient(
 )
 
 AppState.addEventListener('change', (state) => {
-    state === 'active' ? supabase.auth.startAutoRefresh : supabase.auth.stopAutoRefresh()
+    state === 'active' ? supabase.auth.startAutoRefresh() : supabase.auth.stopAutoRefresh()
 })
