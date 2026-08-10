@@ -1,6 +1,6 @@
 {
-  "id": "9b0be7b8-872c-4157-b85b-7b17ae5e7d07",
-  "prevId": "d80860bd-6e7f-4e00-9811-f323db676a95",
+  "id": "71c26856-3551-439c-8cc9-d4ce01b75520",
+  "prevId": "5bff3b1c-8dd9-4fec-81d1-c424364b26d9",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -79,9 +79,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -97,6 +97,114 @@
             "authenticated"
           ],
           "using": "true"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.condiciones": {
+      "name": "condiciones",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "perfil_id": {
+          "name": "perfil_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "detalles": {
+          "name": "detalles",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted": {
+          "name": "deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "condiciones_perfil_id_perfiles_id_fk": {
+          "name": "condiciones_perfil_id_perfiles_id_fk",
+          "tableFrom": "condiciones",
+          "tableTo": "perfiles",
+          "columnsFrom": [
+            "perfil_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "condiciones_select_propio": {
+          "name": "condiciones_select_propio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"condiciones\".\"perfil_id\""
+        },
+        "condiciones_create_propio": {
+          "name": "condiciones_create_propio",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "authenticated"
+          ],
+          "withCheck": "(select auth.uid()) = \"condiciones\".\"perfil_id\""
+        },
+        "condiciones_update_propio": {
+          "name": "condiciones_update_propio",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "authenticated"
+          ],
+          "using": "(select auth.uid()) = \"condiciones\".\"perfil_id\"",
+          "withCheck": "(select auth.uid()) = \"condiciones\".\"perfil_id\""
         }
       },
       "checkConstraints": {},
@@ -194,16 +302,16 @@
         "perfiles_id_users_id_fk": {
           "name": "perfiles_id_users_id_fk",
           "tableFrom": "perfiles",
+          "tableTo": "users",
+          "schemaTo": "auth",
           "columnsFrom": [
             "id"
           ],
-          "tableTo": "users",
-          "schemaTo": "auth",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -250,10 +358,10 @@
     }
   },
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

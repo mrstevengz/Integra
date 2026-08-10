@@ -1,27 +1,37 @@
 import {supabase} from '@/lib/supabase'
 import { observable } from '@legendapp/state'
+import { getAllSyncStates } from '@legendapp/state/sync'
 import type { Session } from '@supabase/supabase-js'
 import { Storage } from 'expo-sqlite/kv-store'
 
-//Auth guarda el estado del usuario en la aplicacion, para poder llamar en cada pantalla y verificar al usuario logeado / llamar API calls especificas al usuario
-
-
-//observable() permite asignar que propiedades van a ser observadas, leidas por legend-state
 export const auth$ = observable({
     session: null as Session | null,
-    cargando: true
+    cargando: true,
+    cerrandoSesion: false
 })
 
-//Listener para llamar la funcion cada vez que el estado del auth cambie.
 supabase.auth.onAuthStateChange((_evento, sesion) => {
     auth$.session.set(sesion)
     auth$.cargando.set(false)
 })
 
 export async function cerrarSesion() {
-    //Invalidar la sesion local y del servidor
-    await supabase.auth.signOut()
-    //Borrar toda la cache local
-    await Storage.clear()
-}
+    //Bloquea la navegacion hasta que la limpieza termine por completo.
+    auth$.cerrandoSesion.set(true)
 
+    try {
+        //Invalidar la sesion local y del servidor
+        await supabase.auth.signOut()
+
+        //Resetear TODAS las tablas sincronizadas 
+        //en memoria y en su cache persistida
+        await Promise.all(
+            getAllSyncStates().map(([syncState$]) => syncState$.reset())
+        )
+
+        //Borrar el resto de la cache local (sesion de supabase, por ej)
+        await Storage.clear()
+    } finally {
+        auth$.cerrandoSesion.set(false)
+    }
+}

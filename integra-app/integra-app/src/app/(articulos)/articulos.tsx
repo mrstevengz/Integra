@@ -8,7 +8,7 @@ export default function ArticulosPage() {
 
     return (
         <View className="flex-1">
-            <SafeAreaView edges={['top']} className="bg-white">
+            <SafeAreaView edges={['top']} className="bg-slate-100">
                 <TopBar name='Informacion y salud' canGoBack={true}/>
             </SafeAreaView>
 

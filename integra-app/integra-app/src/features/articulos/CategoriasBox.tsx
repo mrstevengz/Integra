@@ -1,23 +1,27 @@
 import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons'
+
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 type CategoriasBoxProps = {
     categoriaNombre: string;
     count: number
+    icon: IconName
 }
 
 const CATEGORIAS: CategoriasBoxProps[] = [
-    { categoriaNombre: "Diabetes", count: 24 },
-    { categoriaNombre: "Hipertension", count: 18 },
-    { categoriaNombre: "Nutricion", count: 31 },
-    { categoriaNombre: "Ejercicio", count: 15 },
-    { categoriaNombre: "Medicamentos", count: 22 },
-    { categoriaNombre: "Salud mental", count: 12 },
-    { categoriaNombre: "Cuidados", count: 19 },
-    { categoriaNombre: "Discapacidad", count: 8 },
+    { categoriaNombre: "Diabetes", count: 24, icon: 'water-outline' },
+    { categoriaNombre: "Hipertension", count: 18, icon: 'pulse-outline' },
+    { categoriaNombre: "Nutricion", count: 31, icon: 'nutrition-outline' },
+    { categoriaNombre: "Ejercicio", count: 15, icon: 'barbell-outline' },
+    { categoriaNombre: "Medicamentos", count: 22, icon: 'medkit-outline' },
+    { categoriaNombre: "Salud mental", count: 12, icon: 'happy-outline' },
+    { categoriaNombre: "Cuidados", count: 19, icon: 'heart-outline' },
+    { categoriaNombre: "Discapacidad", count: 8, icon: 'body-outline' },
 ]
 
-function CategoriasBox({categoriaNombre, count}: CategoriasBoxProps) {
+function CategoriasBox({categoriaNombre, count, icon}: CategoriasBoxProps) {
     return (
         <Pressable
             onPress={() => {
@@ -26,9 +30,14 @@ function CategoriasBox({categoriaNombre, count}: CategoriasBoxProps) {
                     params: {categoriaArt: `${categoriaNombre}`}
                 })
             }}
-            className="w-[48%] border border-gray-200 rounded-2xl p-4 bg-white mb-3">
-            <Text className="font-semibold text-base mb-1">{categoriaNombre}</Text>
-            <Text className="text-gray-400 text-sm">{count} articulos</Text>
+            className="w-[48%] border border-gray-200 rounded-2xl p-4 bg-white mb-3 flex flex-row gap-3 items-center">
+                <View className="border-2 border-slate-300 bg-slate-200 rounded-lg p-2">
+                    <Ionicons name={icon} size={20}/>
+                </View>
+                <View>
+                     <Text className="font-semibold text-base mb-1">{categoriaNombre}</Text>
+                    <Text className="text-gray-400 text-sm">{count} articulos</Text>
+                </View>
         </Pressable>
     )
 }

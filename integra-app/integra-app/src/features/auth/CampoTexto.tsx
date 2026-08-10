@@ -20,9 +20,9 @@ export function CampoTexto<T extends FieldValues>({
     const {field, fieldState} = useController({name, control})
     const error = fieldState.error?.message
     return (
-        <View className="mb-4">
+        <View className="mb-4 ">
           <Text>
-            {title} {!opcional && <Text className={`${error ? 'text-red-400' : 'text-slate-400'} font-semibold`}>*</Text>}
+            {title} {!opcional && <Text className={`${error ? 'text-red-400' : 'text-slate-400'} font-semibold`}></Text>}
           </Text>
 
           <TextInput

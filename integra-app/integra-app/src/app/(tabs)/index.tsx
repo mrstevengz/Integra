@@ -7,7 +7,7 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1">
-        <SafeAreaView edges={['top']} className="bg-white">
+        <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Inicio' canGoBack={false}/>
         </SafeAreaView>
         <View className="flex-1 justify-center items-center">

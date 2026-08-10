@@ -50,6 +50,41 @@
       "when": 1786154394652,
       "tag": "0006_perfil_contacto",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786313417630,
+      "tag": "0007_condiciones_tabla",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786314697418,
+      "tag": "0008_normal_eternity",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786314963151,
+      "tag": "0009_bitter_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786332327072,
+      "tag": "0010_rare_pepper_potts",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1786342385076,
+      "tag": "0011_smiling_clea",
+      "breakpoints": true
     }
   ]
 }

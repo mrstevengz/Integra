@@ -6,13 +6,15 @@ import { perfil$ } from "@/state/usuario";
 import { useForm } from "react-hook-form";
 import { PerfilForm, perfilSchema } from "@/features/perfil/perfil-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { any } from "zod";
+import { OPCIONES_GENEROS, TIPOS_SANGRE } from "@/features/perfil/perfil-schema";
 import { CampoTexto } from "@/features/auth/CampoTexto";
+import { CampoSelect } from "@/features/perfil/CampoSelect";
+import { router } from "expo-router";
 
 export default function PerfilScreen() {
     const perfil = useValue(perfil$)
 
-    const {control, handleSubmit, formState: {isLoading, isDirty}, reset} = useForm<PerfilForm>({
+    const {control, handleSubmit, formState: {isDirty}, reset} = useForm<PerfilForm>({
         resolver: zodResolver(perfilSchema),
         mode: 'onTouched',
         defaultValues: {
@@ -41,11 +43,12 @@ export default function PerfilScreen() {
         })
 
         reset(formValues)
+        router.back()
     }
 
     if (!perfil) return (
     <View className="flex-1">
-        <SafeAreaView edges={['top']} className="bg-white">
+        <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Mi Expediente' canGoBack={false}/>
         </SafeAreaView>
         <View className="flex-1 items-center justify-center">
@@ -56,7 +59,7 @@ export default function PerfilScreen() {
 
     return (
         <View className="flex-1">
-            <SafeAreaView edges={['top']} className="bg-white">
+            <SafeAreaView edges={['top']} className="bg-slate-100">
                 <TopBar name='Datos personales' canGoBack={true}/>
             </SafeAreaView>
 
@@ -71,11 +74,15 @@ export default function PerfilScreen() {
                 autoComplete="family-name"
                 />
 
+                <CampoSelect name="genero" control={control} title="Genero" opciones={OPCIONES_GENEROS}/>
+
                 <CampoTexto
                 name="telefono" control = {control} title="Numero telefonico" 
                 keyboardType="phone-pad"
                 autoComplete="tel"
                 />
+
+                <CampoSelect name="tipoSangre" control={control} title="Tipo de sangre" opciones={TIPOS_SANGRE}/>
 
                 <CampoTexto
                 name="cedula" control = {control} title="Cedula de identidad" 

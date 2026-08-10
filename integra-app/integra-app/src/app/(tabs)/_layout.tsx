@@ -9,7 +9,7 @@ export default function TabsLayout() {
     <NativeTabs tintColor={activeTint}>
       <NativeTabs.Trigger name="index">
         <Label>Inicio</Label>
-        <Icon sf="house" />
+        <Icon sf="house"/>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="medicacion">

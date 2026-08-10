@@ -9,13 +9,16 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.3",
     "@hookform/resolvers": "^5.7.1",
     "@legendapp/state": "^3.0.0-beta.48",
     "@react-native-community/datetimepicker": "8.4.4",
+    "@react-native-picker/picker": "2.11.1",
     "@supabase/supabase-js": "^2.112.2",
     "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.35",
     "expo-constants": "~18.0.13",
+    "expo-crypto": "~15.0.9",
     "expo-linking": "~8.0.12",
     "expo-router": "~6.0.24",
     "expo-sqlite": "~16.0.10",
@@ -40,6 +43,11 @@
     "drizzle-orm": "^0.45.2",
     "pg": "^8.22.0",
     "typescript": "~5.9.2"
+  },
+  "overrides": {
+    "@legendapp/state": {
+      "expo-sqlite": "$expo-sqlite"
+    }
   },
   "private": true
 }

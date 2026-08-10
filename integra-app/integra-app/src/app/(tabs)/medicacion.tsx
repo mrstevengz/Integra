@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function MedicacionScreen() {
   return (
     <View className="flex-1">
-        <SafeAreaView edges={['top']} className="bg-white">
+        <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Medicacion' canGoBack={false}/>
         </SafeAreaView>
         <ScrollView className="flex-1 bg-white">

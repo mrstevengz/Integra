@@ -1,0 +1,1 @@
+CREATE POLICY "condiciones_create_propio" ON "condiciones" AS PERMISSIVE FOR INSERT TO "authenticated" USING ((select auth.uid()) = "condiciones"."perfil_id") WITH CHECK ((select auth.uid()) = "condiciones"."perfil_id");
