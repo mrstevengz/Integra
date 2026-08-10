@@ -96,3 +96,96 @@ export const perfiles = pgTable('perfiles', {
         withCheck: sql`${authUid} = ${table.id}`
     })
 ]).enableRLS()
+
+export const condiciones = pgTable('condiciones', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+    nombre: text('nombre').notNull(),
+    tipo: text('tipo').notNull(),
+    detalles: text('detalles').notNull(),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+        pgPolicy('condiciones_select_propio', {
+            for: 'select',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+        pgPolicy('condiciones_create_propio', {
+            for: 'insert',
+            to: authenticatedRole,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+
+        pgPolicy('condiciones_update_propio', {
+            for: 'update',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+export const alergias = pgTable('alergias', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+    nombre: text('nombre').notNull(),
+    severidad: text('severidad').notNull(),
+    detalles: text('detalles').notNull(),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+        pgPolicy('alergias_select_propio', {
+            for: 'select',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+        pgPolicy('alergias_create_propio', {
+            for: 'insert',
+            to: authenticatedRole,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+
+        pgPolicy('alergias_update_propio', {
+            for: 'update',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+export const contactosemergencia = pgTable('contactosemergencia', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+    nombre: text('nombre').notNull(),
+    telefono: text('telefono').notNull(),
+    relacion: text('relacion').notNull(),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+        pgPolicy('contactosemergencia_select_propio', {
+            for: 'select',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+        pgPolicy('contactosemergencia_create_propio', {
+            for: 'insert',
+            to: authenticatedRole,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+
+        pgPolicy('contactosemergencia_update_propio', {
+            for: 'update',
+            to: authenticatedRole,
+            using: sql`${authUid} = ${table.perfil_id}`,
+            withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()

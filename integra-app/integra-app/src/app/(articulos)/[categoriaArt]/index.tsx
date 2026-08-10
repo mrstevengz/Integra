@@ -15,7 +15,7 @@ export default function CategoriaListScreen() {
 
     return (
         <View className="flex-1">
-            <SafeAreaView edges={['top']} className="bg-white">
+            <SafeAreaView edges={['top']} className="bg-slate-100">
                 <TopBar name='Articulos' canGoBack={true}/>
             </SafeAreaView>
             

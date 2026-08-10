@@ -26,7 +26,7 @@ export function CampoFecha<T extends FieldValues>({
     
     return (
         <View className="mb-4">
-            <Text>{title} *</Text>
+            <Text>{title}</Text>
                     
             <Pressable 
             className={`border rounded-lg py-3 text-slate-900 flex ${error ? 'border-red-400' : 'border-slate-300'}`}

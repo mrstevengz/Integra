@@ -9,7 +9,7 @@ type TopBarProps = {
 
 export default function TopBar({ name, canGoBack }: TopBarProps) {
     return (
-        <View className="relative flex-row items-center justify-center py-4 px-4 bg-white border-b border-black/10">
+        <View className="relative flex-row items-center justify-center py-4 px-4 bg-slate-100 border-b border-black/10">
             {canGoBack && (
                 <Pressable
                     onPress={() => router.back()}

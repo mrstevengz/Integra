@@ -3,6 +3,7 @@ import {observablePersistSqlite} from '@legendapp/state/persist-plugins/expo-sql
 import {configureSyncedSupabase, syncedSupabase} from '@legendapp/state/sync-plugins/supabase'
 import { Storage } from 'expo-sqlite/kv-store'
 import { supabase } from './supabase'
+import { Alert } from 'react-native'
 
 //Legend-State plugin config, apunta a los campos que deberia tener cada tabla
 configureSyncedSupabase({
@@ -16,5 +17,14 @@ configureSyncedSupabase({
 export const syncedTable = configureSynced(syncedSupabase, {
     supabase,
     persist: {plugin: observablePersistSqlite(Storage), retrySync: true}, //Escribe el SQLite en cada cambio que hay y lo recarga al abrir la aplicacion.
-    retry: {infinite: true}
+    retry: {infinite: true},
+    onError: (error, params) => {
+        console.error(`[sync:${params.source}]`, error.message)
+
+        const isPermanent = error.message.includes('permission denied') || error.message.includes('row-level security') || error.message.includes('violates')
+
+        if (isPermanent) {
+            Alert.alert('Error de sincronizacion', 'No se pudo guardar en el servidor. Intente mas tarde')
+        }
+    }
 })
