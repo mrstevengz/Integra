@@ -1,54 +1,54 @@
-import { condicion$, porId } from "@/state/condicion";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/features/topbar/TopBar";
-import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condicion/condiciones-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { CampoTexto } from "@/features/auth/CampoTexto";
 import { CampoSelect } from "@/features/perfil/CampoSelect";
+import { contactoEmergencia$, porId } from "@/state/contactosemergencia";
+import { EmergenciaForm, emergenciaSchema, TIPO_RELACION } from "@/features/perfil/emergencia-schema";
 
-export default function AgregarItem() {
-    const {itemId} = useLocalSearchParams()
+export default function EditarCondicion() {
+    const {contactoId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const condicionesLista = useValue(condicion$)
-    const item = porId(condicionesLista, itemId as string)
+    const contactosLista = useValue(contactoEmergencia$)
+    const item = porId(contactosLista, contactoId as string)
 
-    const {control, handleSubmit, formState: {isDirty}, reset} = useForm<CondicionesForm>({
+    const {control, handleSubmit, reset, formState: {isDirty}} = useForm<EmergenciaForm>({
 
-        resolver: zodResolver(condicionesSchema),
+        resolver: zodResolver(emergenciaSchema),
         mode: 'onTouched',
         defaultValues: {
             nombre: '',
-            tipo: '',
-            detalles: ''
+            relacion: '',
+            telefono: ''
         },
 
         values: item ? {
             nombre: item.nombre,
-            tipo: item.tipo,
-            detalles: item.detalles,
+            relacion: item.relacion,
+            telefono: item.telefono,
         }: undefined
     })
 
 
-    function onSubmit(formValues: CondicionesForm) {
+    function onSubmit(formValues: EmergenciaForm) {
         if (!item) return
         const id = item.id
         try {
-            condicion$[id].assign!({
+            contactoEmergencia$[id].assign!({
             nombre: formValues.nombre,
-            tipo: formValues.tipo,
-            detalles: formValues.detalles
+            relacion: formValues.relacion,
+            telefono: formValues.telefono
             })
 
             reset(formValues)
             router.back()
         } catch (error) {
-            console.error('No se pudo guardar la condicion', error)
+            console.error('No se pudo guardar el contacto de emergencia', error)
         } finally {
             setIsSubmitting(false)
         }
@@ -69,16 +69,16 @@ export default function AgregarItem() {
                 <TopBar name='Editar' canGoBack={true}/>
             </SafeAreaView>
             <ScrollView contentContainerClassName="flex-1 px-6 py-6">
-                <CampoTexto name="nombre" control={control} title="Nombre de la condicion"/>
+                <CampoTexto name="nombre" control={control} title="Nombre"/>
+                
+                <CampoTexto name="telefono" control={control} title="Numero telefonico" keyboardType="phone-pad"/>
+                
+                <CampoSelect name="relacion" control={control} title="Tipo de relacion" opciones={TIPO_RELACION}/>
             
-                <CampoSelect name="tipo" control={control} title="Tipo de condicion" opciones={TIPO_CONDICION}/>
-            
-                <CampoTexto name="detalles" control={control} title="Detalles de la condicion (opcional)"/>
-            
-                <Pressable onPress={handleSubmit(onSubmit)} disabled={isSubmitting}
+                <Pressable onPress={handleSubmit(onSubmit)} disabled={isSubmitting || !isDirty}
                     className="bg-black py-4 rounded-lg">
                     <Text className="text-white text-center">
-                        {isSubmitting? "Guardando..." : "Guardar condicion"}
+                        {isSubmitting? "Guardando..." : "Guardar contacto de emergencia"}
                     </Text>
                 </Pressable>
             </ScrollView>

@@ -10,9 +10,21 @@ export const auth$ = observable({
     cerrandoSesion: false
 })
 
-supabase.auth.onAuthStateChange((_evento, sesion) => {
+async function limpiarDatosLocales() {
+    await Promise.all(
+        getAllSyncStates().map(([syncState$]) => syncState$.reset())
+    )
+
+    await Storage.clear()
+}
+
+supabase.auth.onAuthStateChange((evento, sesion) => {
     auth$.session.set(sesion)
     auth$.cargando.set(false)
+
+    if(evento === "SIGNED_OUT" && !auth$.cerrandoSesion.get()) {
+        limpiarDatosLocales()
+    }
 })
 
 export async function cerrarSesion() {
