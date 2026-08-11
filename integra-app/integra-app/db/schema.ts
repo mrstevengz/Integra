@@ -1,28 +1,9 @@
 import {sql} from 'drizzle-orm'
-import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index, date, pgEnum} from 'drizzle-orm/pg-core'
+import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index, date, pgEnum, integer, numeric, time, unique} from 'drizzle-orm/pg-core'
 //Roles de supabase
 import {anonRole, authenticatedRole, authUid, authUsers} from 'drizzle-orm/supabase'
 
-//SINTAXIS BASICA PARA DRIZZLE ORM
-/*
-Tipos (dentro van los nombres):
-.integer('id')
-.text()
-.uuid()
-.boolean()
-.timestamp()
-.date()
-.enum()
 
-Constraints (van dsp del tipo):
-.notNull()
-.default('valor')
-.defaultNow() --- tiempo
-.primaryKey()
-.defaultRandom() ----genera un id random para los UUIDS SOLAMENTE
-.generatedAlwaysAsIdentity({startWith: 'numero'}) --- id autoincremento (startWith es donde empieza)
-
-*/
 
 //ENUMS
 
@@ -187,5 +168,132 @@ export const contactosemergencia = pgTable('contactosemergencia', {
             to: authenticatedRole,
             using: sql`${authUid} = ${table.perfil_id}`,
             withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+//PANTALLA MEDICACION
+
+export const formaFarmaceuticaEnum = pgEnum('forma_farmaceutica', [
+    'tableta', 'capsula', 'jarabe', 'suspension', 'inyeccion',
+    'gotas', 'crema', 'inhalador', 'supositorio', 'parche',
+])
+
+export const conAlimentosEnum = pgEnum('con_alimentos', [
+    'con', 'sin', 'indiferente',
+])
+
+export const estadoTomaEnum = pgEnum('estado_toma', [
+    'pendiente', 'tomada', 'pospuesta', 'omitida',
+])
+
+export const medicamentos = pgTable('medicamentos', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+
+    nombre: text('nombre').notNull(),
+    dosis: numeric('dosis', {precision: 8, scale: 3}).notNull(),
+    unidad: text('unidad').notNull(),
+    forma: formaFarmaceuticaEnum('forma').notNull(),
+    con_alimentos: conAlimentosEnum('con_alimentos'),
+    indicaciones: text('indicaciones'),
+
+    //Permite pausar un tratamiento sin borrar su historial
+    activo: boolean('activo').notNull().default(true),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+    index('medicamentos_perfil_idx').on(table.perfil_id),
+
+    pgPolicy('medicamentos_select_propio', {
+        for: 'select',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('medicamentos_create_propio', {
+        for: 'insert',
+        to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('medicamentos_update_propio', {
+        for: 'update',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+export const horarios = pgTable('horarios', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+    medicamento_id: uuid('medicamento_id').notNull().references(() => medicamentos.id, {onDelete: 'cascade'}),
+
+    hora: time('hora').notNull(),
+    //0 = domingo ... 6 = sabado. {0,1,2,3,4,5,6} = todos los dias
+    dias: integer('dias').array().notNull(),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+    index('horarios_medicamento_idx').on(table.medicamento_id),
+
+    pgPolicy('horarios_select_propio', {
+        for: 'select',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('horarios_create_propio', {
+        for: 'insert',
+        to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('horarios_update_propio', {
+        for: 'update',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+export const tomas = pgTable('tomas', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+    medicamento_id: uuid('medicamento_id').notNull().references(() => medicamentos.id, {onDelete: 'cascade'}),
+    //set null: si borra el horario, el historial sobrevive
+    horario_id: uuid('horario_id').references(() => horarios.id, {onDelete: 'set null'}),
+
+    programada_para: timestamp('programada_para', {withTimezone: true}).notNull(),
+    estado: estadoTomaEnum('estado').notNull().default('pendiente'),
+    registrada_en: timestamp('registrada_en', {withTimezone: true}),
+    pospuesta_hasta: timestamp('pospuesta_hasta', {withTimezone: true}),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+    //Hace imposible duplicar una dosis, sin importar cuantas veces corra el generador
+    unique('tomas_medicamento_programada_unq').on(table.medicamento_id, table.programada_para),
+    index('tomas_perfil_programada_idx').on(table.perfil_id, table.programada_para),
+
+    pgPolicy('tomas_select_propio', {
+        for: 'select',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('tomas_create_propio', {
+        for: 'insert',
+        to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('tomas_update_propio', {
+        for: 'update',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
     }),
 ]).enableRLS()

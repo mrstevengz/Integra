@@ -1,7 +1,8 @@
-// src/features/topbar/TopBar.tsx
 import { router } from "expo-router"
 import { Pressable, Text, View } from "react-native"
 
+
+//Topbar para todas las pantallas de la aplicacion. Aqui se puede modificar. Acepta el titulo y un booleano, para permitir retornar o no. (En las pantallas principales de (tabs) no se retorna)
 type TopBarProps = {
     name: string
     canGoBack: boolean
