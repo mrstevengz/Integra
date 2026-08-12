@@ -17,14 +17,14 @@ import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condicion$)).filter(
+    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
         (c) => c.perfil_id === perfil.id && c.deleted !== true
     )
-    const alergias = Object.values(useValue(alergia$)).filter(
+    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id && a.deleted !== true
     )
 
-    const contactos = Object.values(useValue(contactoEmergencia$)).filter(
+    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
         (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
     )
 
@@ -59,7 +59,7 @@ export default function ExpedienteScreen() {
         <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Mi Expediente' canGoBack={false}/>
         </SafeAreaView>
-        <ScrollView className="flex-1 bg-white">
+        <ScrollView className="flex-grow bg-white">
 
           <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
 
@@ -72,7 +72,7 @@ export default function ExpedienteScreen() {
               <PerfilBoxText titulo="Medico tratante" data={perfil.medico_tratante}/>
 
             </View>
-          </PerfilBox>
+          </PerfilBox> 
 
           <PerfilBox titulo="Condiciones" link="/expediente/diagnosticos" linkName="Editar">
           <ScrollView 

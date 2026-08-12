@@ -1,5 +1,4 @@
 import { Link, router } from "expo-router";
-import { ReactNode } from "react";
 import { View, Text } from "react-native";
 
 type PerfilBoxProps = {

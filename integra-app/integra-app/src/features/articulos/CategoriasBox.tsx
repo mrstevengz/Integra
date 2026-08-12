@@ -1,6 +1,8 @@
 import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useValue } from "@legendapp/state/react";
+import { articulo$, porCategoria, porId } from "@/state/articulos";
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -11,14 +13,14 @@ type CategoriasBoxProps = {
 }
 
 const CATEGORIAS: CategoriasBoxProps[] = [
-    { categoriaNombre: "Diabetes", count: 24, icon: 'water-outline' },
-    { categoriaNombre: "Hipertension", count: 18, icon: 'pulse-outline' },
-    { categoriaNombre: "Nutricion", count: 31, icon: 'nutrition-outline' },
-    { categoriaNombre: "Ejercicio", count: 15, icon: 'barbell-outline' },
-    { categoriaNombre: "Medicamentos", count: 22, icon: 'medkit-outline' },
-    { categoriaNombre: "Salud mental", count: 12, icon: 'happy-outline' },
-    { categoriaNombre: "Cuidados", count: 19, icon: 'heart-outline' },
-    { categoriaNombre: "Discapacidad", count: 8, icon: 'body-outline' },
+    { categoriaNombre: "Diabetes", count: 0, icon: 'water-outline' },
+    { categoriaNombre: "Hipertension", count: 0, icon: 'pulse-outline' },
+    { categoriaNombre: "Nutricion", count: 0, icon: 'nutrition-outline' },
+    { categoriaNombre: "Ejercicio", count: 0, icon: 'barbell-outline' },
+    { categoriaNombre: "Medicamentos", count: 0, icon: 'medkit-outline' },
+    { categoriaNombre: "Salud mental", count: 0, icon: 'happy-outline' },
+    { categoriaNombre: "Cuidados", count: 0, icon: 'heart-outline' },
+    { categoriaNombre: "Discapacidad", count: 0, icon: 'body-outline' },
 ]
 
 function CategoriasBox({categoriaNombre, count, icon}: CategoriasBoxProps) {
@@ -43,12 +45,27 @@ function CategoriasBox({categoriaNombre, count, icon}: CategoriasBoxProps) {
 }
 
 export default function Categorias() {
+    const articulos = useValue(articulo$)
+
+    if (!articulos) {
+        return (
+            <View className="px-4 pt-4">
+            <Text className="text-lg mb-2 font-semibold">CATEGORIAS</Text>
+            <View className="flex-row flex-wrap justify-between">
+                {CATEGORIAS.map((cat) => (
+                    <CategoriasBox key={cat.categoriaNombre} count={0} categoriaNombre={cat.categoriaNombre} icon={cat.icon}/>
+                ))}
+            </View>   
+        </View>
+        )
+    }
+
     return (
         <View className="px-4 pt-4">
             <Text className="text-lg mb-2 font-semibold">CATEGORIAS</Text>
             <View className="flex-row flex-wrap justify-between">
                 {CATEGORIAS.map((cat) => (
-                    <CategoriasBox key={cat.categoriaNombre} {...cat}/>
+                    <CategoriasBox key={cat.categoriaNombre} count={porCategoria(articulos, cat.categoriaNombre).length} categoriaNombre={cat.categoriaNombre} icon={cat.icon}/>
                 ))}
             </View>
         </View>

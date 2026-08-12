@@ -11,11 +11,11 @@ import { alergia$ } from "@/state/alergia"
 export default function DiagnosticosScreen() {
     const perfil = useValue(perfil$)
     
-    const condiciones = Object.values(useValue(condicion$)).filter(
+    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
         (c) => c.perfil_id === perfil.id
     )
 
-    const alergias = Object.values(useValue(alergia$)).filter(
+    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id
     )
 

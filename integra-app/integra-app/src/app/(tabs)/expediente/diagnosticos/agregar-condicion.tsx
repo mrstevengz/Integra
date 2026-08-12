@@ -34,7 +34,8 @@ export default function AgregarCondicionScreen() {
     
 
     function onSubmit(formValues: CondicionesForm) {
-        if (isSubmitting) return setIsSubmitting(true)
+        if (isSubmitting) return 
+        setIsSubmitting(true)
         
         try {
             const id = generateUUID()

@@ -34,7 +34,8 @@ export default function AgregarAlergiaScreen() {
     
 
     function onSubmit(formValues: AlergiasForm) {
-        if (isSubmitting) return setIsSubmitting(true)
+        if (isSubmitting) return 
+        setIsSubmitting(true)
         
         try {
             const id = generateUUID()
