@@ -12,10 +12,10 @@ export function etiquetaEstado(estado: EstadoToma): string {
 
 export function colorEstado(estado: EstadoToma): string {
     const map: Record<EstadoToma, string> = {
-        pendiente: 'text-slate-500',
-        tomada: 'text-teal-700',
-        pospuesta: 'text-amber-600',
-        omitida: 'text-red-600',
+        pendiente: 'text-neutral-600 font-medium',
+        tomada: 'text-neutral-900 font-semibold',
+        pospuesta: 'text-neutral-600 font-medium italic',
+        omitida: 'text-neutral-500 font-medium line-through',
     }
     return map[estado]
 }

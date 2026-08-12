@@ -16,7 +16,7 @@ function generarClave(medicamentoId: string, programada: Date): string {
 export function generarTomasPendientes(perfilId: string): number {
     
     //Se filtra la lista de medicamentos por los que tienen activos, y los ordena
-    const medicamentos = medicamentosActivos(medicamento$.get())
+    const medicamentos = medicamentosActivos(medicamento$.get(), perfilId)
 
     //Si no hay medicamentos activos, retorna 0
     if (medicamentos.length === 0) return 0
@@ -55,6 +55,7 @@ export function generarTomasPendientes(perfilId: string): number {
 
             const creado = new Date(med.created_at)
 
+            // Bucle 3 - Horarios de cada medicamento
             for (const horario of med.horarios ?? []) {
                 //Si el horario NO incluye el dia de la semana del loop, pasar al siguiente
                 if (!horario.dias.includes(diaSemana)) continue

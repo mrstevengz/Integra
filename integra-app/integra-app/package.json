@@ -23,6 +23,7 @@
     "expo-router": "~6.0.24",
     "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
+    "lucide-react-native": "^1.31.0",
     "nativewind": "^4.2.6",
     "react": "19.1.0",
     "react-dom": "^19.1.0",

@@ -11,7 +11,7 @@ type Props = {
     puedeEliminar: boolean
 }
 
-//"08:00" -> Date de hoy a esa hora
+//"08:00" -> Fecha de hoy a esa hora
 function horaADate(hhmm: string): Date {
     const [h, m] = hhmm.split(':').map(Number)
     const d = new Date()

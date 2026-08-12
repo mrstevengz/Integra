@@ -2,7 +2,8 @@ import { syncedTable } from "@/lib/sync";
 import { observable } from "@legendapp/state";
 import { comoLista } from "./helpers";
 
-//Enums para matchear la base de datos
+//ENUMS para hacer match con la base de datos
+
 export type FormaFarmaceutica =
     | 'tableta' | 'capsula' | 'jarabe' | 'suspension' | 'inyeccion'
     | 'gotas' | 'crema' | 'inhalador' | 'supositorio' | 'parche'
@@ -11,13 +12,15 @@ export type ConAlimentos = 'con' | 'sin' | 'indiferente'
 
 export type EstadoToma = 'pendiente' | 'tomada' | 'pospuesta' | 'omitida'
 
+//Forma de horario
 export type HorarioMed = {
     id: string
     hora: string
     dias: number[]
 }
 
-//Respuestas que se recibe de la base de datos
+
+//Forma de medicamento
 export type Medicamento = {
     id: string
     perfil_id: string
@@ -33,7 +36,7 @@ export type Medicamento = {
     created_at?: string | null
 }
 
-//Tabla para resolver que pasa con cada toma de medicamento. 
+//Toma -> 1 por cada dia y hora del horario
 export type Toma = {
     id: string
     perfil_id: string
@@ -67,17 +70,18 @@ export const toma$ = observable<Record<string, Toma>>(syncedTable({
 
 //HELPERS DE MEDICACION
 
-//Reciba una lista de Medicamento, y retorna los medicamentos activos en orden alfabetico
+//Recibe una lista de medicamentos, y el id del usuario por proteccion contra la cache. Regresa la lista ordenada, que tienen el ID especifico y ordenadas
 export function medicamentosActivos(
     todos: Record<string, Medicamento> | undefined, perfilId: string | undefined,
 ): Medicamento[] {
-     return comoLista(todos)
+    if (!perfilId) return []
+    return comoLista(todos)
         .filter((m) => m.perfil_id === perfilId)
         .filter((m) => m.activo)
         .sort((a, b) => a.nombre.localeCompare(b.nombre))
 }
 
-//Horarios de un medicamento
+//Retorna los horarios de medicamentos ordenados por hora
 export function horariosOrdenados(m: Medicamento): HorarioMed[] {
     return [...m.horarios].sort((a, b) => a.hora.localeCompare(b.hora))
 }
@@ -108,7 +112,7 @@ export function tomasDelDia(
         )
 }
 
-//Utilidades de fecha/hora
+//Utilidades de DateTime
 
 //Retorna una fecha en hora local (hora de la region)
 export function fechaLocalISO(d: Date): string {
@@ -141,10 +145,12 @@ export type GrupoTomas = {
 }
 
 //Agrupa las dosis del dia por hora exacta.
-//Dos medicamentos a las 8:00 caen en el mismo grupo; uno a las 20:00 va aparte.
+//Dos medicamentos a las 8:00 caen en el mismo grupo; uno a las 11:00 va aparte.
 export function agruparPorHora(tomas: Toma[]): GrupoTomas[] {
+    //Crea un nuevo mapa con una llave y el grupo de tomas
     const mapa = new Map<string, GrupoTomas>()
 
+    //Por cada toma en el arreglo de tomas completo
     for (const t of tomas) {
         const d = new Date(t.programada_para)
         const hora = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`

@@ -1,6 +1,7 @@
 import { toma$ } from "@/state/medicacion";
 import { batch } from "@legendapp/state";
 
+//Para marcar como tomada, se le asigna al registro de SQLite y se le cambia el estado a tomada, y la fecha en la que fue tomada a hora local.
 export function marcarTomada(tomaId: string) {
     toma$[tomaId].assign({
         estado: 'tomada',
@@ -9,7 +10,7 @@ export function marcarTomada(tomaId: string) {
     })
 }
 
-//El usuario decide saltarsela
+//El usuario decide saltarsela, se marca como omitida y se le manda la fecha de registro
 export function marcarOmitida(tomaId: string) {
     toma$[tomaId].assign({
         estado: 'omitida',
@@ -18,6 +19,7 @@ export function marcarOmitida(tomaId: string) {
     })
 }
 
+//El usuario decide posponerla, se cambia el estado a pospuesta y se le agrega los minutos a la fecha de hoy.
 export function posponer(tomaId: string, minutos = 15){
     const hasta = new Date(Date.now() + minutos * 60_000)
     toma$[tomaId].assign({
@@ -27,6 +29,8 @@ export function posponer(tomaId: string, minutos = 15){
     })
 }
 
+
+//El usuario le da al boton de revertir, regresa la toma a su forma base, estado pendiente y sin registro.
 export function revertir(tomaId: string) {
     toma$[tomaId].assign({
         estado: 'pendiente',
@@ -35,8 +39,10 @@ export function revertir(tomaId: string) {
     })
 }
 
+//Se le pasa un arreglo de IDs de tomas, y las marca todas como tomadas
 export function marcarTodasTomadas(tomaIds: string[]) {
     batch(() => {
         for (const id of tomaIds) marcarTomada(id)
     })
 }
+

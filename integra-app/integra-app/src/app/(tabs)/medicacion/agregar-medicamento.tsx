@@ -1,5 +1,5 @@
 import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicacion/medicacion-schema"
-import { medicamento$} from "@/state/medicacion"
+import { medicamento$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicacion"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -46,8 +46,8 @@ export default function AgregarMedicamentoScreen() {
             nombre: v.nombre,
             dosis: dosisANumero(v.dosis),
             unidad: v.unidad,
-            forma: v.forma,
-            con_alimentos: v.con_alimentos || null,
+            forma: v.forma as FormaFarmaceutica,
+            con_alimentos: (v.con_alimentos || null) as ConAlimentos | null,
             indicaciones: v.indicaciones || null,
             activo: true,
             horarios: v.horarios.map((h) => ({
