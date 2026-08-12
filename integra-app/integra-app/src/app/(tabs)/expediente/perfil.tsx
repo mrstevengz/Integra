@@ -1,4 +1,4 @@
-import { View, ActivityIndicator, ScrollView, Pressable, Text} from "react-native"
+import { View, ActivityIndicator, ScrollView, Pressable, Text, KeyboardAvoidingView, Platform} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/features/topbar/TopBar";
 import { useValue } from "@legendapp/state/react";
@@ -63,7 +63,17 @@ export default function PerfilScreen() {
                 <TopBar name='Datos personales' canGoBack={true}/>
             </SafeAreaView>
 
-            <ScrollView contentContainerClassName="flex-1 px-6 py-6">
+        <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView
+                    className="flex-grow bg-white"
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        paddingHorizontal: 20,
+                        paddingTop: 40,
+                        paddingBottom: 90
+                    }}
+                    keyboardShouldPersistTaps="handled">
+
                 <CampoTexto
                 name="nombre" control = {control} title="Nombre"
                 autoComplete="name"
@@ -100,8 +110,8 @@ export default function PerfilScreen() {
                     <Text className="text-white text-center">Guardar cambios</Text>
                 </Pressable>
 
-
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </View>
     )
 }

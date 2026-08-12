@@ -4,6 +4,7 @@ import type { RegistroForm } from './registro-schema'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useState } from 'react'
 
+//Campo generico para pasar un DateTimePicker, escoge fecha y hora, o fecha, o hora. (Se le pasa la propiedad 'mode')
 type Props<T extends FieldValues> = {
     name: Path<T>
     control: Control<T>
@@ -18,8 +19,10 @@ export function CampoFecha<T extends FieldValues>({
     control
 }: Props<T>) {
 
+    //Controller para manejar los cambios de valores y el schema de zod
     const {field, fieldState} = useController({name, control})
     const error = fieldState.error?.message
+    //Estado para manejar si esta abierto o no
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
 
 

@@ -11,7 +11,7 @@ import { perfil$ } from "@/state/usuario";
 export default function ContactosEmergenciaScreen() {
 
     const perfil = useValue(perfil$)
-    const contactos = Object.values(useValue(contactoEmergencia$)).filter(
+    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
         (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
     )
 

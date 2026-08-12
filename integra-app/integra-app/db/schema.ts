@@ -1,5 +1,5 @@
 import {sql} from 'drizzle-orm'
-import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index, date, pgEnum, integer, numeric, time, unique} from 'drizzle-orm/pg-core'
+import { pgTable, pgPolicy, uuid, text, boolean, timestamp, index, date, pgEnum, integer, numeric, time, unique, jsonb} from 'drizzle-orm/pg-core'
 //Roles de supabase
 import {anonRole, authenticatedRole, authUid, authUsers} from 'drizzle-orm/supabase'
 
@@ -186,6 +186,12 @@ export const estadoTomaEnum = pgEnum('estado_toma', [
     'pendiente', 'tomada', 'pospuesta', 'omitida',
 ])
 
+export type HorarioMed = {
+    id: string
+    hora: string
+    dias: number[]
+}
+
 export const medicamentos = pgTable('medicamentos', {
     id: uuid('id').primaryKey().defaultRandom(),
     perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
@@ -200,6 +206,9 @@ export const medicamentos = pgTable('medicamentos', {
     //Permite pausar un tratamiento sin borrar su historial
     activo: boolean('activo').notNull().default(true),
 
+    
+    horarios: jsonb('horarios').$type<HorarioMed[]>().notNull().default(sql`'[]'::jsonb`),
+
     createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
     deleted: boolean('deleted').notNull().default(false),
@@ -208,63 +217,27 @@ export const medicamentos = pgTable('medicamentos', {
     index('medicamentos_perfil_idx').on(table.perfil_id),
 
     pgPolicy('medicamentos_select_propio', {
-        for: 'select',
-        to: authenticatedRole,
+        for: 'select', to: authenticatedRole,
         using: sql`${authUid} = ${table.perfil_id}`,
     }),
     pgPolicy('medicamentos_create_propio', {
-        for: 'insert',
-        to: authenticatedRole,
+        for: 'insert', to: authenticatedRole,
         withCheck: sql`${authUid} = ${table.perfil_id}`,
     }),
     pgPolicy('medicamentos_update_propio', {
-        for: 'update',
-        to: authenticatedRole,
+        for: 'update', to: authenticatedRole,
         using: sql`${authUid} = ${table.perfil_id}`,
         withCheck: sql`${authUid} = ${table.perfil_id}`,
     }),
-]).enableRLS()
+]).enableRLS()  
 
-export const horarios = pgTable('horarios', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
-    medicamento_id: uuid('medicamento_id').notNull().references(() => medicamentos.id, {onDelete: 'cascade'}),
-
-    hora: time('hora').notNull(),
-    //0 = domingo ... 6 = sabado. {0,1,2,3,4,5,6} = todos los dias
-    dias: integer('dias').array().notNull(),
-
-    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
-    deleted: boolean('deleted').notNull().default(false),
-
-}, (table) => [
-    index('horarios_medicamento_idx').on(table.medicamento_id),
-
-    pgPolicy('horarios_select_propio', {
-        for: 'select',
-        to: authenticatedRole,
-        using: sql`${authUid} = ${table.perfil_id}`,
-    }),
-    pgPolicy('horarios_create_propio', {
-        for: 'insert',
-        to: authenticatedRole,
-        withCheck: sql`${authUid} = ${table.perfil_id}`,
-    }),
-    pgPolicy('horarios_update_propio', {
-        for: 'update',
-        to: authenticatedRole,
-        using: sql`${authUid} = ${table.perfil_id}`,
-        withCheck: sql`${authUid} = ${table.perfil_id}`,
-    }),
-]).enableRLS()
 
 export const tomas = pgTable('tomas', {
     id: uuid('id').primaryKey().defaultRandom(),
     perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
     medicamento_id: uuid('medicamento_id').notNull().references(() => medicamentos.id, {onDelete: 'cascade'}),
-    //set null: si borra el horario, el historial sobrevive
-    horario_id: uuid('horario_id').references(() => horarios.id, {onDelete: 'set null'}),
+    
+    horario_id: uuid('horario_id'),
 
     programada_para: timestamp('programada_para', {withTimezone: true}).notNull(),
     estado: estadoTomaEnum('estado').notNull().default('pendiente'),

@@ -113,6 +113,13 @@
       "when": 1786407018324,
       "tag": "0015_triggers_medicacion",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786470783140,
+      "tag": "0016_legal_sentinel",
+      "breakpoints": true
     }
   ]
 }

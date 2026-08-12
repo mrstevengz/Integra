@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { View, Text, Pressable, Platform } from "react-native"
-import DateTimePicker from '@react-native-community/datetimepicker'
+import { View, Text, Pressable, Platform, Modal} from "react-native"
 import { Control, useController } from "react-hook-form"
 import { MedicamentoForm, DIAS_SEMANA } from "./medicacion-schema"
+import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
 type Props = {
     control: Control<MedicamentoForm>
@@ -26,39 +26,56 @@ function dateAHora(d: Date): string {
     return `${h}:${m}`
 }
 
+//"08:00" -> "8:00 a. m."
+function mostrarHora(hhmm: string): string {
+    return horaADate(hhmm).toLocaleTimeString('es-NI', { hour: 'numeric', minute: '2-digit' })
+}
+
+const esAndroid = Platform.OS === 'android'
+
 export function CampoHorario({ control, index, onEliminar, puedeEliminar }: Props) {
+    //Se le pasa el indice, en el formulario pueden haber maximo 6 horarios. Indice (numero de horario.)
     const hora = useController({ control, name: `horarios.${index}.hora` })
     const dias = useController({ control, name: `horarios.${index}.dias` })
 
     const [abierto, setAbierto] = useState(false)
+    const [temporal, setTemporal] = useState(() => horaADate(hora.field.value))
 
     const diasActuales: number[] = dias.field.value ?? []
     const errorHora = hora.fieldState.error?.message
     const errorDias = dias.fieldState.error?.message
 
+    function abrir() {
+        setTemporal(horaADate(hora.field.value))
+        setAbierto(true)
+    }
+
+    function confirmar() {
+        hora.field.onChange(dateAHora(temporal))
+        setAbierto(false)
+    }
+
+    function cancelar() {
+        setAbierto(false)
+    }
+
     function alternarDia(valor: number) {
+        //Funcion que recibe el arreglo y retorna un arreglo nuevo. La logica es =>
+        //Guarda el arreglo nuevo en -> nuevos, se pasa la condicion que retorna un booleano,
+        //Si el arreglo de dias actuales incluye el valor (esta seleccionado en el UI) se quita de la lista de dias actuales (se deselecciona), si NO lo incluye, lo agrega a la lista existente y la ordena. (El ordenamiento solo es a nivel de base de datos, no afecta en el UI)
         const nuevos = diasActuales.includes(valor)
             ? diasActuales.filter((d) => d !== valor)
             : [...diasActuales, valor].sort((a, b) => a - b)
         dias.field.onChange(nuevos)
     }
 
-    function onChange(event: any, selectedDate?: Date) {
-        if (Platform.OS === 'android') {
-            setAbierto(false)
-        }
-
-        if (selectedDate) {
-
-        }
-    }
 
     return (
         <View className="border border-slate-300 rounded-lg p-4 mb-3">
             <View className="flex-row justify-between items-center mb-3">
-                <Pressable onPress={() => setAbierto(true)}>
+                <Pressable onPress={abrir}>
                     <Text className="text-2xl font-semibold text-slate-900">
-                        {hora.field.value}
+                        {mostrarHora(hora.field.value)}
                     </Text>
                 </Pressable>
 
@@ -69,32 +86,23 @@ export function CampoHorario({ control, index, onEliminar, puedeEliminar }: Prop
                 )}
             </View>
 
-            {abierto && (
-                <DateTimePicker
-                    value={horaADate(hora.field.value)}
-                    mode="time"
-                    is24Hour={true}
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={(evento, fecha) => {
+            <DateTimePickerModal
+            isVisible ={abierto}
+            mode="time"
+            date={horaADate(hora.field.value)}
+            onConfirm={(fecha) => {
+                hora.field.onChange(dateAHora(fecha)); setAbierto(false)}}
+            
+            onCancel={() => setAbierto(false)}
+            confirmTextIOS="Listo"
+            isDarkModeEnabled={false}
+            themeVariant="light"
+            cancelTextIOS="Cancelar"
+            locale="es-NI"
+            pickerComponentStyleIOS={{ alignSelf: 'center'}}
+            modalStyleIOS={{ marginHorizontal: 16 }}
+            buttonTextColorIOS="#0F7C7C"/>
 
-                    if (Platform.OS === 'android') {
-                        setAbierto(false)
-                        if (evento.type === 'set' && fecha) {
-                            hora.field.onChange(dateAHora(fecha))
-                        } 
-        
-                    }
-                    
-                    if (Platform.OS === "ios") {
-                        if (fecha) {
-                            hora.field.onChange(dateAHora(fecha))
-                        }
-                        setTimeout(() => setAbierto(false), 1500)
-                        
-                    }
-                }}
-                />
-            )}
 
             {errorHora && <Text className="text-red-600 text-sm mb-2">{errorHora}</Text>}
 

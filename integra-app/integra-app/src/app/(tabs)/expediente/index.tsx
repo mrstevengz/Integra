@@ -17,14 +17,14 @@ import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condicion$)).filter(
+    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
         (c) => c.perfil_id === perfil.id && c.deleted !== true
     )
-    const alergias = Object.values(useValue(alergia$)).filter(
+    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id && a.deleted !== true
     )
 
-    const contactos = Object.values(useValue(contactoEmergencia$)).filter(
+    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
         (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
     )
 

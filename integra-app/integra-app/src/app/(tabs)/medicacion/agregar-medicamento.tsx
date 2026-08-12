@@ -1,5 +1,5 @@
 import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicacion/medicacion-schema"
-import { medicamento$, horario$ } from "@/state/medicacion"
+import { medicamento$} from "@/state/medicacion"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -33,43 +33,37 @@ export default function AgregarMedicamentoScreen() {
 
     const { fields, append, remove } = useFieldArray({ control, name: 'horarios' })
 
-    function onSubmit(formsValue: MedicamentoForm) {
-        if (isSubmitting) return
-        setIsSubmitting(true)
+    function onSubmit(v: MedicamentoForm) {
+    if (isSubmitting) return
+    setIsSubmitting(true)
 
-        try {
-            const medId = Crypto.randomUUID()
+    try {
+        const medId = Crypto.randomUUID()
 
-            medicamento$[medId].set({
-                id: medId,
-                perfil_id: perfil.id,
-                nombre: formsValue.nombre,
-                dosis: dosisANumero(formsValue.dosis),
-                unidad: formsValue.unidad,
-                forma: formsValue.forma,
-                con_alimentos: formsValue.con_alimentos || null,
-                indicaciones: formsValue.indicaciones || null,
-                activo: true,
-            })
+        medicamento$[medId].set({
+            id: medId,
+            perfil_id: perfil.id,
+            nombre: v.nombre,
+            dosis: dosisANumero(v.dosis),
+            unidad: v.unidad,
+            forma: v.forma,
+            con_alimentos: v.con_alimentos || null,
+            indicaciones: v.indicaciones || null,
+            activo: true,
+            horarios: v.horarios.map((h) => ({
+                id: Crypto.randomUUID(),
+                hora: h.hora,
+                dias: h.dias,
+            })),
+        })
 
-            formsValue.horarios.forEach((h) => {
-                const horId = Crypto.randomUUID()
-                horario$[horId].set({
-                    id: horId,
-                    perfil_id: perfil.id,
-                    medicamento_id: medId,
-                    hora: h.hora,
-                    dias: h.dias,
-                })
-            })
-
-            router.back()
-        } catch (error) {
-            console.error('No se pudo guardar el medicamento', error)
-        } finally {
-            setIsSubmitting(false)
-        }
+        router.back()
+    } catch (error) {
+        console.error('No se pudo guardar el medicamento', error)
+    } finally {
+        setIsSubmitting(false)
     }
+}
 
     if (!perfil?.id) return (
         <View className="flex-1">
@@ -94,7 +88,7 @@ export default function AgregarMedicamentoScreen() {
                 contentContainerStyle={{
                     flexGrow: 1,
                     paddingHorizontal: 20,
-                    paddingTop: 40,
+                    paddingTop: 20,
                     paddingBottom: 120
                 }}
                 keyboardShouldPersistTaps="handled"

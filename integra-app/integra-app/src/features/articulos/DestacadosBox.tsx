@@ -39,7 +39,7 @@ function DestacadoCard({ categoriaNombre, articuloId, titulo }: DestacadoCardPro
 }
 
 export default function Destacados() {
-    const articulos = Object.values(useValue(articulo$));
+    const articulos = Object.values(useValue(articulo$) ?? {});
 
     const idsKey = articulos.map((a) => a.id).join(",");
 

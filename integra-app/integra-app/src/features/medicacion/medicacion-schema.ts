@@ -42,13 +42,16 @@ export const DIAS_SEMANA = [
     {valor: 0, letra: 'D', nombre: 'Domingo'},
 ]
 
+//Arreglo para representar los dias en el UI
 export const TODOS_LOS_DIAS = [0, 1, 2, 3, 4, 5, 6]
 
+//La tabla de horario solo recibe la hora de un DateTimePicker y los dias en forma de arreglo
 export const horarioFormSchema = z.object({
     hora: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {error: 'Hora invalida'}),
     dias: z.array(z.number()).min(1, {error: 'Selecciona al menos un dia'})
 })
 
+//La tabla de medicamento recibe sus campos Y un arreglo de horarios (hasta un maximo de 6 por cuestion de notificaciones)
 export const medicamentoSchema = z.object({
     nombre: z.string().trim()
         .min(2, {error: 'Ingresa el nombre del medicamento'})

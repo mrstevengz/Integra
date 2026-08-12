@@ -1,5 +1,5 @@
 import {supabase} from '@/lib/supabase'
-import { observable } from '@legendapp/state'
+import { observable, syncState } from '@legendapp/state'
 import { getAllSyncStates } from '@legendapp/state/sync'
 import type { Session } from '@supabase/supabase-js'
 import { Storage } from 'expo-sqlite/kv-store'
