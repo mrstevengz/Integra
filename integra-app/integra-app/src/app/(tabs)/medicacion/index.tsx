@@ -1,4 +1,5 @@
 import { View, Text, Pressable, ScrollView, TouchableOpacity } from "react-native"
+import { syncState } from "@legendapp/state"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
 import { useValue } from "@legendapp/state/react"
@@ -31,9 +32,11 @@ export default function MedicacionScreen() {
     //Las tomas se agrupan por hora. Retorna una lista con 'hora, Toma'
     const grupos = agruparPorHora(hoy)
 
+    const tomasSincronizadas = useValue(syncState(toma$).lastSync)
+
     const sincronizados = lista.filter((m) => m.created_at).length
 
-    const [tomasResueltas, setTomasResueltas] = useState(0)
+    const tomasResueltas = hoy.length - sinResolver.length
 
     useFocusEffect(
         useCallback(() => {
@@ -46,11 +49,7 @@ export default function MedicacionScreen() {
     useEffect(() => {
         if (!perfil?.id) return
         generarTomasPendientes(perfil.id)
-    }, [perfil?.id, sincronizados])
-
-    useEffect(() => {
-        setTomasResueltas(hoy.length - sinResolver.length)
-    })
+    }, [perfil?.id, sincronizados, tomasSincronizadas])
 
 
     return (
