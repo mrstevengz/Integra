@@ -93,7 +93,7 @@ export default function RegistroScreen() {
                 <CampoTexto name='nombre' control={control} title='Nombre' placeholder='Nombre' autoComplete='name'/>
                 <CampoTexto name='apellidos' control={control} title='Apellidos' placeholder='Apellidos' autoComplete='family-name'/>
                 <CampoTexto name='email' control={control} title='Correo electronico' placeholder='correo@ejemplo.com' autoComplete='email' keyboardType='email-address'/>
-                <CampoFecha control ={control} name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento'/>
+                <CampoFecha control ={control} name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento' mode='date'/>
             </>
             )}
 
