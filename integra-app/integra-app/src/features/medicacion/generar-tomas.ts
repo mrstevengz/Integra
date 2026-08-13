@@ -1,7 +1,7 @@
 import { comoLista } from "@/state/helpers"
 import * as Crypto from 'expo-crypto'
 import { medicamento$, medicamentosActivos, partirHora, Toma, toma$ } from "@/state/medicacion"
-import { batch } from "@legendapp/state"
+import { batch, syncState } from "@legendapp/state"
 
 const DIAS_ATRAS = 7 //Variable que determina cuantos dias atras va a generar tomas
 
@@ -15,9 +15,12 @@ function generarClave(medicamentoId: string, programada: Date): string {
 //Funcion para crear las filas de dosis que faltan. Devuelve el numero que creo
 export function generarTomasPendientes(perfilId: string): number {
     
+    const estadoTomas = syncState(toma$)
+    if (!estadoTomas.isPersistLoaded.get()) return 0
+    if (!estadoTomas.lastSync.get()) return 0
+
     //Se filtra la lista de medicamentos por los que tienen activos, y los ordena
     const medicamentos = medicamentosActivos(medicamento$.get(), perfilId)
-
     //Si no hay medicamentos activos, retorna 0
     if (medicamentos.length === 0) return 0
 
