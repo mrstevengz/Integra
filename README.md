@@ -1,7 +1,6 @@
 # Documentación de Integra
 
-> Documentación técnica completa del proyecto. Escrita para que una persona que nunca
-> ha visto el código pueda instalarlo, entenderlo y contribuir.
+> Documentación técnica completa del proyecto.
 
 **Última actualización:** 2026-08-13
 **Rama documentada:** `feature/medicion-cita-mvp`
