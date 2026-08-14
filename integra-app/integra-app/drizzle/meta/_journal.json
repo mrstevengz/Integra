@@ -1,0 +1,146 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1786081543495,
+      "tag": "0000_happy_bill_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786148171761,
+      "tag": "0001_crear_perfil_al_registrarse",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786148211415,
+      "tag": "0002_steady_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786148317406,
+      "tag": "0003_handle_times_function",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786148480256,
+      "tag": "0004_furry_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786153741228,
+      "tag": "0005_cedula_perfiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786154394652,
+      "tag": "0006_perfil_contacto",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786313417630,
+      "tag": "0007_condiciones_tabla",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786314697418,
+      "tag": "0008_normal_eternity",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786314963151,
+      "tag": "0009_bitter_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786332327072,
+      "tag": "0010_rare_pepper_potts",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1786342385076,
+      "tag": "0011_smiling_clea",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1786387454092,
+      "tag": "0012_uneven_lethal_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1786389697142,
+      "tag": "0013_faithful_bloodscream",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1786406773529,
+      "tag": "0014_next_shiver_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1786407018324,
+      "tag": "0015_triggers_medicacion",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786470783140,
+      "tag": "0016_legal_sentinel",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1786584446073,
+      "tag": "0017_smiling_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1786593040863,
+      "tag": "0018_clear_mauler",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1786593075597,
+      "tag": "0019_mediciones_trigger_y_presion",
+      "breakpoints": true
+    }
+  ]
+}
