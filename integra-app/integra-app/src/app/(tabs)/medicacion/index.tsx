@@ -1,15 +1,15 @@
-import { View, Text, Pressable, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity } from "react-native"
 import { syncState } from "@legendapp/state"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
 import { useValue } from "@legendapp/state/react"
 import TopBar from "@/features/topbar/TopBar"
 import { medicamento$, medicamentosActivos, tomasDelDia, toma$, agruparPorHora } from "@/state/medicacion"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { perfil$ } from "@/state/usuario"
 import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
 import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
-import MedicinasLista from "@/features/medicacion/MedicinasLista"
+import TopBarSecondary from "@/features/medicion/TopBarSecondary"
 
 export default function MedicacionScreen() {
     const perfil = useValue(perfil$)
@@ -58,6 +58,8 @@ export default function MedicacionScreen() {
                 <TopBar name='Medicacion' canGoBack={false}/>
             </SafeAreaView>
 
+            <TopBarSecondary active="Tomas" tab1="Tomas" tab2="Medicamentos" route1="/medicacion" route2="/medicacion/historial"/>
+
 
             <ScrollView
                 className="flex-grow bg-neutral-50"
@@ -102,20 +104,6 @@ export default function MedicacionScreen() {
                 )}
                     </View>
                 )}
-
-                <Text className="text-2xl font-bold text-neutral-900 tracking-tight mb-4 px-6">Mis medicamentos</Text>
-
-                {lista.length === 0 && (
-                    <View className="mx-6 mb-6 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
-                        <Text className="text-neutral-500 text-sm text-center">
-                            Todavia no has agregado medicamentos.
-                        </Text>
-                    </View>
-                )}
-
-                {lista.map((item) => (
-                    <MedicinasLista key = {item.id} {...item}/>
-                ))}
 
                 
             </ScrollView>

@@ -26,10 +26,11 @@ export default function ResultadoMedicion() {
     return (
         <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
+
                 {/* //Codigo del TopBar, se implementa para navegar a la ruta deseada (de momento) */}
                 <View className="relative flex-row items-center justify-center py-4 px-4 bg-slate-100 border-b border-black/10">
                     <Pressable
-                        onPress={() => router.navigate("/medicion")}
+                        onPress={() => router.navigate("/medicion/historial")}
                         hitSlop={8}
                         className="absolute left-4 h-9 w-9 items-center justify-center rounded-full active:bg-black/5">
                         <Text className="text-2xl leading-none">‹</Text>
@@ -39,6 +40,7 @@ export default function ResultadoMedicion() {
                         Resultado
                     </Text>
                 </View>
+
             </SafeAreaView>
             <View className="flex flex-col items-center mt-8 gap-4 px-6">
 

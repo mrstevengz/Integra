@@ -16,8 +16,13 @@ function generarClave(medicamentoId: string, programada: Date): string {
 export function generarTomasPendientes(perfilId: string): number {
     
     const estadoTomas = syncState(toma$)
+    const estadoMeds = syncState(medicamento$)
+
     if (!estadoTomas.isPersistLoaded.get()) return 0
-    if (!estadoTomas.lastSync.get()) return 0
+    if (!estadoMeds.isPersistLoaded.get()) return 0
+
+    if (!estadoTomas.isLoaded.get()) return 0
+    if (!estadoMeds.isLoaded.get()) return 0
 
     //Se filtra la lista de medicamentos por los que tienen activos, y los ordena
     const medicamentos = medicamentosActivos(medicamento$.get(), perfilId)

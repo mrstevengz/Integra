@@ -34,7 +34,7 @@ export default function MedicionScreen() {
         </SafeAreaView>
         <ScrollView className="flex-1">
 
-          <TopBarSecondary active="registrar"/>
+          <TopBarSecondary active="Registrar" tab1="Registrar" tab2="Historial" route1="/medicion" route2="/medicion/historial"/>
 
           <Text className="p-6 text-lg text-slate-600">¿Que deseas registrar?</Text>
 

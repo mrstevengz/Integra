@@ -21,9 +21,18 @@ export default function HistorialMediciones() {
                 <TopBar name='Historial' canGoBack={false}/>
             </SafeAreaView>
             
-            <TopBarSecondary active="historial"/>
+            <TopBarSecondary active="Historial" tab1="Registrar" tab2="Historial" route1="/medicion" route2="/medicion/historial"/>
 
             <ScrollView className="flex-grow" contentContainerStyle={{ paddingTop: 5, paddingBottom: 100 }}>
+
+                    {medicionesHistorial.length === 0 && (
+                    <View className="mx-6 mb-8 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
+                        <Text className="text-neutral-500 text-sm text-center">
+                            No hay historial de mediciones.
+                        </Text>
+                    </View>
+                    )}
+
                     {medicionesHistorial.map((m) => {
                         const t = porId(tipos, m.tipo_medicion_id)
                         const medidoEn = new Date(m.medido_en)
