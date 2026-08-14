@@ -1,1 +1,0 @@
-ALTER TABLE "alergias" RENAME COLUMN "tipo" TO "severidad";
