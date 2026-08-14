@@ -120,6 +120,27 @@
       "when": 1786470783140,
       "tag": "0016_legal_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1786584446073,
+      "tag": "0017_smiling_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1786593040863,
+      "tag": "0018_clear_mauler",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1786593075597,
+      "tag": "0019_mediciones_trigger_y_presion",
+      "breakpoints": true
     }
   ]
 }

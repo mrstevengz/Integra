@@ -270,3 +270,77 @@ export const tomas = pgTable('tomas', {
         withCheck: sql`${authUid} = ${table.perfil_id}`,
     }),
 ]).enableRLS()
+
+//MEDICIONES
+
+export const tipoMedicion = pgTable('tipomedicion', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    nombre: text('nombre').notNull(),
+    unidad: text('unidad').notNull(),
+
+    rango_min: numeric('rango_min', {precision: 8, scale: 3}).notNull(),
+    rango_max: numeric('rango_max', {precision: 8, scale: 3}).notNull(),
+
+    etiqueta_principal: text('etiqueta_principal'),
+    etiqueta_secundaria: text('etiqueta_secundaria'),
+    rango_min_secundario: numeric('rango_min_secundario', {precision: 8, scale: 3}),
+    rango_max_secundario: numeric('rango_max_secundario', {precision: 8, scale: 3}),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false)
+
+
+}, (table) => [
+    index('tipomedicion_updated_at_idx').on(table.updatedAt),
+
+
+    pgPolicy('tipomedicion_lectura_publica', {
+        for: 'select',
+        to: [anonRole, authenticatedRole],
+        using: sql`true`,
+    })
+
+]).enableRLS()
+
+
+export const mediciones = pgTable('mediciones', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+
+    tipo_medicion_id: uuid('tipo_medicion_id').notNull().references(() => tipoMedicion.id, {onDelete: 'restrict'}),
+
+    valor: numeric('valor', {precision: 8, scale: 3}).notNull(),
+    //Solo lo usan los tipos de dos valores (diastolica en presion arterial)
+    valor_secundario: numeric('valor_secundario', {precision: 8, scale: 3}),
+
+    //Cuando se tomo la medicion, no cuando se registro
+    medido_en: timestamp('medido_en', {withTimezone: true}).notNull(),
+
+    contexto: text('contexto'),
+    nota: text('nota'),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+    index('mediciones_perfil_medido_idx').on(table.perfil_id, table.medido_en),
+
+    pgPolicy('mediciones_select_propio', {
+        for: 'select',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('mediciones_create_propio', {
+        for: 'insert',
+        to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('mediciones_update_propio', {
+        for: 'update',
+        to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()

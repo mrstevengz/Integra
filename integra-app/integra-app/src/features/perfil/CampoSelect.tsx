@@ -38,7 +38,7 @@ export function CampoSelect<T extends FieldValues>({
 
     return (
         <View className="mb-4">
-            <Text>{title}</Text>
+            <Text className="mb-2">{title}</Text>
 
             <ModalPicker
                 data={datos}

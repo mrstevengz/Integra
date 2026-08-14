@@ -1,10 +1,11 @@
-import { Text, View, ScrollView, FlatList, Pressable } from "react-native";
+import { Text, View, Pressable } from "react-native";
 import TopBar from "@/features/topbar/TopBar";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
 
+    
   return (
     <View className="flex-1">
         <SafeAreaView edges={['top']} className="bg-slate-100">

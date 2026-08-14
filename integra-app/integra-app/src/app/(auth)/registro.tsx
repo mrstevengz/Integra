@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Text, TextInput, Pressable, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Text, TextInput, Pressable, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { Link } from 'expo-router'
 import { supabase } from '@/lib/supabase'
 import {zodResolver} from '@hookform/resolvers/zod'
@@ -66,17 +66,27 @@ export default function RegistroScreen() {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <View className='flex-1 bg-white'>
+    <SafeAreaView edges={['top']} className='bg-slate-100'>
         <TopBar name='Crear cuenta' canGoBack={true}/>
+    </SafeAreaView>
 
-        <ScrollView contentContainerClassName="flex-1 justify-center px-6">
+        <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <ScrollView
+            className="flex-grow bg-white"
+            contentContainerStyle={{
+                flexGrow: 1,
+                paddingHorizontal: 20,
+                paddingTop: 30,
+                paddingBottom: 120
+            }}>
 
             <View className="flex-row gap-2 mb-8">
                     {PASOS.map((_, i) => (
                         <View
                             key={i}
                             className={`h-1 flex-1 rounded-full ${
-                                i <= paso ? 'bg-teal-700' : 'bg-slate-200'
+                                i <= paso ? 'bg-slate-700' : 'bg-slate-200'
                             }`}
                         />
                     ))}
@@ -87,13 +97,14 @@ export default function RegistroScreen() {
                 <Text className='text-slate-500 mb-8'>{actual.subtitulo}</Text>
             </View>
 
-            <View className=''>
-                {paso === 0 && (
+           
+            
+            {paso === 0 && (
             <>
                 <CampoTexto name='nombre' control={control} title='Nombre' placeholder='Nombre' autoComplete='name'/>
                 <CampoTexto name='apellidos' control={control} title='Apellidos' placeholder='Apellidos' autoComplete='family-name'/>
                 <CampoTexto name='email' control={control} title='Correo electronico' placeholder='correo@ejemplo.com' autoComplete='email' keyboardType='email-address'/>
-                <CampoFecha control ={control} name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento'/>
+                <CampoFecha control ={control} name='fechaNacimiento' title='Fecha de nacimiento' placeholder='Fecha de nacimiento' mode='date'/>
             </>
             )}
 
@@ -115,15 +126,16 @@ export default function RegistroScreen() {
                     <Text className="text-red-600 mb-3 text-center">{errorServer}</Text>
                 )}
                 {aviso && <Text className="text-teal-700 mb-3 text-center">{aviso}</Text>}
-            </View>
+
+            
 
             <View>
 
-            <Pressable onPress={continuar} className='py-4 bg-black'>
+            <Pressable onPress={continuar} className='border rounded-lg py-4 items-center mb-2 bg-black'>
                 {isLoading ? (
                     <ActivityIndicator color="white"/>
                 ): (
-                    <Text className='text-white'>
+                    <Text className='text-white font-semibold'>
                         {esUltimo ? "Crear cuenta": 'Continuar'}
                     </Text>
                 )}
@@ -131,18 +143,21 @@ export default function RegistroScreen() {
             {paso > 0 && (
                 <Pressable
                     onPress={regresar}>
-                    <Text>Ir atras</Text>
+                    <Text className='text-center text-slate-700 mt-3 underline '>Volver</Text>
                 </Pressable>
             )}
 
             {paso === 0 && (
-                <Link href="/login" className="text-teal-700 text-center mt-6">
-                        Ya tengo cuenta
+                <Link href="/login" className="text-slate-700 text-center mt-3 underline ">
+                        ¿Ya tienes cuenta? Iniciar sesion
                 </Link>
             )}
 
+        
             </View>
-        </ScrollView>
-    </SafeAreaView>
+        
+            </ScrollView>
+        </KeyboardAvoidingView>
+    </View>   
   )
 }

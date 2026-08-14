@@ -59,7 +59,7 @@ export default function ExpedienteScreen() {
         <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Mi Expediente' canGoBack={false}/>
         </SafeAreaView>
-        <ScrollView className="flex-grow bg-white">
+        <ScrollView className="flex-grow bg-white" contentContainerStyle={{ paddingTop: 5, paddingBottom: 100 }}>
 
           <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
 
@@ -69,7 +69,7 @@ export default function ExpedienteScreen() {
               <PerfilBoxText titulo="Fecha de nac." data={perfil.fecha_nacimiento}/>
               <PerfilBoxText titulo="Telefono" data={perfil.telefono}/>
               <PerfilBoxText titulo="Tipo de sangre" data={perfil.tipo_sangre}/>
-              <PerfilBoxText titulo="Medico tratante" data={perfil.medico_tratante}/>
+              <PerfilBoxText titulo="Medico tratante" data={perfil.medico_tratante}/>     
 
             </View>
           </PerfilBox> 

@@ -21,8 +21,8 @@ export function CampoTexto<T extends FieldValues>({
     const error = fieldState.error?.message
     return (
         <View className="mb-4 ">
-          <Text>
-            {title} {!opcional && <Text className={`${error ? 'text-red-400' : 'text-slate-400'} font-semibold`}></Text>}
+          <Text className='mb-2'>
+            {title} {opcional && <Text className='text-sm text-slate-500'>(opcional)</Text>} {!opcional && <Text className={`${error ? 'text-red-400' : 'text-slate-400'} font-semibold`}></Text>}
           </Text>
 
           <TextInput
