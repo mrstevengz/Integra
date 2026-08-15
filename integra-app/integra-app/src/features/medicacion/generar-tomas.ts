@@ -60,8 +60,8 @@ export function generarTomasPendientes(perfilId: string): number {
             //Se necesita la fecha para compararla y no crear tomas antes de que el medicamento fue creado.
 
             if (!med.created_at) continue
-
             const creado = new Date(med.created_at)
+            creado.setHours(0, 0, 0, 0)
 
             // Bucle 3 - Horarios de cada medicamento
             for (const horario of med.horarios ?? []) {

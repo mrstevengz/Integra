@@ -7,7 +7,7 @@ import { articulo$, type Articulo } from "@/state/articulos";
 
 
 //Metodo Fisher-Yates
-function elegirAleatorios(articulos: Articulo[], cantidad: number) {
+export function elegirAleatorios(articulos: Articulo[], cantidad: number) {
     const copia = [...articulos];
     for (let i = copia.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

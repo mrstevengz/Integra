@@ -2,7 +2,7 @@ import {View} from "react-native"
 import Categorias from "@/features/articulos/CategoriasBox"
 import { SafeAreaView } from "react-native-safe-area-context"
 import DestacadosBox from "@/features/articulos/DestacadosBox"
-import TopBar from "@/features/topbar/TopBar"
+import TopBar from "@/components/TopBar"
 
 export default function ArticulosPage() {
 

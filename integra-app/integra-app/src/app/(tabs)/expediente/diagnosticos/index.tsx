@@ -1,6 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context"
 import { FlatList, View, Text, Pressable, ActivityIndicator, ScrollView } from "react-native"
-import TopBar from "@/features/topbar/TopBar"
+import TopBar from "@/components/TopBar"
 import { useValue } from "@legendapp/state/react"
 import { perfil$ } from "@/state/usuario"
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox"

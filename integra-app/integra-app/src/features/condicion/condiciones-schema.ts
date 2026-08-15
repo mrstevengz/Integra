@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import { OpcionPicker } from '../perfil/CampoSelect'
+import { OpcionPicker } from '../../components/CampoSelect'
 
 export const TIPO_CONDICION: OpcionPicker[] = [
   { valor: 'Cardiovascular', etiqueta: 'Cardiovascular' },

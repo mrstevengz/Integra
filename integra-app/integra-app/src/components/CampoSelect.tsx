@@ -56,6 +56,7 @@ export function CampoSelect<T extends FieldValues>({
                     paddingHorizontal: 14,
                     paddingVertical: 12,
                     alignItems: 'center',
+                    backgroundColor: '#ffffff'
                 }}
 
                 selectedTextStyle={{ color: '#0f172a', fontSize: 14, textAlign: 'left' }}

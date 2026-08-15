@@ -2,16 +2,17 @@ import {cerrarSesion } from "@/state/auth";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { Text, View, ScrollView, Pressable, ActivityIndicator } from "react-native";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PerfilSummary from "@/features/perfil/PerfilSummary";
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox";
-import {condicion$ } from "@/state/condicion";
+import {Condicion, condicion$ } from "@/state/condicion";
 import { alergia$ } from "@/state/alergia";
 import { contactoEmergencia$ } from "@/state/contactosemergencia";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
+import { Articulo, articulo$ } from "@/state/articulos";
+import { comoLista } from "@/state/helpers";
 
 
 export default function ExpedienteScreen() {
@@ -28,7 +29,8 @@ export default function ExpedienteScreen() {
         (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
     )
 
-    
+    const expedienteCompleto = (condiciones.length !== 0 && alergias.length !== 0 && contactos.length !== 0 && perfil.tipo_sangre && perfil.genero ) ? true : false
+
     if(!perfil.id || !condicion$) {
       return (
         <View className="flex-1">
@@ -41,6 +43,8 @@ export default function ExpedienteScreen() {
             </View>
       )
     }
+
+    
 
 
     const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
@@ -59,9 +63,17 @@ export default function ExpedienteScreen() {
         <SafeAreaView edges={['top']} className="bg-slate-100">
             <TopBar name='Mi Expediente' canGoBack={false}/>
         </SafeAreaView>
-        <ScrollView className="flex-grow bg-white" contentContainerStyle={{ paddingTop: 5, paddingBottom: 100 }}>
+        <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100 }}>
 
           <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
+
+          {!expedienteCompleto && (
+              <View className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500">
+                  <Text>Expediente incompleto ——— Termina de completar tu perfil</Text>
+              </View>
+          )}
+
+          
 
           <PerfilBox titulo="Datos Personales" link="/expediente/perfil" linkName="Editar">
             <View className="flex flex-col">
@@ -82,7 +94,7 @@ export default function ExpedienteScreen() {
             {condiciones.map((condicion) => (
               <Text
               key={condicion.id}
-              className="p-2 border rounded-xl border-black/40 text-black/40"
+              className="p-2 border rounded-xl border-black/40 text-black/90"
               >{condicion.nombre}</Text>
             ))}
           </ScrollView>
@@ -96,7 +108,7 @@ export default function ExpedienteScreen() {
               {alergias.map((alergia) => (
                 <Text
                 key={alergia.id}
-                className="p-2 border rounded-xl border-black/40 text-black/40"
+                className="p-2 border rounded-xl border-black/40 text-black/70"
                 >{alergia.nombre}</Text>
               ))}
             </ScrollView>
@@ -118,3 +130,4 @@ export default function ExpedienteScreen() {
     </View>
   );
 }
+

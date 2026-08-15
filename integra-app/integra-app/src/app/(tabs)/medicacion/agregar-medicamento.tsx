@@ -7,10 +7,10 @@ import { router } from "expo-router"
 import { useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as Crypto from 'expo-crypto';
-import { CampoTexto } from "@/features/auth/CampoTexto"
+import { CampoTexto } from "@/components/CampoTexto"
 import { CampoHorario } from "@/features/medicacion/CampoHorario"
-import { CampoSelect } from "@/features/perfil/CampoSelect"
-import TopBar from "@/features/topbar/TopBar"
+import { CampoSelect } from "@/components/CampoSelect"
+import TopBar from "@/components/TopBar"
 import { View, Text, ActivityIndicator, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 

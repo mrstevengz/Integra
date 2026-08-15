@@ -1,7 +1,7 @@
 import { esDoble, TipoMedicion } from "@/state/medicion";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
-import { TextInput, Text, View, Pressable } from "react-native";
-import { pasoDe } from "./medicion-schema";
+import { TextInput, Text, View, Pressable, TouchableOpacity } from "react-native";
+import { pasoDe, redondear } from "./medicion-schema";
 
 type Props<T extends FieldValues> = {
     name: Path<T>
@@ -20,8 +20,8 @@ export default function CampoMedicion<T extends FieldValues>({name, control, tip
     const handleButton = (amount: number, type: string) => {
         const currVal = Number(field.value) || 0
 
-        if (type === 'add') field.onChange(currVal + amount)
-        else field.onChange(currVal - amount)
+        if (type === 'add') field.onChange(redondear((currVal + amount)))
+        else field.onChange(redondear((currVal - amount)))
         
     }
 
@@ -40,15 +40,15 @@ export default function CampoMedicion<T extends FieldValues>({name, control, tip
                 <Text>{tipo.unidad}</Text>
             </View>
             <View className="flex flex-row items-center gap-6">
-                <Pressable
+                <TouchableOpacity
                 onPress={() => handleButton(paso, 'restar')}
                 className="bg-transparent border-slate-300 border rounded-xl px-6 py-2">
                     <Text className="text-[40px]">-</Text>
-                </Pressable>
-                <Pressable className="bg-black border rounded-xl px-6 py-2"
+                </TouchableOpacity>
+                <TouchableOpacity className="bg-black border rounded-xl px-6 py-2"
                 onPress={() => handleButton(paso, 'add')}>
                     <Text className="text-[40px] text-white">+</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
            
         </View>

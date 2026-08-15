@@ -1,5 +1,5 @@
 import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { contactoEmergencia$ } from "@/state/contactosemergencia";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
@@ -33,7 +33,7 @@ export default function ContactosEmergenciaScreen() {
                 <SafeAreaView edges={['top']} className="bg-slate-100">
                     <TopBar name='Contactos de Emergencia' canGoBack={true}/>
                 </SafeAreaView>
-                <ScrollView className="flex-1 bg-white">
+                <ScrollView className="flex-1 bg-slate-100">
                     <View className="flex justify-center p-6 ">
                         <Text className="text-slate-500/60">Estos contactos seran mostrados en tu QR de emergencia para ser contactados por personal medico</Text>
                     </View>
@@ -49,7 +49,7 @@ export default function ContactosEmergenciaScreen() {
                     </Pressable>
 
                     <Pressable className="p-4 py-6 flex justify-center items-center border m-6 rounded-xl active:bg-slate-200/70" onPress={() => router.navigate('/expediente/contactos-emergencia/agregar-contacto')}>
-                        <Text>+ Agregar contacto</Text>
+                        <Text className="text-md">+ Agregar contacto</Text>
                     </Pressable>
                 </ScrollView>
         </View>

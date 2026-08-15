@@ -1,5 +1,5 @@
 import { Text, View, ScrollView } from "react-native";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CitaScreen() {

@@ -11,7 +11,7 @@ type PerfilSummaryProps = {
 
 export default function PerfilSummary({nombre, edad, genero, cedula}: PerfilSummaryProps) {
     return (
-        <Pressable className="flex flex-row gap-4 p-4 border-b border-black/20 active:bg-black/5"
+        <Pressable className="flex flex-row gap-4 p-4 border-b border-black/20 active:bg-black/5 bg-white"
             onPress={() => router.navigate("/expediente/perfil")}>
             <View className="flex-2 w-24 h-24 rounded-full flex items-center justify-center bg-slate-300">
                 <Ionicons name="person-sharp" size={40}/>

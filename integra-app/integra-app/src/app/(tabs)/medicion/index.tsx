@@ -1,11 +1,11 @@
-import { Text, View, ScrollView, Pressable } from "react-native";
-import TopBar from "@/features/topbar/TopBar";
+import { Text, View, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tiposOrdenados, tipoMedicion$ } from "@/state/medicion";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import TopBarSecondary from "@/features/medicion/TopBarSecondary";
+import TopBarSecondary from "@/components/TopBarSecondary";
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -48,7 +48,7 @@ export default function MedicionScreen() {
                     params: { medicionTipo: medicion.id }
                   })
                 }}
-                className="flex w-[45%] flex-col items-start gap-2 p-4 bg-white rounded-xl border border-slate-300">
+                className="flex w-[45%] flex-col items-start gap-2 p-4 bg-white rounded-xl border border-slate-300 active:bg-slate-100">
                 <View className="p-2 rounded-lg bg-slate-200 border-slate-300 border">
                   <Ionicons name={getIconForMedicion(medicion.nombre)} size={20} color={"#475569"} />
                 </View>

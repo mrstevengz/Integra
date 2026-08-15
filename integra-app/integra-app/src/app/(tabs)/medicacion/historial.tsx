@@ -1,7 +1,7 @@
 import MedicinasLista from "@/features/medicacion/MedicinasLista";
-import TopBarSecondary from "@/features/medicion/TopBarSecondary";
-import TopBar from "@/features/topbar/TopBar";
-import { medicamento$, toma$, medicamentosActivos } from "@/state/medicacion";
+import TopBarSecondary from "@/components/TopBarSecondary";
+import TopBar from "@/components/TopBar";
+import { medicamento$, medicamentosActivos } from "@/state/medicacion";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { ScrollView, View, Text } from "react-native";

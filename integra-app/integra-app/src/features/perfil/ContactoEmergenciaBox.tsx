@@ -11,7 +11,7 @@ export type ContactoEmergenciaProps = {
 
 export default function ContactoEmergenciaBox({nombre, relacion, telefono, onPress}: ContactoEmergenciaProps) {
     return (
-         <Pressable className="flex flex-row items-center gap-3 p-4 px-5 bg-slate-100 border-b-2 border-black/20 active:bg-slate-200"
+         <Pressable className="flex flex-row items-center gap-3 p-4 px-5 bg-white border-b-2 border-black/20 active:bg-slate-200"
             onPress={onPress}>
             <Ionicons size={28} name="person-circle"/>
         

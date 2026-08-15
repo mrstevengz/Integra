@@ -1,6 +1,5 @@
 import { View, Text, TextInput, Pressable, Platform } from 'react-native'
-import { Control, Controller, FieldValues, Path, useController, useFormContext } from 'react-hook-form'
-import type { RegistroForm } from './registro-schema'
+import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useState } from 'react'
 
@@ -35,7 +34,7 @@ export function CampoFecha<T extends FieldValues>({
             <Text className='mb-2'>{title}</Text>
                     
             <Pressable 
-            className={`border rounded-lg py-3 text-slate-900 flex ${error ? 'border-red-400' : 'border-slate-300'}`}
+            className={`border rounded-lg py-3 text-slate-900 bg-white flex ${error ? 'border-red-400' : 'border-slate-300'}`}
             onPress={() => setIsDatePickerOpen(true)}>
 
             {Platform.OS !== "ios" && (
