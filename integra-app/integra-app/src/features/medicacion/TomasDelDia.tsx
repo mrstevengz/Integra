@@ -12,12 +12,11 @@ import {
 } from 'lucide-react-native';
 
 import Modal from 'react-native-modal'
-import {useState } from "react"
+import { useState } from "react"
 import { porId } from "@/state/helpers"
 import { colorEstado, etiquetaEstado } from "./estados"
-import { marcarTomada, marcarOmitida, posponer, revertir, marcarTodasTomadas } from "./acciones"
-import type { FormaFarmaceutica, GrupoTomas, Medicamento } from "@/state/medicacion"
-
+import { marcarTomada, marcarOmitida, posponer, revertir, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
+import { type FormaFarmaceutica, type GrupoTomas, type Medicamento,} from "@/state/medicacion"
 
 type Props = {
     grupo: GrupoTomas
@@ -31,8 +30,14 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
         (t) => t.estado === 'pendiente' || t.estado === 'pospuesta'
     )
 
+    const resueltas = grupo.tomas.filter(
+        (t) => t.estado === 'tomada'
+    )
+
     //Guarda el ID de la dosis abierta, no el objeto. null = modal cerrado.
     const [idAbierto, setIdAbierto] = useState<string | null>(null)
+
+    const todasTomadas = sinResolver.length === 0 && resueltas.length > 0
 
     //Se busca en cada render, asi el modal siempre muestra el estado actual
     const abierta = idAbierto ? grupo.tomas.find((t) => t.id === idAbierto) : undefined
@@ -54,14 +59,29 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
             <View className="flex-row items-center justify-between px-5 py-4 bg-slate-100">
                 <Text className="font-semibold text-neutral-900 tracking-tight">{grupo.etiqueta}</Text>
 
-                {sinResolver.length > 1 && (
+                {sinResolver.length > 1 && !todasTomadas && (
                     <Pressable
-                        onPress={() => marcarTodasTomadas(sinResolver.map((t) => t.id))}
+                        onPress={() => {
+                            marcarTodasTomadas(sinResolver.map((t) => t.id))
+                        }}
                         hitSlop={8}
                         accessibilityRole="button"
                         className="rounded-full bg-neutral-900 px-3 py-1.5 active:opacity-80"
                     >
                         <Text className="text-white text-xs font-semibold tracking-wide">Tomar todas</Text>
+                    </Pressable>
+                )}
+
+                {todasTomadas && (
+                    <Pressable
+                        onPress={() => {
+                            revertirTodasTomadas(resueltas.map((t) => t.id))
+                        }}
+                        hitSlop={8}
+                        accessibilityRole="button"
+                        className="rounded-full bg-neutral-900 px-3 py-1.5 active:opacity-80"
+                    >
+                        <Text className="text-white text-xs font-semibold tracking-wide">Deshacer</Text>
                     </Pressable>
                 )}
             </View>
@@ -194,7 +214,8 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
     )
 }
 
-function retornarIcono(forma: FormaFarmaceutica | undefined) {
+
+export function retornarIcono(forma: FormaFarmaceutica | undefined) {
     if (forma === "tableta") return <Tablets color="#737373"/>
     if (forma === "capsula") return <Pill color="#737373"/>
     if (forma === "jarabe") return <Droplet color="#737373"/>

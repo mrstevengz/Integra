@@ -46,3 +46,10 @@ export function marcarTodasTomadas(tomaIds: string[]) {
     })
 }
 
+//Revertir marcar todas tomadas
+export function revertirTodasTomadas(tomaIds: string[]) {
+     batch(() => {
+        for (const id of tomaIds) revertir(id)
+    })
+}
+

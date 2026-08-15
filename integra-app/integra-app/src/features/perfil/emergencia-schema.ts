@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import { OpcionPicker } from './CampoSelect'
+import { OpcionPicker } from '../../components/CampoSelect'
 
 
 export const TIPO_RELACION: OpcionPicker[] = [

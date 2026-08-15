@@ -1,5 +1,5 @@
 import { medicionDobleSchema, MedicionForm, medicionSchema, OPCIONES_CONTEXTO, valorInicial } from "@/features/medicion/medicion-schema";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { porId } from "@/state/helpers";
 import { esDoble, medicion$, TipoMedicion, tipoMedicion$ } from "@/state/medicion";
 import { perfil$ } from "@/state/usuario";
@@ -11,9 +11,9 @@ import { useForm } from "react-hook-form";
 import { ActivityIndicator, Pressable, ScrollView, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Crypto from 'expo-crypto';
-import { CampoTexto } from "@/features/auth/CampoTexto";
-import { CampoFecha } from "@/features/auth/CampoFecha";
-import { CampoSelect } from "@/features/perfil/CampoSelect";
+import { CampoTexto } from "@/components/CampoTexto";
+import { CampoFecha } from "@/components/CampoFecha";
+import { CampoSelect } from "@/components/CampoSelect";
 import CampoMedicion from "@/features/medicion/CampoMedicion";
 import CampoMedicionDoble from "@/features/medicion/CampoMedicionDoble";
 

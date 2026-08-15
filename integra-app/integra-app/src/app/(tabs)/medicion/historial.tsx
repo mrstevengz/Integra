@@ -1,5 +1,5 @@
-import TopBarSecondary from "@/features/medicion/TopBarSecondary";
-import TopBar from "@/features/topbar/TopBar";
+import TopBarSecondary from "@/components/TopBarSecondary";
+import TopBar from "@/components/TopBar";
 import { porId } from "@/state/helpers";
 import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
 import { perfil$ } from "@/state/usuario";
@@ -18,7 +18,7 @@ export default function HistorialMediciones() {
     return (
          <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
-                <TopBar name='Historial' canGoBack={false}/>
+                <TopBar name='Medicion' canGoBack={false}/>
             </SafeAreaView>
             
             <TopBarSecondary active="Historial" tab1="Registrar" tab2="Historial" route1="/medicion" route2="/medicion/historial"/>

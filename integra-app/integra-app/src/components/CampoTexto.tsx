@@ -33,7 +33,7 @@ export function CampoTexto<T extends FieldValues>({
           keyboardType={keyboardType}
           autoComplete={autoComplete}
           secureTextEntry={secureTextEntry}
-          className={`border rounded-lg px-4 py-3 text-slate-900 ${error ? 'border-red-400' : 'border-slate-300'}`}
+          className={`border rounded-lg px-4 py-3 bg-white text-slate-900 ${error ? 'border-red-400' : 'border-slate-300'}`}
           />
             {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
         </View>

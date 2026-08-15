@@ -1,15 +1,16 @@
-import { View, ActivityIndicator, ScrollView, Pressable, Text, KeyboardAvoidingView, Platform} from "react-native"
+import { View, ActivityIndicator, ScrollView, Pressable, Text, KeyboardAvoidingView, Platform, TouchableOpacity} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { useValue } from "@legendapp/state/react";
 import { perfil$ } from "@/state/usuario";
 import { useForm } from "react-hook-form";
 import { PerfilForm, perfilSchema } from "@/features/perfil/perfil-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OPCIONES_GENEROS, TIPOS_SANGRE } from "@/features/perfil/perfil-schema";
-import { CampoTexto } from "@/features/auth/CampoTexto";
-import { CampoSelect } from "@/features/perfil/CampoSelect";
+import { CampoTexto } from "@/components/CampoTexto";
+import { CampoSelect } from "@/components/CampoSelect";
 import { router } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function PerfilScreen() {
     const perfil = useValue(perfil$)
@@ -57,6 +58,8 @@ export default function PerfilScreen() {
     </View>
     )
 
+    
+
     return (
         <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
@@ -65,14 +68,18 @@ export default function PerfilScreen() {
 
         <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView
-                    className="flex-grow bg-white"
+                    className="flex-grow bg-slate-100"
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingHorizontal: 20,
                         paddingTop: 40,
-                        paddingBottom: 90
+                        paddingBottom: 90,
                     }}
                     keyboardShouldPersistTaps="handled">
+                
+                <TouchableOpacity className="w-28 h-28 rounded-full flex items-center justify-center bg-slate-300 m-auto mb-8">
+                    <Ionicons name="person-sharp" size={40}/>
+                </TouchableOpacity>
 
                 <CampoTexto
                 name="nombre" control = {control} title="Nombre"

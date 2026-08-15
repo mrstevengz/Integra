@@ -4,7 +4,7 @@ import { View, Text, FlatList, Pressable } from "react-native"
 import { useMemo } from "react"
 import { useValue } from "@legendapp/state/react"
 import { SafeAreaView } from "react-native-safe-area-context"
-import TopBar from "@/features/topbar/TopBar"
+import TopBar from "@/components/TopBar"
 
 export default function CategoriaListScreen() {
     const { categoriaArt } = useLocalSearchParams()

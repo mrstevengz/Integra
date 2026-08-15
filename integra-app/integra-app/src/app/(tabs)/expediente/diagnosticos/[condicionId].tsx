@@ -3,19 +3,19 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopBar from "@/features/topbar/TopBar";
+import TopBar from "@/components/TopBar";
 import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condicion/condiciones-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { CampoTexto } from "@/features/auth/CampoTexto";
-import { CampoSelect } from "@/features/perfil/CampoSelect";
+import { CampoTexto } from "@/components/CampoTexto";
+import { CampoSelect } from "@/components/CampoSelect";
 
 export default function EditarCondicion() {
-    const {itemId} = useLocalSearchParams()
+    const {condicionId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const condicionesLista = useValue(condicion$)
-    const item = porId(condicionesLista, itemId as string)
+    const item = porId(condicionesLista, condicionId as string)
 
     const {control, handleSubmit, reset} = useForm<CondicionesForm>({
 

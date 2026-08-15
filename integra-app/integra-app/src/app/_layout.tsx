@@ -39,7 +39,6 @@ export default function RootLayout() {
     <Stack screenOptions={{headerShown: false}}>
         <Stack.Protected guard={!!sesion}>
           <Stack.Screen name="(tabs)"/>
-          <Stack.Screen name="(articulos)"/>
         </Stack.Protected>
     
         <Stack.Protected guard={!sesion}>

@@ -4,7 +4,7 @@ import { porId } from "@/state/articulos"
 import { View, Text, ScrollView } from "react-native"
 import { useValue } from "@legendapp/state/react"
 import { SafeAreaView } from "react-native-safe-area-context"
-import TopBar from "@/features/topbar/TopBar"
+import TopBar from "@/components/TopBar"
 
 export default function ArticuloScreen() {
     const {articuloId } = useLocalSearchParams()

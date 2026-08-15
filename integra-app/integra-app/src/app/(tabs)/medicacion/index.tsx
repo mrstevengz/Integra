@@ -3,13 +3,13 @@ import { syncState } from "@legendapp/state"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
 import { useValue } from "@legendapp/state/react"
-import TopBar from "@/features/topbar/TopBar"
+import TopBar from "@/components/TopBar"
 import { medicamento$, medicamentosActivos, tomasDelDia, toma$, agruparPorHora } from "@/state/medicacion"
 import { useCallback, useEffect } from "react"
 import { perfil$ } from "@/state/usuario"
 import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
 import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
-import TopBarSecondary from "@/features/medicion/TopBarSecondary"
+import TopBarSecondary from "@/components/TopBarSecondary"
 
 export default function MedicacionScreen() {
     const perfil = useValue(perfil$)
@@ -34,6 +34,9 @@ export default function MedicacionScreen() {
 
     const tomasSincronizadas = useValue(syncState(toma$).lastSync)
 
+    const tomasListas = useValue(syncState(toma$).isLoaded)
+    const medsListos = useValue(syncState(medicamento$).isLoaded)
+
     const sincronizados = lista.filter((m) => m.created_at).length
 
     const tomasResueltas = hoy.length - sinResolver.length
@@ -41,15 +44,13 @@ export default function MedicacionScreen() {
     useFocusEffect(
         useCallback(() => {
         if (!perfil?.id) return
-        const n = generarTomasPendientes(perfil.id)
-        if (n > 0) console.log(`tomas generadas ${n}`)
-    }, [perfil?.id])
+    }, [perfil?.id, tomasSincronizadas, tomasListas, medsListos])
     )
 
     useEffect(() => {
         if (!perfil?.id) return
         generarTomasPendientes(perfil.id)
-    }, [perfil?.id, sincronizados, tomasSincronizadas])
+    }, [perfil?.id, sincronizados, tomasSincronizadas, tomasListas, medsListos])
 
 
     return (
@@ -68,10 +69,10 @@ export default function MedicacionScreen() {
                
                 <Text className="text-2xl font-bold text-neutral-900 tracking-tight px-6">{`Hoy, ${new Date().getDate()} de ${new Date().toLocaleString('es-Es', {month: 'long'})}`}</Text>
 
-                 <View className=" flex flex-col px-6 my-4">
+                <View className=" flex flex-col px-6 my-4">
                     <View className="flex-row justify-between mb-2">
                         <Text>Progreso del dia</Text>
-                        <Text>{tomasResueltas} de {hoy.length} tomados</Text>
+                        <Text>{hoy.length !== 0 ? `${tomasResueltas} de ${hoy.length} tomados` : `No hay tomas hoy`}</Text>
                     </View>
                     <View className="h-4 w-full overflow-hidden rounded-3xl bg-slate-200">
                         <View className="h-full bg-black" style={{

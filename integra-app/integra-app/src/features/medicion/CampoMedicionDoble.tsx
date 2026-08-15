@@ -1,7 +1,7 @@
 import { TipoMedicion } from "@/state/medicion";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 import { useState } from "react";
-import { TextInput, Text, View, Pressable } from "react-native";
+import { TextInput, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { pasoDe } from "./medicion-schema";
 
 type Props<T extends FieldValues> = {
@@ -66,16 +66,16 @@ export default function CampoMedicionDoble<T extends FieldValues>({control, nomb
             )}
 
             <View className="flex flex-row items-center gap-6 mt-2">
-                <Pressable
+                <TouchableOpacity
                     onPress={() => handleButton(paso, 'restar')}
                     className="bg-transparent border-slate-300 border rounded-xl px-6 py-2">
                     <Text className="text-[40px]">-</Text>
-                </Pressable>
-                <Pressable
+                </TouchableOpacity>
+                <TouchableOpacity
                     onPress={() => handleButton(paso, 'add')}
                     className="bg-black border rounded-xl px-6 py-2">
                     <Text className="text-[40px] text-white">+</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
         </View>
     )
