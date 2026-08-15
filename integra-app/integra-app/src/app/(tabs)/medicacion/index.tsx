@@ -10,6 +10,7 @@ import { perfil$ } from "@/state/usuario"
 import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
 import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
 import TopBarSecondary from "@/components/TopBarSecondary"
+import { GlassView } from "expo-glass-effect"
 
 export default function MedicacionScreen() {
     const perfil = useValue(perfil$)
@@ -109,12 +110,30 @@ export default function MedicacionScreen() {
                 
             </ScrollView>
 
-            <TouchableOpacity
+            <GlassView
+            style={{
+            position: 'absolute',
+            bottom: 144, 
+            right: 24,   
+            height: 64,  
+            width: 64,   
+            borderRadius: 32, 
+            overflow: 'hidden',
+            }}
+            glassEffectStyle="clear"
+            tintColor="#000000E6"
+            isInteractive
+            >
+                <TouchableOpacity
                 onPress={() => router.navigate('/medicacion/agregar-medicamento')}
                 accessibilityRole="button"
-                className="bg-black absolute bottom-36 right-6 h-16 w-16 rounded-full justify-center align-middle">
-                    <Text className="text-white text-center font-semibold text-2xl ">+</Text>
-            </TouchableOpacity>
+                className="flex-1 justify-center items-center"
+                >
+                <Text className="text-white text-center items-center font-semibold text-2xl">+</Text>
+                </TouchableOpacity>
+            </GlassView>
+
+           
 
             
         </View>

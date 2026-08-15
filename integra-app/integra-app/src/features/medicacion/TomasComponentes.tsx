@@ -20,12 +20,20 @@ export function TomaComponente({ tomas }: ComponenteProps) {
 
     const medicinas = useValue(medicamento$)
 
+
+
+
+    const hoy = new Date()
+
     const tomaReciente = sinResolver.length > 0
-        ? sinResolver.reduce((a, b) => new Date(a.programada_para) > new Date(b.programada_para) ? a : b)
+        ? sinResolver.reduce((a, b) => {
+            const diffA = Math.abs(new Date(a.programada_para).getTime() - hoy.getTime())
+            const diffB = Math.abs(new Date(b.programada_para).getTime() - hoy.getTime())
+            return diffB < diffA ? b : a;
+        })
         : undefined
 
     const medicamentoReciente = tomaReciente ? porId(medicinas, tomaReciente.medicamento_id) : undefined
-
 
     const tiempoParaTomar = new Date(tomaReciente?.programada_para ?? "")
     const tiempoActual = new Date()
@@ -58,7 +66,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
     return (
         <View className="w-full">
             <View className="flex-row items-center justify-between mb-3">
-                <Text className="text-neutral-500 text-md font-semibold uppercase tracking-wider">
+                <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
                     Próxima toma
                 </Text>
 
@@ -114,18 +122,18 @@ export function TomaComponente({ tomas }: ComponenteProps) {
                         <Pressable
                             onPress={() => marcarTomada(tomaReciente.id)}
                             accessibilityRole="button"
-                            className="flex-1 bg-black rounded-2xl py-4 items-center active:opacity-90 shadow-sm"
+                            className="flex-1 bg-btn-color rounded-2xl py-4 items-center active:opacity-90 shadow-sm"
                         >
-                            <Text className="text-white font-semibold text-base">✓ Tomado</Text>
+                            <Text className="text-bg-color font-semibold text-base">✓ Tomado</Text>
                         </Pressable>
 
                         <Pressable
                             onPress={() => {posponer(tomaReciente.id, 15); setPospuesta(true)}}
                             accessibilityRole="button"
                             disabled={pospuesta}
-                            className={`flex-1 border border-neutral-300 rounded-2xl py-4 items-center active:bg-neutral-50 ${pospuesta && 'bg-slate-200'}`}
+                            className={`flex-1 border border-btn-color rounded-2xl py-4 items-center active:bg-neutral-color ${pospuesta && 'bg-slate-200'}`}
                         >
-                            <Text className="text-neutral-700 font-semibold text-base">{pospuesta ? `Pospuesta (15 min)` : `Posponer`}</Text>
+                            <Text className="text-btn-color font-semibold text-base">{pospuesta ? `Pospuesta (15 min)` : `Posponer`}</Text>
                         </Pressable>
 
                     </View>

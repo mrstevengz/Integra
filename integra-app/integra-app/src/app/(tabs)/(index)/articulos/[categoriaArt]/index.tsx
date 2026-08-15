@@ -32,7 +32,7 @@ export default function CategoriaListScreen() {
                 renderItem={({item}) => (
                     <Pressable
                         onPress={() => router.navigate({
-                            pathname: '/[categoriaArt]/[articuloId]',
+                            pathname: '/articulos/[categoriaArt]/[articuloId]',
                             params: {categoriaArt: categoriaArt as string, articuloId: item.id}
                         })}
                         className="border border-gray-200 rounded-2xl p-4 mb-3 bg-white">

@@ -16,7 +16,7 @@ export default function ArticulosDestacadoComponente() {
 
     const articuloAleatorio = useMemo(() => {
     if (matches.length === 0) {
-        return elegirAleatorios(articulosLista, 1);
+        return elegirAleatorios(articulosLista, 1)[0] ?? null;
     }
     return null;
     }, [matches.length, articulosLista]);
@@ -39,11 +39,11 @@ export default function ArticulosDestacadoComponente() {
                 className="flex-col flex-1 justify-start rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm active:bg-white/80" 
                 key={item?.id} 
                 onPress={() => router.navigate({
-                    pathname: '/[categoriaArt]/[articuloId]',
+                    pathname: '/articulos/[categoriaArt]/[articuloId]',
                     params: { categoriaArt: item?.categoria, articuloId: item?.id }
                 })}>
 
-                <Text className="text-slate-400">{item?.categoria}</Text>
+                <Text className="text-alert-color">{item?.categoria}</Text>
                 <Text className="text-2xl font-bold">{item?.titulo}</Text>
             </Pressable>
             )}
@@ -54,7 +54,7 @@ export default function ArticulosDestacadoComponente() {
                             pathname: '/articulos/[categoriaArt]/[articuloId]',
                             params: {categoriaArt: m.categoria, articuloId: m.id}
                         })}>
-                        <Text className="text-slate-400">{m?.categoria}</Text>
+                        <Text className="text-alert-color">{m?.categoria}</Text>
                         <Text className="text-2xl font-bold">{m?.titulo}</Text>
                     </Pressable>
                 )

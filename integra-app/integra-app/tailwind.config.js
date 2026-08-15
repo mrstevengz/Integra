@@ -6,6 +6,17 @@ module.exports = {
     "./src/features/**/*.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
-  theme: { extend: {} },
+  theme: {
+    extend: {
+      colors: {
+        "bg-color": "var(--background-color)",
+        "neutral-color": "var(--neutral-color)",
+        "txt-color": "var(--text-color)",
+        "btn-color": "var(--interaction-color)",
+        "sec-color": "var(--secondary-color)",
+        "alert-color": "var(--alert)",
+      },
+    },
+  },
   plugins: [],
 };

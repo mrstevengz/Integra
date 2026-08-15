@@ -6,30 +6,31 @@ import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PerfilSummary from "@/features/perfil/PerfilSummary";
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox";
-import {Condicion, condicion$ } from "@/state/condicion";
+import {condicion$ } from "@/state/condicion";
 import { alergia$ } from "@/state/alergia";
 import { contactoEmergencia$ } from "@/state/contactosemergencia";
 import { router } from "expo-router";
 import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
-import { Articulo, articulo$ } from "@/state/articulos";
-import { comoLista } from "@/state/helpers";
+import { expedienteChecklist$ } from "@/state/expedienteChecklist";
 
 
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
     const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
-        (c) => c.perfil_id === perfil.id && c.deleted !== true
+        (c) => c.perfil_id === perfil.id 
     )
     const alergias = Object.values(useValue(alergia$) ?? {}).filter(
-        (a) => a.perfil_id === perfil.id && a.deleted !== true
+        (a) => a.perfil_id === perfil.id 
     )
 
     const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
-        (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
+        (ce) => ce.perfil_id === perfil.id 
     )
 
-    const expedienteCompleto = (condiciones.length !== 0 && alergias.length !== 0 && contactos.length !== 0 && perfil.tipo_sangre && perfil.genero ) ? true : false
+    const confirmadas = useValue(expedienteChecklist$)
+
+    
 
     if(!perfil.id || !condicion$) {
       return (
@@ -44,7 +45,13 @@ export default function ExpedienteScreen() {
       )
     }
 
-    
+      const expedienteIncompleto = [
+      perfil.genero == null || perfil.cedula == null,
+      perfil.tipo_sangre == null,
+      condiciones.length === 0,
+      alergias.length === 0,
+      contactos.length === 0,
+    ].some((incompleta, i) => incompleta && !confirmadas[['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'][i]])
 
 
     const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
@@ -67,10 +74,11 @@ export default function ExpedienteScreen() {
 
           <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
 
-          {!expedienteCompleto && (
-              <View className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500">
+          {expedienteIncompleto && (
+              <Pressable className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500"
+              onPress={() => router.navigate("/expediente/completar")}>
                   <Text>Expediente incompleto ——— Termina de completar tu perfil</Text>
-              </View>
+              </Pressable>
           )}
 
           

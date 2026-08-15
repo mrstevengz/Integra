@@ -28,7 +28,7 @@ function CategoriasBox({categoriaNombre, count, icon}: CategoriasBoxProps) {
         <Pressable
             onPress={() => {
                 router.navigate({
-                    pathname: '/[categoriaArt]',
+                    pathname: '/articulos/[categoriaArt]',
                     params: {categoriaArt: `${categoriaNombre}`}
                 })
             }}

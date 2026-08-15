@@ -27,7 +27,7 @@ function DestacadoCard({ categoriaNombre, articuloId, titulo }: DestacadoCardPro
         <Pressable
             onPress={() => {
                 router.navigate({
-                    pathname: '/[categoriaArt]/[articuloId]',
+                    pathname: '/articulos/[categoriaArt]/[articuloId]',
                     params: { categoriaArt: categoriaNombre, articuloId }
                 })
             }}

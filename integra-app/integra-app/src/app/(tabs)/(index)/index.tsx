@@ -46,7 +46,7 @@ export default function HomeScreen() {
                 <Text className="text-lg font-light text-neutral-900 tracking-tight">{`${capitalize}, ${hoy.getDate()} de ${hoy.toLocaleString('es-Es', {month: 'long', year:'numeric'})}`}</Text>
             </View>
 
-            <TouchableOpacity className="w-12 h-12 rounded-full flex items-center justify-center bg-slate-300" onPress={() => router.navigate("/expediente")}>
+            <TouchableOpacity className="w-12 h-12 rounded-full flex items-center justify-center bg-sec-color" onPress={() => router.navigate("/expediente")}>
                 <Ionicons name="person-sharp" size={20}/>
             </TouchableOpacity>
         </View>
@@ -61,19 +61,19 @@ export default function HomeScreen() {
 
             <View className="flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm mt-4">
                 <View className="flex-row justify-between mb-2">
-                    <Text>Progreso del dia</Text>
-                    <Text>{tomasDeHoy.length !== 0 ? `${tomasResueltas} de ${tomasDeHoy.length} tomados` : `No hay tomas hoy`}</Text>
+                    <Text className="font-semibold">Progreso del dia</Text>
+                    <Text className="font-semibold">{tomasDeHoy.length !== 0 ? `${tomasResueltas} de ${tomasDeHoy.length} tomados` : `No hay tomas hoy`}</Text>
                 </View>
 
-                <View className="h-4 w-full overflow-hidden rounded-3xl bg-slate-200">
-                    <View className="h-full bg-black" style={{
+                <View className="h-4 w-full overflow-hidden bg-neutral-color rounded-3xl">
+                    <View className="h-full bg-sec-color border-r-8 rounded-lg" style={{
                         width: `${(tomasResueltas/tomasDeHoy.length)* 100}%`
                     }}/>
                 </View>
             </View>
 
              <View className="flex-row items-center justify-between my-5">
-                <Text className="text-neutral-500 text-md font-semibold uppercase tracking-wider">
+                <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
                     Ultimas mediciones
                 </Text>
             
@@ -82,24 +82,23 @@ export default function HomeScreen() {
                 </Pressable>
             </View>
 
-            <View className="flex-row gap-6">
-                {medicionComponente.length === 0 && (
-                    <View className="mx-6 mb-8 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
-                        <Text className="text-neutral-500 text-sm text-center">
-                            No hay historial de mediciones.
-                        </Text>
-                    </View>
-                )}
 
+            {medicionComponente.length === 0 && (
+                <View className="rounded-2xl border border-neutral-200 bg-white p-5 items-center justify-between">
+                    <Text className="text-neutral-500 text-sm">No hay historial de mediciones</Text>
+                </View>
+            )}
+
+            <View className="flex-row gap-6">
                 {medicionComponente.map((m => {
                     const t = porId(tipos, m.tipo_medicion_id)
                     const medidoEn = new Date(m.medido_en)
 
                     return (
-                        <Pressable className="flex-col flex-1 justify-start rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm active:bg-white/80" key={m.id} onPress={() => router.navigate('/medicion/historial')}>
-                            <Text className="text-slate-400">{t?.nombre}</Text>
+                        <Pressable className="flex-col flex-1 justify-start rounded-2xl bg-white p-4 shadow-sm active:bg-white/80" key={m.id} onPress={() => router.navigate('/medicion/historial')}>
+                            <Text className="text-btn-color font-light">{t?.nombre}</Text>
                             <Text className="text-2xl font-bold">{m.valor} {m.valor_secundario && `/ ${m.valor_secundario}`}</Text>
-                            <Text className="text-slate-400">{t?.unidad}</Text>
+                            <Text className="text-txt-color font-bold">{t?.unidad}</Text>
                             <Text className="text-slate-400">{medidoEn.toDateString().slice(4, 10)} {medidoEn.toTimeString().slice(0,5)}</Text>
                         </Pressable>
                     )
@@ -107,11 +106,11 @@ export default function HomeScreen() {
             </View>
 
             <View className="flex-row items-center justify-between my-5">
-                <Text className="text-neutral-500 text-md font-semibold uppercase tracking-wider">
+                <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
                     Articulos Destacados
                 </Text>
             
-                <Pressable onPress={() => router.push('/medicion')} hitSlop={8} accessibilityRole="button">
+                <Pressable onPress={() => router.push('/articulos')} hitSlop={8} accessibilityRole="button">
                     <Text className="text-neutral-400 text-md font-medium">Ver todos</Text>
                 </Pressable>
 

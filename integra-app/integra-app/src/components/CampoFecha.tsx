@@ -1,7 +1,9 @@
-import { View, Text, TextInput, Pressable, Platform } from 'react-native'
+import { View, Text, TextInput, Pressable, Platform, TouchableWithoutFeedback, Modal, TouchableOpacity } from 'react-native'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useState } from 'react'
+import { GlassView} from 'expo-glass-effect'
+
 
 //Campo generico para pasar un DateTimePicker, escoge fecha y hora, o fecha, o hora. (Se le pasa la propiedad 'mode')
 
@@ -28,42 +30,110 @@ export function CampoFecha<T extends FieldValues>({
     const error = fieldState.error?.message
     //Estado para manejar si esta abierto o no
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+    const [tempDate, setTempDate] = useState(field.value ?? new Date(2000, 0, 1))
 
+    const abrirPicker = () => {
+        setTempDate(field.value ?? new Date(2000, 0, 1))
+        setIsDatePickerOpen(true)
+    }
+
+    const confirmarIOS = () => {
+        field.onChange(tempDate)
+        setIsDatePickerOpen(false)
+    }
+
+    const cancelarIOS = () => setIsDatePickerOpen(false)
+    
     return (
         <View className="mb-4">
             <Text className='mb-2'>{title}</Text>
                     
-            <Pressable 
-            className={`border rounded-lg py-3 text-slate-900 bg-white flex ${error ? 'border-red-400' : 'border-slate-300'}`}
-            onPress={() => setIsDatePickerOpen(true)}>
+            <Pressable
+                className={`border rounded-lg py-3 px-4 bg-white flex ${error ? 'border-red-400' : 'border-slate-300'}`}
+                onPress={abrirPicker}>
+                <Text className={field.value ? 'text-slate-900' : 'text-slate-400'}>
+                    {field.value
+                        ? field.value.toLocaleDateString('es-CR', { day: '2-digit', month: 'long', year: 'numeric' })
+                        : placeholder}
+                </Text>
+            </Pressable>
 
-            {Platform.OS !== "ios" && (
-                <Text className={field.value ? 'text-slate-900 pl-4': 'text-slate-400 pl-4'}>
-                    {field.value ? field.value.toLocaleDateString('es-CR', 
-                    {day: '2-digit', month: 'long', year: 'numeric'}): placeholder}
-                </Text> )}
-                        
-                {isDatePickerOpen && (
-                    <DateTimePicker
-                    value={field.value ?? new Date(2000,0, 1)}
+            {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
+        
+        {isDatePickerOpen && Platform.OS === 'android' && (
+                <DateTimePicker
+                    value={field.value ?? new Date(2000, 0, 1)}
                     mode={mode}
-                    
                     design="material"
                     maximumDate={new Date()}
                     minimumDate={new Date(1930, 0, 1)}
                     onChange={(evento, fecha) => {
-                    if (Platform.OS === 'android') setIsDatePickerOpen(false)
-                    if (evento.type === 'set' && fecha) field.onChange(fecha)
+                        setIsDatePickerOpen(false)
+                        if (evento.type === 'set' && fecha) field.onChange(fecha)
                     }}
-                    />
+                />
+        )}
 
-                    )}
-                    {/* //Para hacer espacio dentro del TextInput (en IOS no se puede poner texto dentro, ya que renderiza el componente de la fecha al tocar) */}
-                    {!isDatePickerOpen && Platform.OS === 'ios' && (
-                        <Text></Text>
-                    )}
-            </Pressable>
-            {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
+        {Platform.OS === 'ios' && (
+                <Modal
+                    visible={isDatePickerOpen}
+                    transparent
+                    animationType="slide"
+                    onRequestClose={cancelarIOS}
+                >
+                    <TouchableWithoutFeedback onPress={cancelarIOS}>
+                        <View className="flex-1 justify-end bg-black/40">
+                        <TouchableWithoutFeedback>
+                                <View className="bg-white rounded-t-2xl pb-8" style={{ minHeight: 200 }}>
+                                    <View className="flex-row justify-between items-center px-4 py-3 border-b border-slate-200">
+                                        <GlassView
+                                        style={{ borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}
+                                        glassEffectStyle="regular"
+                                        tintColor="#e2e8f0"
+                                        isInteractive
+                                    >
+
+                                            <TouchableOpacity onPress={cancelarIOS}>
+                                                <Text className="text-slate-500 text-base">Cancelar</Text>
+                                            </TouchableOpacity>
+                                        </GlassView>
+
+                                        <Text className="text-slate-900 font-semibold">{title}</Text>
+
+                                        <GlassView
+                                        style={{ borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}
+                                        glassEffectStyle="regular"
+                                        tintColor="#e2e8f0"
+                                        isInteractive
+                                        >
+
+                                            <TouchableOpacity onPress={confirmarIOS}>
+                                                <Text className="text-blue-600 font-semibold text-base">Listo</Text>
+                                            </TouchableOpacity>
+                                        </GlassView>
+                                    </View>
+
+                                    <View className="items-center">
+                                        <DateTimePicker
+                                            value={tempDate}
+                                            mode={mode}
+                                            display="spinner"
+                                            themeVariant="light"
+                                            locale="es-ES"
+                                            style={{ width: '100%', height: 220 }}
+                                            maximumDate={new Date()}
+                                            minimumDate={new Date(1930, 0, 1)}
+                                            onChange={(_, fecha) => { if (fecha) setTempDate(fecha) }}
+                                        />
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            )}
         </View>
+
     )
 }
