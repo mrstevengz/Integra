@@ -4,17 +4,15 @@ import { porId } from "@/state/helpers";
 import { formatearFecha, formatearHora } from "@/state/medicacion";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { View, KeyboardAvoidingView, Platform, ScrollView, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function EditarCita() {
+export default function DetalleCita() {
     const {citaId} = useLocalSearchParams()
     const citas = useValue(cita$)
 
     const citaAEditar = porId(citas, citaId as string)
-
-    console.log(citaAEditar)
 
     const date = new Date(citaAEditar.programada_para)
     return (
@@ -91,7 +89,12 @@ export default function EditarCita() {
                     </Pressable>
 
                     <Pressable
-                        className="bg-transparent py-4 rounded-xl border-txt-color border-2 active:bg-neutral-800/10">
+                        className="bg-transparent py-4 rounded-xl border-txt-color border-2 active:bg-neutral-800/10"
+                        onPress={() => router.navigate({
+                        pathname: '/cita/[citaId]/editar',
+                        params: {citaId: citaAEditar.id}})
+                        }
+                        >
                         <Text className="text-txt-color text-center font-semibold text-lg">
                             Editar cita
                         </Text>

@@ -1,5 +1,16 @@
 import { EstadoToma } from "@/state/medicacion";
 
+
+export type EstadoVisual = {
+    etiqueta: string
+    tile: string          
+    iconoColor: string    
+    titulo: string        
+    detalle: string       
+    accionable: boolean   
+}
+
+
 export function etiquetaEstado(estado: EstadoToma): string {
     const map: Record<EstadoToma, string> = {
         pendiente: 'Pendiente',

@@ -3,10 +3,93 @@
 @tailwind utilities;
 
 :root {
-  --background-color: #ffffff;
-  --neutral-color: #e4e4e4;
-  --text-color: #000000;
-  --interaction-color: #374ea2;
-  --secondary-color: #97c0d9;
-  --alert: #ff3131;
+  /* Valores primitivos de la paleta de colores */
+  --blue-50: 240 246 255;
+  --blue-100: 220 235 254;
+  --blue-200: 187 214 251;
+  --blue-300: 142 183 246;
+  --blue-400: 94 147 232;
+  --blue-500: 49 110 216;
+  --blue-600: 36 89 189;
+  --blue-700: 28 70 156;
+  --blue-800: 23 54 124;
+  --blue-900: 24 44 98;
+  --blue-950: 18 29 63;
+
+  --gray-0: 255 255 255;
+  --gray-50: 248 249 251;
+  --gray-100: 242 244 247;
+  --gray-200: 227 230 237;
+  --gray-300: 207 212 221;
+  --gray-400: 155 162 176;
+  --gray-500: 113 123 142;
+  --gray-600: 87 95 112;
+  --gray-700: 64 72 89;
+  --gray-800: 41 48 61;
+  --gray-900: 25 31 41;
+  --gray-950: 14 18 27;
+
+  --green-50: 239 251 245;
+  --green-100: 214 245 230;
+  --green-600: 23 130 76;
+  --green-800: 11 74 43;
+
+  --amber-50: 254 248 235;
+  --amber-100: 254 237 205;
+  --amber-500: 245 159 10;
+  --amber-700: 155 94 8;
+
+  --red-50: 254 241 241;
+  --red-100: 254 226 226;
+  --red-500: 220 40 40;
+  --red-700: 184 30 30;
+
+  /* Variables de tailwind */
+
+  /* Superficies */
+  --surface: var(--gray-100); /* Backgrounde de la app     */
+  --surface-raised: var(--gray-0); /* Filas, cards, etc    */
+  --surface-sunken: var(--gray-200); /* Barras de progreso     */
+  --surface-inverse: var(--gray-900); /* toasts          */
+
+  /* Contenido (texto y iconos */
+  --content: var(--gray-900); /* Titulos, valores    */
+  --content-muted: var(--gray-600); /*  Labels   */
+  --content-subtle: var(--gray-500); /*  Texto grande    */
+  --content-disabled: var(--gray-400); /*  Placeholders  */
+  --content-inverse: var(--gray-50);
+  --content-on-primary: var(--gray-0);
+
+  /* Bordes de elementos*/
+  --border: var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-focus: var(--blue-500);
+
+  /* Interactivo (cuando se presiona, etc) */
+  --primary: var(--blue-700);
+  --primary-pressed: var(--blue-800);
+  --primary-subtle: var(--blue-50);
+  --primary-on-subtle: var(--blue-800);
+
+  /* Status */
+  --success: var(--green-600);
+  --success-subtle: var(--green-50);
+  --success-on-subtle: var(--green-800);
+
+  --warning: var(--amber-500);
+  --warning-subtle: var(--amber-50);
+  --warning-on-subtle: var(--amber-700);
+
+  --danger: var(--red-700);
+  --danger-solid: var(--red-500);
+  --danger-subtle: var(--red-50);
+  --danger-on-subtle: var(--red-700);
+
+  /* //Legacy */
+  --background-color: var(--gray-0);
+  --neutral-color: var(--gray-200);
+  --text-color: var(--gray-900);
+  --interaction-color: var(--blue-700);
+  --secondary-color: var(--blue-300);
+  --alert: var(--red-700);
 }

@@ -25,7 +25,13 @@ export const citasSchema = z.object({
     fecha: z.date({ error: 'Selecciona la fecha' }),
     hora: z.date({ error: 'Selecciona la hora' }),
 
-    notas: z.string().trim().max(200, {error: 'Maximo 200 caracteres'})
+    notas: z.string().trim().max(200, {error: 'Maximo 200 caracteres'}),
+
+    cancelada: z.boolean().optional(),
+
+    notaCancelacion: z.string().trim().optional()
+
+
 
 })
 

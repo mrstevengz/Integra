@@ -130,7 +130,7 @@ export default function MedicacionScreen() {
                 accessibilityRole="button"
                 className={`flex-1 justify-center items-center ${Platform.OS === "android" ? 'bg-txt-color' : ''}`}
                 >
-                <Text className="text-white text-center items-center font-semibold text-2xl">+</Text>
+                <Text className="text-white text-center items-center text-4xl">+</Text>
                 </TouchableOpacity>
             </GlassView>
 

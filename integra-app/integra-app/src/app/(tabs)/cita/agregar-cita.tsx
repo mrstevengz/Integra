@@ -38,18 +38,12 @@ export default function AgregarCitaScreen() {
         return Crypto.randomUUID()
     }
 
-    function combinarFechaHora(fecha: Date, hora: Date): Date {
-    const combinado = new Date(fecha)
-    combinado.setHours(hora.getHours(), hora.getMinutes(), 0, 0)
-    return combinado
-}
 
     function onSubmit(formValues: CitaForm) {
         if (isSubmitting) return 
         setIsSubmitting(true)
         
         try {
-            console.log(`hola`)
             const id = generateUUID()
             const programadaPara = combinarFechaHora(formValues.fecha, formValues.hora)
 
@@ -135,3 +129,9 @@ export default function AgregarCitaScreen() {
         </View>
     )
 }
+
+export function combinarFechaHora(fecha: Date, hora: Date): Date {
+    const combinado = new Date(fecha)
+    combinado.setHours(hora.getHours(), hora.getMinutes(), 0, 0)
+    return combinado
+    }

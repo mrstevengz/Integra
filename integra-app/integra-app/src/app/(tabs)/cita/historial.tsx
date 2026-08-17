@@ -5,16 +5,17 @@ import TopBarSecondary from "@/components/TopBarSecondary";
 import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
-import { cita$, citasProximas } from "@/state/cita";
+import { cita$, citasPasadas } from "@/state/cita";
 import { perfil$ } from "@/state/usuario";
 import { formatearFecha, formatearHora } from "@/state/medicacion";
 
-export default function CitaScreen() {
+export default function HistorialCitaScreen() {
 
   const perfil = useValue(perfil$)
   const citas = useValue(cita$)
 
-  const citasProximasLista = citasProximas(citas, new Date(), perfil.id)
+  const citasPasadasLista = citasPasadas(citas, new Date(), perfil.id)
+
 
   return (
     <View className="flex-1">
@@ -22,10 +23,10 @@ export default function CitaScreen() {
             <TopBar name='Citas medicas' canGoBack={false}/>
         </SafeAreaView>
 
-        <TopBarSecondary active="Proximas" tab1="Proximas" tab2="Historial" route1="/cita" route2="/cita/historial"/>
+        <TopBarSecondary active="Historial" tab1="Proximas" tab2="Historial" route1="/cita" route2="/cita/historial"/>
 
         <ScrollView className="flex-1 bg-slate-100">
-         {citasProximasLista.map((c) => {
+         {citasPasadasLista.map((c) => {
           const date = new Date(c.programada_para)
 
           

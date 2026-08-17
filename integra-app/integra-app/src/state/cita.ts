@@ -51,7 +51,21 @@ export function citasProximas(
     const dia = fechaLocalISO(fecha)
     return comoLista(todos)
     .filter((c) => c && c.perfil_id === perfilId && c.programada_para)
-    .filter((c) => fechaLocalISO(new Date(c.programada_para)) > dia)
+    .filter((c) => fechaLocalISO(new Date(c.programada_para)) > dia && c.cancelada === false)
+    .sort((a, b) =>
+        new Date(a.programada_para).getTime() - new Date(b.programada_para).getTime()
+    )
+}
+
+export function citasPasadas(
+    todos: Record<string, Cita> | undefined,
+    fecha: Date,
+    perfilId: string | undefined
+): Cita[] {
+    const dia = fechaLocalISO(fecha)
+    return comoLista(todos)
+    .filter((c) => c && c.perfil_id === perfilId && c.programada_para)
+    .filter((c) => fechaLocalISO(new Date(c.programada_para)) < dia || c.cancelada === true)
     .sort((a, b) =>
         new Date(a.programada_para).getTime() - new Date(b.programada_para).getTime()
     )
