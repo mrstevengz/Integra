@@ -136,6 +136,18 @@ export function formatearHora(hora: string): string {
     return d.toLocaleTimeString('es-CR', { hour: 'numeric', minute: '2-digit' })
 }
 
+//Se le pasa un date y retorna Jue 14 ago
+export function formatearFecha(date: Date, monthLong?: boolean, needYear?: boolean): string {
+    const cleanDate = date.toLocaleDateString('es-CR', {
+        weekday: 'short',
+        day: 'numeric',
+        month: monthLong ? 'long' : 'short',
+        year: needYear ? 'numeric' : undefined,
+    }).replace(/\./g, '').replace(/\,/g, '')
+
+    return cleanDate.charAt(0).toUpperCase() + cleanDate.slice(1)
+}
+
 //Un grupo de dosis que se toman a la misma hora
 export type GrupoTomas = {
     hora: string        //"08:00", sirve de llave

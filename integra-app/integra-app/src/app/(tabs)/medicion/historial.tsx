@@ -23,7 +23,7 @@ export default function HistorialMediciones() {
             
             <TopBarSecondary active="Historial" tab1="Registrar" tab2="Historial" route1="/medicion" route2="/medicion/historial"/>
 
-            <ScrollView className="flex-grow" contentContainerStyle={{ paddingTop: 5, paddingBottom: 100 }}>
+            <ScrollView className="flex-grow" contentContainerStyle={{paddingBottom: 100 }}>
 
                     {medicionesHistorial.length === 0 && (
                     <View className="mx-6 mb-8 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
@@ -38,7 +38,7 @@ export default function HistorialMediciones() {
                         const medidoEn = new Date(m.medido_en)
 
                         return (
-                            <View key={m.id} className="p-6 justify-between flex flex-row items-center border-b border-slate-400">
+                            <View key={m.id} className="p-6 justify-between flex flex-row items-center border-b border-slate-400 bg-bg-color">
                                 <View>
                                     <Text className="text-md font-semibold">{t?.nombre}</Text>
                                     <Text className="text-sm text-slate-500">{medidoEn.toDateString().slice(4, 10)} ⋅ {medidoEn.toTimeString().slice(0,5)} {labelHelper(m.contexto)}</Text>

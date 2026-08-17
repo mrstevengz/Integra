@@ -1,6 +1,6 @@
 import { GlassView } from "expo-glass-effect"
 import { router } from "expo-router"
-import { Pressable, Text, TouchableOpacity, View } from "react-native"
+import { Platform, Text, TouchableOpacity, View } from "react-native"
 
 
 //Topbar para todas las pantallas de la aplicacion. Aqui se puede modificar. Acepta el titulo y un booleano, para permitir retornar o no. (En las pantallas principales de (tabs) no se retorna)
@@ -22,7 +22,7 @@ export default function TopBar({ name, canGoBack }: TopBarProps) {
                     <TouchableOpacity
                     onPress={() => router.back()}
                     hitSlop={8}
-                    className="flex-1 justify-center items-center">
+                    className={`flex-1 justify-center items-center ${Platform.OS === 'android' ? 'border rounded-xl active:bg-neutral-300' : ''}`}>
                     <Text className="text-2xl leading-none">‹</Text>
                     </TouchableOpacity>
                 </GlassView>

@@ -344,3 +344,87 @@ export const mediciones = pgTable('mediciones', {
         withCheck: sql`${authUid} = ${table.perfil_id}`,
     }),
 ]).enableRLS()
+
+//CITAS
+
+export const tipoCitasEnum = pgEnum('tipo_cita', [
+    'primera', 'control', 'rutina', 'prioritaria', 'urgencias'
+])
+
+export const citas = pgTable('citas', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+
+    //Enum de tipo de cita
+    tipoCita: tipoCitasEnum('tipo_citas').notNull(),
+
+    //Campos de forms, se deja medico como nullable en caso de que no sepa
+    especialidad: text('especialidad').notNull(),
+    institucion: text('institucion').notNull(),
+    medico: text('medico'),
+
+    //Timestamp para la cita programada (fecha y hora)
+    programadaPara: timestamp('programada_para', {withTimezone: true, mode: 'date'}, ).notNull(),
+
+    //Notas de la cita (opcional)
+    notas: text('notas'),
+
+    //Campos para filtrar citas canceladas, un booleano y nota de cancelacion.
+    cancelada: boolean('cancelada').default(false),
+    notaCancelacion: text('nota_cancelacion'),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+   index('citas_perfil_idx').on(table.perfil_id),
+
+    pgPolicy('citas_select_propio', {
+        for: 'select', to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('citas_create_propio', {
+        for: 'insert', to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('citas_update_propio', {
+        for: 'update', to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()
+
+export const citasResultado = pgTable('citas_resultado', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    perfil_id: uuid('perfil_id').notNull().references(() => perfiles.id, {onDelete: 'cascade'}),
+
+    cita_id: uuid('cita_id').notNull().references(() => citas.id, {onDelete: 'cascade'}),
+
+    asistida: boolean('asistido').notNull().default(true),
+
+    diagnostico: text('diagnostico'),
+    instruccion: text('instruccion'),
+    ajusteMedicacion: text('ajuste_medicacion'),
+
+    createdAt: timestamp('created_at', {withTimezone: true}).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', {withTimezone: true}).notNull().defaultNow(),
+    deleted: boolean('deleted').notNull().default(false),
+
+}, (table) => [
+   index('citas_resultado_perfil_idx').on(table.perfil_id),
+
+    pgPolicy('citas_resultado_select_propio', {
+        for: 'select', to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('citas_resultado_create_propio', {
+        for: 'insert', to: authenticatedRole,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy('citas_resultado_update_propio', {
+        for: 'update', to: authenticatedRole,
+        using: sql`${authUid} = ${table.perfil_id}`,
+        withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+]).enableRLS()

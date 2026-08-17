@@ -72,8 +72,8 @@ export default function PerfilScreen() {
                     contentContainerStyle={{
                         flexGrow: 1,
                         paddingHorizontal: 20,
-                        paddingTop: 40,
-                        paddingBottom: 90,
+                        paddingTop: 20,
+                        paddingBottom: 120,
                     }}
                     keyboardShouldPersistTaps="handled">
                 

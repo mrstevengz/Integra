@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native"
 import { syncState } from "@legendapp/state"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
@@ -110,6 +110,7 @@ export default function MedicacionScreen() {
                 
             </ScrollView>
 
+
             <GlassView
             style={{
             position: 'absolute',
@@ -127,7 +128,7 @@ export default function MedicacionScreen() {
                 <TouchableOpacity
                 onPress={() => router.navigate('/medicacion/agregar-medicamento')}
                 accessibilityRole="button"
-                className="flex-1 justify-center items-center"
+                className={`flex-1 justify-center items-center ${Platform.OS === "android" ? 'bg-txt-color' : ''}`}
                 >
                 <Text className="text-white text-center items-center font-semibold text-2xl">+</Text>
                 </TouchableOpacity>

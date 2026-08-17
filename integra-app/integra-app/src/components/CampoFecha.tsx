@@ -31,41 +31,52 @@ export function CampoFecha<T extends FieldValues>({
     //Estado para manejar si esta abierto o no
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
     const [tempDate, setTempDate] = useState(field.value ?? new Date(2000, 0, 1))
+    const [tempTime, setTempTime] = useState(field.value ?? new Date())
 
     const abrirPicker = () => {
+    if (mode === 'time') {
+        setTempTime(field.value ?? new Date())
+    } else {
         setTempDate(field.value ?? new Date(2000, 0, 1))
-        setIsDatePickerOpen(true)
     }
+    setIsDatePickerOpen(true)
+}
 
     const confirmarIOS = () => {
-        field.onChange(tempDate)
-        setIsDatePickerOpen(false)
+    field.onChange(mode === 'time' ? tempTime : tempDate)
+    setIsDatePickerOpen(false)
     }
 
     const cancelarIOS = () => setIsDatePickerOpen(false)
     
     return (
         <View className="mb-4">
-            <Text className='mb-2'>{title}</Text>
+            <Text className='mb-2 text-lg'>{title}</Text>
                     
             <Pressable
-                className={`border rounded-lg py-3 px-4 bg-white flex ${error ? 'border-red-400' : 'border-slate-300'}`}
+                className={`border rounded-lg py-4 px-4 bg-white flex ${error ? 'border-red-400' : 'border-slate-300'}`}
                 onPress={abrirPicker}>
-                <Text className={field.value ? 'text-slate-900' : 'text-slate-400'}>
+                <Text numberOfLines={1}
+                    ellipsizeMode="tail"
+                    className={field.value ? 'text-slate-900 text-lg' : 'text-slate-400 text-lg'}
+                    >
                     {field.value
-                        ? field.value.toLocaleDateString('es-CR', { day: '2-digit', month: 'long', year: 'numeric' })
-                        : placeholder}
+                    ? mode === 'time'
+                    ? field.value.toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' })
+                    : field.value.toLocaleDateString('es-CR', { weekday: 'short', day: '2-digit', month: 'short', year: '2-digit' })
+                    : placeholder}
+
                 </Text>
             </Pressable>
 
-            {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
+        {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
         
         {isDatePickerOpen && Platform.OS === 'android' && (
                 <DateTimePicker
-                    value={field.value ?? new Date(2000, 0, 1)}
+                    value={field.value ?? (mode === 'time' ? new Date() : new Date(2000, 0, 1))}
+
                     mode={mode}
                     design="material"
-                    maximumDate={new Date()}
                     minimumDate={new Date(1930, 0, 1)}
                     onChange={(evento, fecha) => {
                         setIsDatePickerOpen(false)
@@ -115,15 +126,21 @@ export function CampoFecha<T extends FieldValues>({
 
                                     <View className="items-center">
                                         <DateTimePicker
-                                            value={tempDate}
+                                            value={mode === 'time' ? tempTime : tempDate}
                                             mode={mode}
+                                            is24Hour={false}
                                             display="spinner"
                                             themeVariant="light"
                                             locale="es-ES"
                                             style={{ width: '100%', height: 220 }}
-                                            maximumDate={new Date()}
                                             minimumDate={new Date(1930, 0, 1)}
-                                            onChange={(_, fecha) => { if (fecha) setTempDate(fecha) }}
+                                            onChange={
+                                            (_, fecha) => {
+                                                    if (!fecha) return
+                                                    if (mode === 'time') setTempTime(fecha)
+                                                    else setTempDate(fecha)
+                                                }
+                                            }
                                         />
                                     </View>
                                 </View>

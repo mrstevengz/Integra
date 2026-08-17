@@ -25,7 +25,7 @@ export default function AgregarMedicamentoScreen() {
             dosis: '',
             unidad: 'mg',
             forma: 'tableta',
-            con_alimentos: '',
+            con_alimentos: 'con',
             indicaciones: '',
             horarios: [{ hora: '08:00', dias: TODOS_LOS_DIAS }],
         },
@@ -94,7 +94,7 @@ export default function AgregarMedicamentoScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <CampoTexto name="nombre" control={control} title="Nombre del medicamento"
-                    placeholder="Losartan"/>
+                    placeholder="Paracetamol"/>
 
                 <CampoTexto name="dosis" control={control} title="Dosis"
                     placeholder="50" keyboardType="phone-pad"/>
@@ -105,11 +105,11 @@ export default function AgregarMedicamentoScreen() {
                 <CampoSelect name="forma" control={control} title="Forma farmaceutica"
                     opciones={OPCIONES_FORMA}/>
 
-                <CampoSelect name="con_alimentos" control={control} title="Con alimentos (opcional)"
+                <CampoSelect name="con_alimentos" control={control} title="Con alimentos"
                     opciones={OPCIONES_ALIMENTOS}/>
 
                 <CampoTexto name="indicaciones" control={control} title="Indicaciones del medico"
-                    placeholder="Tomar con abundante agua" opcional/>
+                    placeholder="Ej. Tomar con abundante agua" opcional/>
 
                 <Text className="text-lg font-semibold text-slate-900 mt-4 mb-3">Horarios</Text>
 
