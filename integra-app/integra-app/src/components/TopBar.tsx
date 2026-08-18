@@ -70,7 +70,7 @@ export default function TopBar({
                     className="absolute left-2 items-center justify-center rounded-full active:bg-surface"
                 >
                     <ChevronLeft size={26} color={color.content} />
-                </Pressable>
+                </Pressable>         
             )}
 
             <Text className="text-subheading font-bold text-content px-14" numberOfLines={1}>

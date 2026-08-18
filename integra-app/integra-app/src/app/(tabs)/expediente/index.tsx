@@ -12,7 +12,19 @@ import { contactoEmergencia$ } from "@/state/contactosemergencia";
 import { router } from "expo-router";
 import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
 import { expedienteChecklist$ } from "@/state/expedienteChecklist";
+import {QrCode} from "lucide-react-native";
+import { color } from "@/theme/colors";
 
+
+
+export function getAge(edadNacimiento: string) {
+      const yearUsuario = (edadNacimiento ?? "").slice(0,10)
+      const fechaLimpia = yearUsuario.toString().replaceAll("-", "")
+
+      const hoy = new Date().toISOString().slice(0,10).replaceAll("-", "")
+      const edad = parseInt(hoy) - parseInt(fechaLimpia)
+      return edad.toString().slice(0,2)
+  }
 
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
@@ -55,24 +67,18 @@ export default function ExpedienteScreen() {
 
 
     const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
-    const usersYear = (perfil.fecha_nacimiento ?? "").slice(0,10)
-    const cleanDate = usersYear.toString().replaceAll("-", "")
-
-    const todaysDate = new Date().toISOString().slice(0,10).replaceAll("-", "")
-
-    const age = (parseInt(todaysDate) - parseInt(cleanDate))
-
-    const usersAge = age.toString().slice(0,2)
-
 
   return (
     <View className="flex-1">
         <SafeAreaView edges={['top']} className="bg-slate-100">
-            <TopBar name='Mi Expediente' canGoBack={false}/>
+            <TopBar name='Mi Expediente' canGoBack={false} grande={true} subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
+            accion={() => router.navigate("/expediente/exportar")}
+            accionIcono={<QrCode size={25} color={color.primary}/>}
+            />
         </SafeAreaView>
-        <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100 }}>
+        <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100, paddingTop: 15 }}>
 
-          <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
+          <PerfilSummary nombre={nombreCompleto} edad={getAge(perfil.fecha_nacimiento ?? '')} genero={perfil.genero} cedula={perfil.cedula}/>
 
           {expedienteIncompleto && (
               <Pressable className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500"

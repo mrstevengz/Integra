@@ -7,6 +7,7 @@ export type ContactoEmergencia = {
     nombre: string
     telefono: string;
     relacion: string
+    created_at?: string
 }
 
 //Collection name debe matchear la tabla de Supabase

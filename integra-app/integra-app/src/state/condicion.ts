@@ -7,6 +7,7 @@ export type Condicion = {
     nombre: string
     tipo: string;
     detalles: string
+    created_at?: string
 }
 
 export const condicion$ = observable(syncedTable({

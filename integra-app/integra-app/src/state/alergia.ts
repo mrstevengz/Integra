@@ -7,6 +7,7 @@ export type Alergia = {
     nombre: string
     severidad: string;
     detalles: string
+    created_at?: string
 }
 
 export const alergia$ = observable(syncedTable({
