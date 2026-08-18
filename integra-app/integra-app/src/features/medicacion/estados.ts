@@ -23,10 +23,10 @@ export function etiquetaEstado(estado: EstadoToma): string {
 
 export function colorEstado(estado: EstadoToma): string {
     const map: Record<EstadoToma, string> = {
-        pendiente: 'text-neutral-600 font-medium',
-        tomada: 'text-neutral-900 font-semibold',
-        pospuesta: 'text-neutral-600 font-medium italic',
-        omitida: 'text-neutral-500 font-medium line-through',
+        pendiente: 'text-content font-semibold',
+        tomada: 'text-success-on-subtle font-medium',
+        pospuesta: 'text-warning-on-subtle font-semibold',
+        omitida: 'text-danger font-medium',
     }
     return map[estado]
 }

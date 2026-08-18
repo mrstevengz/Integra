@@ -17,7 +17,12 @@ export default function HistorialMedicamentos() {
     return (
         <View className="flex-1">
         <SafeAreaView edges={['top']} className="bg-slate-100">
-            <TopBar name='Medicacion' canGoBack={false}/>
+            <TopBar
+                name="Medicación"
+                canGoBack={false}
+                grande
+                subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
+            />
         </SafeAreaView>
         
         <TopBarSecondary active="Medicamentos" tab1="Tomas" tab2="Medicamentos" route1="/medicacion" route2="/medicacion/historial"/>

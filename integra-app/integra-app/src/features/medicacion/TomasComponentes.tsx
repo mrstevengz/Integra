@@ -20,9 +20,6 @@ export function TomaComponente({ tomas }: ComponenteProps) {
 
     const medicinas = useValue(medicamento$)
 
-
-
-
     const hoy = new Date()
 
     const tomaReciente = sinResolver.length > 0

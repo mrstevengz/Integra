@@ -26,6 +26,7 @@ function getIconForMedicion(nombre: string): IconName {
 export default function MedicionScreen() {
 
   const mediciones = tiposOrdenados(useValue(tipoMedicion$))
+  const tipos = useValue(tipoMedicion$)
 
   return (
     <View className="flex-1">
@@ -43,9 +44,9 @@ export default function MedicionScreen() {
                 <Pressable
                 key={medicion.id}
                 onPress={() => {
-                  router.navigate({
-                    pathname: '/medicion/[medicionTipo]',
-                    params: { medicionTipo: medicion.id }
+                router.navigate({
+                pathname: '/medicion/agregar/[medicionTipo]',
+                params: {medicionTipo: medicion.id}
                   })
                 }}
                 className="flex w-[45%] flex-col items-start gap-2 p-4 bg-white rounded-xl border border-slate-300 active:bg-slate-100">

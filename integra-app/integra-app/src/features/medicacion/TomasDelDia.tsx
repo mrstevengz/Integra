@@ -17,6 +17,7 @@ import { porId } from "@/state/helpers"
 import { colorEstado, etiquetaEstado } from "./estados"
 import { marcarTomada, marcarOmitida, posponer, revertir, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
 import { type FormaFarmaceutica, type GrupoTomas, type Medicamento,} from "@/state/medicacion"
+import { color } from "@/theme/colors";
 
 type Props = {
     grupo: GrupoTomas
@@ -55,9 +56,9 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
     }
 
     return (
-        <View className="flex flex-col border border-neutral-200 bg-white shadow-sm">
-            <View className="flex-row items-center justify-between px-5 py-4 bg-slate-100">
-                <Text className="font-semibold text-neutral-900 tracking-tight">{grupo.etiqueta}</Text>
+        <View className="flex flex-col border border-line bg-surface-raised">
+            <View className="flex-row items-center justify-between px-5 py-4 bg-surface">
+                <Text className="text-label font-semibold text-content">{grupo.etiqueta}</Text>
 
                 {sinResolver.length > 1 && !todasTomadas && (
                     <Pressable
@@ -66,9 +67,9 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                         }}
                         hitSlop={8}
                         accessibilityRole="button"
-                        className="rounded-full bg-neutral-900 px-3 py-1.5 active:opacity-80"
+                        className="rounded-full bg-primary px-3 py-2 active:bg-primary-pressed"
                     >
-                        <Text className="text-white text-xs font-semibold tracking-wide">Tomar todas</Text>
+                        <Text className="text-caption font-semibold text-content-on-primary">Tomar todas</Text>
                     </Pressable>
                 )}
 
@@ -79,9 +80,9 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                         }}
                         hitSlop={8}
                         accessibilityRole="button"
-                        className="rounded-full bg-neutral-900 px-3 py-1.5 active:opacity-80"
+                        className="rounded-full bg-primary px-3 py-2 active:bg-primary-pressed"
                     >
-                        <Text className="text-white text-xs font-semibold tracking-wide">Deshacer</Text>
+                        <Text className="text-caption font-semibold text-content-on-primary">Deshacer</Text>
                     </Pressable>
                 )}
             </View>
@@ -94,27 +95,27 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                         key={t.id}
                         onPress={() => setIdAbierto(t.id)}
                         accessibilityRole="button"
-                        className={`px-5 py-4 active:bg-neutral-200/80 flex-row flex'}`}
+                        className={`px-5 py-4 active:bg-surface flex-row flex'}`}
                     >
-                        <View className="flex-2 flex p-4 items-center justify-center rounded-xl bg-slate-200 border-slate-300 border mr-4">
+                        <View className="flex-2 flex p-3 items-center justify-center rounded-control bg-surface border border-line mr-4">
                             {retornarIcono(med?.forma)}
                         </View>
 
                         <View className="flex-1 flex-row items-center justify-between">
                             <View className="flex-1 pr-3">
-                                <Text className={` text-base font-medium tracking-tight ${t.estado === 'tomada' || t.estado === 'omitida' ? "line-through text-neutral-600" : 'text-neutral-900'}`}>
+                                <Text className={` text-body font-medium ${t.estado === 'tomada' || t.estado === 'omitida' ? "line-through text-content-muted" : 'text-content'}`}>
                                     {med ? `${med.nombre} | ${med.dosis} ${med.unidad}` : 'Medicamento'}
                                 </Text>
 
                                 {med?.con_alimentos && med.con_alimentos !== 'indiferente' && (
-                                    <Text className="text-xs text-neutral-500 mt-0.5">
+                                    <Text className="text-caption text-content-muted mt-0.5">
                                         {med.con_alimentos === 'con' ? 'Con alimentos' : 'Sin alimentos'}
                                     </Text>
                                 )}
 
                                 {t.estado === 'pospuesta' && t.pospuesta_hasta && (
-                                    <View className="self-start mt-1.5 rounded-full border border-neutral-300 px-2 py-0.5">
-                                        <Text className="text-xs font-medium text-neutral-600">
+                                    <View className="self-start mt-1.5 rounded-chip bg-warning-subtle py-1">
+                                        <Text className="text-caption font-medium text-warning-on-subtle">
                                             Hasta las {new Date(t.pospuesta_hasta).toLocaleTimeString('es-CR', {
                                                 hour: 'numeric', minute: '2-digit',
                                             })}
@@ -124,15 +125,13 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                             </View>
 
                             <View className="flex-row items-center gap-2">
-                                <Text className={`text-sm ${colorEstado(t.estado)}`}>
+                                <Text className={`text-caption ${colorEstado(t.estado)}`}>
                                     {etiquetaEstado(t.estado)}
                                 </Text>
-                                <Text className="text-neutral-300 text-lg">›</Text>
+                                <Text className="text-content-disabled text-heading">›</Text>
                             </View>
 
                         </View>
-
-                        
                     </Pressable>
                 )
             })}
@@ -146,26 +145,26 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                 useNativeDriver
                 style={{ justifyContent: 'flex-end', margin: 0 }}
             >
-                <SafeAreaView edges={['bottom']} className="bg-white rounded-t-3xl px-6 pt-4 pb-6">
+                <SafeAreaView edges={['bottom']} className="bg-surface-raised rounded-t-sheet px-6 pt-4 pb-6">
 
                     <View className="items-center mb-5">
-                        <View className="h-1.5 w-12 rounded-full bg-neutral-300" />
+                        <View className="h-1.5 w-12 rounded-full bg-line-strong" />
                     </View>
 
-                    <Text className="text-xl font-bold text-neutral-900 tracking-tight">
+                    <Text className="text-title font-bold text-content">
                         {medAbierto
                             ? `${medAbierto.nombre} ${medAbierto.dosis} ${medAbierto.unidad}`
                             : 'Medicamento'}
                     </Text>
-                    <Text className="text-neutral-500 text-xs font-semibold uppercase tracking-wider mb-6 mt-1">
+                    <Text className="text-label text-content-muted uppercase tracking-wider mb-6 mt-1">
                         Hora programada: {grupo.etiqueta}
                     </Text>
 
-                    <View className="border-t border-gray-300 py-4 mb-4">
-                        <Text className="text-neutral-500 text-xs font-semibold uppercase tracking-wide mb-3 mt-1">
+                    <View className="border-t border-line py-4 mb-4">
+                        <Text className="text-label font-semibold text-content-muted mb-3 mt-1">
                             Indicaciones del medico: 
                         </Text>
-                        <Text className="text-neutral-700">
+                        <Text className="text-body text-content">
                             {medAbierto?.indicaciones !== null ? `"${medAbierto?.indicaciones}"` : "Sin indicaciones"}
                         </Text>
                     </View>
@@ -174,35 +173,35 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                         <Pressable
                             onPress={() => ejecutar(revertir)}
                             accessibilityRole="button"
-                            className="border border-neutral-300 rounded-2xl py-4 items-center active:bg-neutral-50"
+                            className="border border-line-strong rounded-control py-4 items-center active:bg-surface"
                         >
-                            <Text className="text-neutral-700 font-semibold">Deshacer</Text>
+                            <Text className="text-body font-semibold text-content">Deshacer</Text>
                         </Pressable>
                     ) : (
                         <View className="gap-3">
                             <Pressable
                                 onPress={() => ejecutar(marcarTomada)}
                                 accessibilityRole="button"
-                                className="bg-black rounded-2xl py-4 items-center active:opacity-90 shadow-sm"
+                                className="bg-primary rounded-control py-4 items-center active:bg-primary-pressed"
                             >
-                                <Text className="text-white font-semibold text-base">✓ Tomado</Text>
+                                <Text className="text-body font-semibold text-content-on-primary">✓ Tomado</Text>
                             </Pressable>
 
                             <View className="flex flex-row gap-3">
                                 <Pressable
                                     onPress={() => ejecutar((id) => posponer(id, 15))}
                                     accessibilityRole="button"
-                                    className="flex-1 border border-neutral-300 rounded-2xl py-4 items-center active:bg-neutral-50"
+                                    className="flex-1 border border-line-strong rounded-control py-4 items-center active:bg-danger-subtle"
                                 >
-                                    <Text className="text-neutral-700 font-semibold">🕛 Posponer 15 minutos</Text>
+                                    <Text className="text-label font-semibold text-danger">🕛 Posponer 15 minutos</Text>
                                 </Pressable>
                         
                                 <Pressable
                                     onPress={() => ejecutar(marcarOmitida)}
                                     accessibilityRole="button"
-                                    className="flex-1 border border-neutral-200 rounded-2xl py-4 items-center active:bg-neutral-50"
+                                    className="flex-1 border border-line-strong rounded-control py-4 items-center active:bg-danger-subtle"
                                 >
-                                    <Text className="text-neutral-500 font-medium">Χ Omitir</Text>
+                                    <Text className="text-label font-semibold text-surface-inverse">Χ Omitir</Text>
                                 </Pressable>
                             </View>                   
                         </View>
@@ -216,16 +215,16 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
 
 
 export function retornarIcono(forma: FormaFarmaceutica | undefined) {
-    if (forma === "tableta") return <Tablets color="#737373"/>
-    if (forma === "capsula") return <Pill color="#737373"/>
-    if (forma === "jarabe") return <Droplet color="#737373"/>
-    if (forma === "suspension") return <TestTubes color="#737373"/>
-    if (forma === "inyeccion") return <Syringe color="#737373"/>
-    if (forma === "gotas") return <Pipette color="#737373"/>
-    if (forma === "crema") return <Droplet color="#737373"/>
-    if (forma === "inhalador") return <Wind color="#737373"/>
-    if (forma === "supositorio") return <Pill color="#737373"/>
-    if (forma === "parche") return <Bandage color="#737373"/>
+    if (forma === "tableta") return <Tablets color={color.contentMuted}/>
+    if (forma === "capsula") return <Pill color={color.contentMuted}/>
+    if (forma === "jarabe") return <Droplet color={color.contentMuted}/>
+    if (forma === "suspension") return <TestTubes color={color.contentMuted}/>
+    if (forma === "inyeccion") return <Syringe color={color.contentMuted}/>
+    if (forma === "gotas") return <Pipette color={color.contentMuted}/>
+    if (forma === "crema") return <Droplet color={color.contentMuted}/>
+    if (forma === "inhalador") return <Wind color={color.contentMuted}/>
+    if (forma === "supositorio") return <Pill color={color.contentMuted}/>
+    if (forma === "parche") return <Bandage color={color.contentMuted}/>
 
     return <Pill/>
 }

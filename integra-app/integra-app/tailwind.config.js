@@ -54,12 +54,13 @@ module.exports = {
         },
 
         // legacy
-        "bg-color": "var(--background-color)",
-        "neutral-color": "var(--neutral-color)",
-        "txt-color": "var(--text-color)",
-        "btn-color": "var(--interaction-color)",
-        "sec-color": "var(--secondary-color)",
-        "alert-color": "var(--alert)",
+        // legacy
+        "bg-color": c("--background-color"),
+        "neutral-color": c("--neutral-color"),
+        "txt-color": c("--text-color"),
+        "btn-color": c("--interaction-color"),
+        "sec-color": c("--secondary-color"),
+        "alert-color": c("--alert"),
       },
       fontSize: {
         display: ["30px", { lineHeight: "36px" }],
@@ -69,6 +70,7 @@ module.exports = {
         body: ["16px", { lineHeight: "24px" }],
         label: ["15px", { lineHeight: "20px" }],
         caption: ["14px", { lineHeight: "20px" }],
+        "large-title": ["34px", { lineHeight: "41px" }],
       },
 
       borderRadius: {

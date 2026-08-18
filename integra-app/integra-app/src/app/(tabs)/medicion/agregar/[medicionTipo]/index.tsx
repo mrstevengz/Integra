@@ -81,8 +81,8 @@ function Formulario({tipo}: {tipo: TipoMedicion}) {
                 nota: values.nota
             })
             reset(values)
-            router.navigate({pathname: "/medicion/[medicionTipo]/[resultadoMedicion]" ,
-                params: {resultadoMedicion: id}
+            router.navigate({pathname: "/medicion/agregar/[medicionTipo]/[resultadoMedicion]" ,
+            params: {resultadoMedicion: id}
             })
     
         } catch (error) {

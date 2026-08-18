@@ -1,18 +1,22 @@
-import { Text, View, TouchableOpacity, ScrollView, Pressable, TouchableHighlight } from "react-native";
+import { Text, View, ScrollView, Pressable} from "react-native";
 import TopBar from "@/components/TopBar";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useValue } from "@legendapp/state/react";
 import { perfil$ } from "@/state/usuario";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { toma$, tomasDelDia } from "@/state/medicacion";
 import { TomaComponente } from "@/features/medicacion/TomasComponentes";
 import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
 import { porId } from "@/state/helpers";
 import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
+import CitasComponente from "@/features/citas/CitasComponente";
+import { cita$, citasProximas } from "@/state/cita";
+import { color } from "@/theme/colors";
+import { User } from "lucide-react-native";
 
 export default function HomeScreen() {
     const perfil = useValue(perfil$)
+    
 
     const tomas = useValue(toma$)
     const tomasDeHoy = tomasDelDia(tomas, new Date(), perfil?.id)
@@ -24,10 +28,12 @@ export default function HomeScreen() {
 
     const hoy = new Date()
     const day = new Intl.DateTimeFormat('es-ni', {weekday: "long"}).format(hoy)
-    const capitalize = day.charAt(0).toUpperCase() + day.slice(1)
 
     const mediciones = useValue(medicion$)
     const tipos = useValue(tipoMedicion$)
+    const citas = useValue(cita$)
+    
+    const citasProximasLista = citasProximas(citas, hoy, perfil.id)
         
     const medicionesHistorial = medicionesOrdenadas(mediciones, perfil.id)
 
@@ -36,25 +42,19 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-slate-100">
         <SafeAreaView edges={['top']} className="bg-slate-100">
-            <TopBar name='Inicio' canGoBack={false}/>
+            <TopBar
+            name={`Hola, ${perfil.nombre}`}
+            canGoBack={false}
+            grande
+            subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
+            accion={() => router.navigate("/expediente")}
+            accionIcono={<User size={30} color={color.primary}/>}
+            />
         </SafeAreaView>
-
-        {/* //Topbar del perfil */}
-        <View className="w-full bg-white flex-row justify-between items-center border-y border-slate-300 p-6">
-            <View className="flex-col">
-                <Text className="text-3xl font-bold">{`Hola, ${perfil.nombre}`}</Text>
-                <Text className="text-lg font-light text-neutral-900 tracking-tight">{`${capitalize}, ${hoy.getDate()} de ${hoy.toLocaleString('es-Es', {month: 'long', year:'numeric'})}`}</Text>
-            </View>
-
-            <TouchableOpacity className="w-12 h-12 rounded-full flex items-center justify-center bg-sec-color" onPress={() => router.navigate("/expediente")}>
-                <Ionicons name="person-sharp" size={20}/>
-            </TouchableOpacity>
-        </View>
-
 
        <ScrollView
                 className="flex-grow bg-slate-100"
-                contentContainerStyle={{ paddingTop: 20, paddingBottom: 80, paddingHorizontal: 15 }}
+                contentContainerStyle={{ paddingTop: 20, paddingBottom: 120, paddingHorizontal: 15 }}
         >
 
             <TomaComponente tomas = {tomasDeHoy}/>
@@ -72,6 +72,8 @@ export default function HomeScreen() {
                 </View>
             </View>
 
+            <CitasComponente citasProximas={citasProximasLista}/>
+
              <View className="flex-row items-center justify-between my-5">
                 <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
                     Ultimas mediciones
@@ -81,7 +83,6 @@ export default function HomeScreen() {
                     <Text className="text-neutral-400 text-md font-medium">Ver todas</Text>
                 </Pressable>
             </View>
-
 
             {medicionComponente.length === 0 && (
                 <View className="rounded-2xl border border-neutral-200 bg-white p-5 items-center justify-between">
