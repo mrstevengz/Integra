@@ -21,7 +21,7 @@ export function CampoTexto<T extends FieldValues>({
     const error = fieldState.error?.message
     return (
         <View className="mb-4 ">
-          <Text className='mb-2'>
+          <Text className='mb-2 text-lg'>
             {title} {opcional && <Text className='text-sm text-slate-500'>(opcional)</Text>} {!opcional && <Text className={`${error ? 'text-red-400' : 'text-slate-400'} font-semibold`}></Text>}
           </Text>
 
@@ -33,7 +33,7 @@ export function CampoTexto<T extends FieldValues>({
           keyboardType={keyboardType}
           autoComplete={autoComplete}
           secureTextEntry={secureTextEntry}
-          className={`border rounded-lg px-4 py-3 bg-white text-slate-900 ${error ? 'border-red-400' : 'border-slate-300'}`}
+          className={`border rounded-lg px-4 py-4 bg-white text-slate-900 text-lg ${error ? 'border-red-400' : 'border-slate-300'}`}
           />
             {error && <Text className="text-red-600 text-sm mt-1">{error}</Text>}
         </View>

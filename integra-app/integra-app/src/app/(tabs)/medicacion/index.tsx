@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, ScrollView, TouchableOpacity, Platform } from "react-native"
 import { syncState } from "@legendapp/state"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
@@ -10,6 +10,7 @@ import { perfil$ } from "@/state/usuario"
 import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
 import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
 import TopBarSecondary from "@/components/TopBarSecondary"
+import { GlassView } from "expo-glass-effect"
 
 export default function MedicacionScreen() {
     const perfil = useValue(perfil$)
@@ -54,37 +55,40 @@ export default function MedicacionScreen() {
 
 
     return (
-        <View className="flex-1">
-            <SafeAreaView edges={['top']} className="bg-slate-100">
-                <TopBar name='Medicacion' canGoBack={false}/>
+        <View className="flex-1 bg-surface">
+            <SafeAreaView edges={['top']} className="bg-surface">
+                <TopBar
+                    name="Medicación"
+                    canGoBack={false}
+                    grande
+                    subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
+                />
             </SafeAreaView>
 
             <TopBarSecondary active="Tomas" tab1="Tomas" tab2="Medicamentos" route1="/medicacion" route2="/medicacion/historial"/>
 
 
             <ScrollView
-                className="flex-grow bg-neutral-50"
+                className="flex-grow bg-surface-raised"
                 contentContainerStyle={{ paddingTop: 20, paddingBottom: 80 }}
             >
-               
-                <Text className="text-2xl font-bold text-neutral-900 tracking-tight px-6">{`Hoy, ${new Date().getDate()} de ${new Date().toLocaleString('es-Es', {month: 'long'})}`}</Text>
 
                 <View className=" flex flex-col px-6 my-4">
                     <View className="flex-row justify-between mb-2">
-                        <Text>Progreso del dia</Text>
-                        <Text>{hoy.length !== 0 ? `${tomasResueltas} de ${hoy.length} tomados` : `No hay tomas hoy`}</Text>
+                        <Text className="text-label text-content-muted">Progreso del dia</Text>
+                        <Text className = "text-label font-semibold text-content">{hoy.length !== 0 ? `${tomasResueltas} de ${hoy.length} dosis tomadas` : `No hay dosis programadas para hoy`}</Text>
                     </View>
-                    <View className="h-4 w-full overflow-hidden rounded-3xl bg-slate-200">
-                        <View className="h-full bg-black" style={{
-                            width: `${(tomasResueltas/hoy.length)* 100}%`
+                    <View className="h-4 w-full overflow-hidden rounded-3xl bg-surface">
+                        <View className="h-full bg-primary" style={{
+                             width: `${hoy.length > 0 ? (tomasResueltas / hoy.length) * 100 : 0}%`
                         }}/>
                     </View>
                     
                 </View>
 
                 {hoy.length === 0 ? (
-                    <View className="mx-6 mb-8 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
-                        <Text className="text-neutral-500 text-sm text-center">
+                    <View className="mx-6 mb-8 rounded-card border border-dashed border-line-strong bg-surface-raised px-5 py-8 items-center">
+                        <Text className="text-body text-content-muted text-center">
                             No hay dosis programadas para hoy.
                         </Text>
                     </View>
@@ -92,7 +96,7 @@ export default function MedicacionScreen() {
                     <View className="mb-8">
                     {grupos.length === 0 ? (
                     <View className="mx-6 mb-8 rounded-2xl border border-dashed border-neutral-200 bg-white px-5 py-8 items-center">
-                        <Text className="text-neutral-500 text-sm text-center">
+                        <Text className="text-body text-content-muted">
                             No hay dosis programadas para hoy.
                         </Text>
                     </View>
@@ -109,12 +113,31 @@ export default function MedicacionScreen() {
                 
             </ScrollView>
 
-            <TouchableOpacity
+
+            <GlassView
+            style={{
+            position: 'absolute',
+            bottom: 144, 
+            right: 24,   
+            height: 64,  
+            width: 64,   
+            borderRadius: 32, 
+            overflow: 'hidden',
+            }}
+            glassEffectStyle="clear"
+            tintColor="#1C469C"
+            isInteractive
+            >
+                <TouchableOpacity
                 onPress={() => router.navigate('/medicacion/agregar-medicamento')}
                 accessibilityRole="button"
-                className="bg-black absolute bottom-36 right-6 h-16 w-16 rounded-full justify-center align-middle">
-                    <Text className="text-white text-center font-semibold text-2xl ">+</Text>
-            </TouchableOpacity>
+                className={`flex-1 justify-center items-center ${Platform.OS === "android" ? 'bg-primary' : ''}`}
+                >
+                <Text className="text-content-on-primary text-center items-center text-4xl">+</Text>
+                </TouchableOpacity>
+            </GlassView>
+
+           
 
             
         </View>

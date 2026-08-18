@@ -14,7 +14,8 @@ export const alergia$ = observable(syncedTable({
     actions: ['read', 'create', 'update'],
     initial: {} as Record<string, Alergia>,
     realtime: true,
-    persist: {name: 'alergias'}
+    persist: {name: 'alergias'},
+    fieldDeleted: 'deleted'
 }))
 
 export function porId(

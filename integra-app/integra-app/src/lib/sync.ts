@@ -5,6 +5,7 @@ import { Storage } from 'expo-sqlite/kv-store'
 import { supabase } from './supabase'
 import { Alert } from 'react-native'
 import { syncState } from '@legendapp/state'
+import { auth$ } from '@/state/auth'
 
 //Legend-State plugin config, apunta a los campos que deberia tener cada tabla
 configureSyncedSupabase({
@@ -19,6 +20,7 @@ export const syncedTable = configureSynced(syncedSupabase, {
     supabase,
     persist: {plugin: observablePersistSqlite(Storage), retrySync: true}, //Escribe el SQLite en cada cambio que hay y lo recarga al abrir la aplicacion.
     retry: {infinite: true},
+    waitFor: () => !!auth$.session.get(), 
     onError: (error, params) => {
         console.error(`[sync:${params.source}]`, error.message)
 
@@ -30,9 +32,6 @@ export const syncedTable = configureSynced(syncedSupabase, {
         //en la cola de pendientes y se reintente en cada arranque.
         if (esConflicto) {
             params.revert?.()
-
-            //Ademas hay un hueco en el cache: la fila del servidor nunca llego.
-            //Con changesSince 'last-sync' no va a llegar sola, hay que bajar todo.
             try {
                 const value$ = params.setParams?.value$
                 if (value$) syncState(value$).sync({ resetLastSync: true })

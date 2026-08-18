@@ -81,8 +81,8 @@ function Formulario({tipo}: {tipo: TipoMedicion}) {
                 nota: values.nota
             })
             reset(values)
-            router.navigate({pathname: "/medicion/[medicionTipo]/[resultadoMedicion]" ,
-                params: {resultadoMedicion: id}
+            router.navigate({pathname: "/medicion/agregar/[medicionTipo]/[resultadoMedicion]" ,
+            params: {resultadoMedicion: id}
             })
     
         } catch (error) {
@@ -104,7 +104,7 @@ function Formulario({tipo}: {tipo: TipoMedicion}) {
             </View>
             
             <View>
-                <CampoFecha control={control} name="medidoEn" title="Fecha" placeholder="0" mode="datetime"/>
+                <CampoFecha control={control} name="medidoEn" title="Fecha" placeholder="0"/>
                 <CampoSelect control={control} name="contexto" title="Contexto de la medicion" opciones={OPCIONES_CONTEXTO}/>
                 <CampoTexto control={control} name="nota" title="Nota" opcional={true}/>
                 <Pressable className="bg-black items-center p-6 rounded-lg"

@@ -38,7 +38,7 @@ export function CampoSelect<T extends FieldValues>({
 
     return (
         <View className="mb-4">
-            <Text className="mb-2">{title}</Text>
+            <Text className="mb-2 text-lg">{title}</Text>
 
             <ModalPicker
                 data={datos}
@@ -54,12 +54,12 @@ export function CampoSelect<T extends FieldValues>({
                     borderColor: error ? '#f87171' : '#cbd5e1',
                     borderRadius: 8,
                     paddingHorizontal: 14,
-                    paddingVertical: 12,
+                    paddingVertical: 14,
                     alignItems: 'center',
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
                 }}
 
-                selectedTextStyle={{ color: '#0f172a', fontSize: 14, textAlign: 'left' }}
+                selectedTextStyle={{ color: '#0f172a', fontSize: 16, textAlign: 'left' }}
                 listTextStyle={{ color: '#0f172a', fontSize: 18 }}
                 itemSeparatorStyle={{ backgroundColor: '#e2e8f0' }}
                 dropDownIconStyle={{ tintColor: '#64748b', width: 20, height: 12 }}

@@ -19,7 +19,7 @@ export default function TabsLayout() {
         selected: { color: '#000000' },
       }}
     >
-      <NativeTabs.Trigger name="index">
+      <NativeTabs.Trigger name="(index)">
         <Label>Inicio</Label>
         <Icon 
         src = {Platform.OS === 'android' ? require("../../../assets/icons/home_icon.png") : undefined}

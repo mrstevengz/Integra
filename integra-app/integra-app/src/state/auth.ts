@@ -1,8 +1,7 @@
-import {supabase} from '@/lib/supabase'
-import { observable, syncState } from '@legendapp/state'
+import {supabase, authStorage} from '@/lib/supabase'
+import { observable } from '@legendapp/state'
 import { getAllSyncStates } from '@legendapp/state/sync'
 import type { Session } from '@supabase/supabase-js'
-import { Storage } from 'expo-sqlite/kv-store'
 
 export const auth$ = observable({
     session: null as Session | null,
@@ -15,7 +14,7 @@ async function limpiarDatosLocales() {
         getAllSyncStates().map(([syncState$]) => syncState$.reset())
     )
 
-    await Storage.clear()
+    await authStorage.clear()
 }
 
 supabase.auth.onAuthStateChange((evento, sesion) => {
@@ -42,7 +41,7 @@ export async function cerrarSesion() {
         )
 
         //Borrar el resto de la cache local (sesion de supabase, por ej)
-        await Storage.clear()
+        await authStorage.clear()
     } finally {
         auth$.cerrandoSesion.set(false)
     }

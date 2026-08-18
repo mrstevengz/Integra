@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context"
-import { FlatList, View, Text, Pressable, ActivityIndicator, ScrollView } from "react-native"
+import {View, ActivityIndicator, ScrollView } from "react-native"
 import TopBar from "@/components/TopBar"
 import { useValue } from "@legendapp/state/react"
 import { perfil$ } from "@/state/usuario"
@@ -7,6 +7,13 @@ import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox"
 import { condicion$ } from "@/state/condicion"
 import { router } from "expo-router"
 import { alergia$ } from "@/state/alergia"
+import Swipeable, { SwipeableMethods, SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { RectButton } from "react-native-gesture-handler"
+import Reanimated from 'react-native-reanimated'
+import { SharedValue, useAnimatedStyle } from "react-native-reanimated"
+import Ionicons from "@expo/vector-icons/Ionicons"
+import { deleteAlert } from "@/components/Alert"
+import { useRef } from "react"
 
 export default function DiagnosticosScreen() {
     const perfil = useValue(perfil$)
@@ -18,6 +25,10 @@ export default function DiagnosticosScreen() {
     const alergias = Object.values(useValue(alergia$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id
     )
+
+    const direction = SwipeDirection
+    const swipeableRef = useRef<SwipeableMethods>(null)
+
 
     if (!perfil.id || !condicion$ || !alergia$) return (
             <View className="flex-1">
@@ -42,20 +53,22 @@ export default function DiagnosticosScreen() {
             <PerfilBox
             titulo="Condiciones / Diagnosticos"
             linkName="+ Agregar"
-            link="/expediente/diagnosticos/agregar-condicion"
+            link="/expediente/diagnosticos/condicion/agregar-condicion"
             >
 
             <View>
             {condiciones.map((condicion) => (
-                <Pressable
-                    onPress={() => router.navigate({
-                        pathname: '/expediente/diagnosticos/[condicionId]',
-                        params: {condicionId: condicion.id}
-                    })}
-                    className="group"
-                    key={condicion.id}>
-                    <PerfilBoxText titulo={condicion.nombre} data={condicion.tipo}/>
-                </Pressable>
+                <Swipeable key = {condicion.id} friction={1} rightThreshold={140} overshootRight={false} renderRightActions={(prog, drag, methods) => 
+                    RightSwipe(
+                    prog, drag, methods, 
+                    () => router.navigate({pathname: '/expediente/diagnosticos/condicion/[condicionId]', params: {condicionId: condicion.id}}), 
+                    () => deleteAlert(() => condicion$[condicion.id].delete())
+                    )} 
+                    ref={swipeableRef}
+                    >
+                        <PerfilBoxText titulo={condicion.nombre} data={condicion.tipo}/>
+
+                </Swipeable>    
             ))}
             </View>
 
@@ -64,20 +77,22 @@ export default function DiagnosticosScreen() {
             <PerfilBox
             titulo="Alergias"
             linkName="+ Agregar"
-            link="/expediente/diagnosticos/agregar-alergia"
+            link="/expediente/diagnosticos/alergia/agregar-alergia"
             >
-
+    
             <View>
             {alergias.map((alergia) => (
-                <Pressable
-                    onPress={() => router.navigate({
-                        pathname: '/expediente/diagnosticos/[alergiaId]',
-                        params: {alergiaId: alergia.id}
-                    })}
-                    className="group"
-                    key={alergia.id}>
-                    <PerfilBoxText titulo={alergia.nombre} data={alergia.severidad}/>
-                </Pressable>
+               <Swipeable key = {alergia.id} friction={1} rightThreshold={140} overshootRight={false} renderRightActions={(prog, drag, methods) => 
+                    RightSwipe(
+                    prog, drag, methods, 
+                    () => router.navigate({pathname: '/expediente/diagnosticos/alergia/[alergiaId]', params: {alergiaId: alergia.id}}), 
+                    () => deleteAlert(() => alergia$[alergia.id].delete())
+                    )} 
+                    ref={swipeableRef}
+                    >
+                        <PerfilBoxText titulo={alergia.nombre} data={alergia.severidad}/>
+
+                </Swipeable>  
             ))}
             </View>
 
@@ -85,5 +100,34 @@ export default function DiagnosticosScreen() {
             </PerfilBox>
             </ScrollView>
         </View>
+    )
+}
+
+function RightSwipe(prog: SharedValue<number>, drag: SharedValue<number>, methods: SwipeableMethods, onEdit: () => void, onDelete: () => void) {
+    const styleAnimation = useAnimatedStyle(() => {
+        return {
+            transform: [{translateX: drag.value + 160}]
+        }
+    })
+
+    return (
+        <Reanimated.View className="flex-row w-50 bg-bg-color">
+            <RectButton style={{width: 80, alignItems: "center", justifyContent: "center", backgroundColor: "#000000"}}
+            
+            onPress={() => {
+                onEdit() 
+                methods.close()}
+                }>
+                <Ionicons color={"#ffffff"} name="pencil" size={25}/>
+            </RectButton>
+
+             <RectButton style={{width: 80, alignItems: "center", justifyContent: "center", backgroundColor: "#ff3131"}}
+             onPress={() => {
+                onDelete() 
+                methods.close()}
+                }>
+                <Ionicons color={"#ffffff"} name="trash" size={25}/>
+            </RectButton>
+        </Reanimated.View>
     )
 }
