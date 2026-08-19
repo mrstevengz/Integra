@@ -7,7 +7,7 @@ import { useValue } from "@legendapp/state/react";
 import { useCallback, useRef, useState } from "react";
 import * as Brightness from "expo-brightness";
 import * as Print from "expo-print";
-import { shareAsync } from "expo-sharing";
+import { shareAsync, isAvailableAsync } from "expo-sharing";
 import { useFocusEffect } from "expo-router";
 import {
   ActivityIndicator,
@@ -19,9 +19,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/components/TopBar";
-import { armarQREmergencia, LARGO } from "@/features/emergencia/armarqr";
+import { armarCarnetHTML } from "@/features/emergencia/carnet-html";
 import QRCode from "react-native-qrcode-svg";
 import TopBarSecondary from "@/components/TopBarSecondary";
+import { armarQREmergencia, LARGO } from "@/features/emergencia/armarqr";
 
 //Propiedades del QR. El tamaño determina que tanto puede leerse en caso de corromperse. Asociado a la propiedad L, M, Q Y H de los SVGs.
 const SIZE_QR = 280;
@@ -109,25 +110,13 @@ export default function ExportarScreen() {
 
   //Funcion para manejar la alerta al exportar el PDF (Cuando se le da al boton de exportar)
   async function exportarPDF() {
-    const { uri } = await Print.printToFileAsync({ html });
-    await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
+    const qrBase64 = await new Promise<string>((r) => refQR.current.toDataURL(r));
+    const html = armarCarnetHTML({perfil, alergias, contactos, condiciones, medicamentos, qrBase64})
+
+    const { uri } = await Print.printToFileAsync({ html});
+    await shareAsync(uri, { UTI: "com.adobe.pdf", mimeType: "application/pdf" });
   }
 
-  //HTML del codigo QR.
-
-  const html = `
-  <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  </head>
-  <body style="text-align: center;">
-    <h1 style="font-size: 50px; font-family: Helvetica Neue; font-weight: normal;">
-        
-      ${textoQR}
-    </h1>
-  </body>
-    </html>
-  `;
 
   return (
     <View className="flex-1">

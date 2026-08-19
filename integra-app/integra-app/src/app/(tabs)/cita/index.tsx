@@ -5,9 +5,12 @@ import TopBarSecondary from "@/components/TopBarSecondary";
 import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
-import { cita$, citasProximas } from "@/state/cita";
+import { Cita, cita$, citasDelDia, citasProximas, fechaDesdeLocalISO } from "@/state/cita";
 import { perfil$ } from "@/state/usuario";
-import { formatearFecha, formatearHora } from "@/state/medicacion";
+import { fechaLocalISO, formatearFecha, formatearHora } from "@/state/medicacion";
+import {Calendar, DateData} from 'react-native-calendars'
+import {useMemo, useState } from "react";
+import { comoLista } from "@/state/helpers";
 
 export default function CitaScreen() {
 
@@ -15,6 +18,30 @@ export default function CitaScreen() {
   const citas = useValue(cita$)
 
   const citasProximasLista = citasProximas(citas, new Date(), perfil.id)
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const citasArray = useMemo(() => {
+  if (!selectedDate) return citasProximasLista 
+  return citasDelDia(citas, fechaDesdeLocalISO(selectedDate), perfil.id)
+  }, [citas, selectedDate, perfil.id])
+
+  const markedDates = useMemo(() => {
+  const marcas: Record<string, any> = {}
+  comoLista(citas).forEach((c) => {
+    if (!c || c.perfil_id !== perfil.id || !c.programada_para) return
+    const dia = fechaLocalISO(new Date(c.programada_para))
+    marcas[dia] = { marked: true, dotColor: '#0F7C7C' }
+  })
+  if (selectedDate) {
+    marcas[selectedDate] = { ...marcas[selectedDate], selected: true, selectedColor: '#000000' }
+  }
+  return marcas
+  }, [citas, perfil.id, selectedDate])
+
+  const handleDayPress = (day: DateData) => {
+    setSelectedDate(day.dateString);
+  }
+
 
   return (
     <View className="flex-1">
@@ -24,8 +51,16 @@ export default function CitaScreen() {
 
         <TopBarSecondary active="Proximas" tab1="Proximas" tab2="Historial" route1="/cita" route2="/cita/historial"/>
 
+        <View>  
+          <Calendar
+          onDayPress={handleDayPress}
+
+          markedDates={markedDates}
+          />
+        </View>
+
         <ScrollView className="flex-1 bg-slate-100">
-         {citasProximasLista.map((c) => {
+         {citasArray.map((c) => {
           const date = new Date(c.programada_para)
 
           

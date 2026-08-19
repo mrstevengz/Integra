@@ -64,7 +64,7 @@ export default function ResultadoMedicion() {
 
 
                 {/* //Valores de referencia view */}
-                <View className="justify-between bg-slate-200/80 w-full gap-2 rounded-xl p-2">
+            <View className="justify-between bg-slate-200/80 w-full gap-2 rounded-xl p-2">
                 <Text className="font-bold p-3">Valores de referencia</Text>
                 <View className="flex-row p-3 justify-between border-b border-slate-400">
                     <Text>Bajo</Text>
@@ -86,7 +86,7 @@ export default function ResultadoMedicion() {
                         ? `> ${tipo?.rango_max}/${tipo?.rango_max_secundario} ${tipo?.unidad}`
                         : `> ${tipo?.rango_max} ${tipo?.unidad}`}</Text>
                 </View>
-</View>
+            </View>
 
 
                 <View className="flex-row gap-4 flex">

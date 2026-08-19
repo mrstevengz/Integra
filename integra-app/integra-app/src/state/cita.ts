@@ -70,3 +70,8 @@ export function citasPasadas(
         new Date(a.programada_para).getTime() - new Date(b.programada_para).getTime()
     )
 }
+
+export function fechaDesdeLocalISO(iso: string): Date {
+    const [y, m, d] = iso.split('-').map(Number)
+    return new Date(y, m - 1, d) 
+}

@@ -76,7 +76,7 @@ function Formulario({ tipo, item }: { tipo: TipoMedicion; item: Medicion }) {
     : undefined;
 
   const valorSecundarioValues = doble
-    ? valorInicial(item.valor ?? 0, item.valor_secundario ?? 0)
+    ? (item.valor ?? 0, item.valor_secundario ?? 0)
     : undefined;
 
   const { control, handleSubmit, reset } = useForm<MedicionForm>({
