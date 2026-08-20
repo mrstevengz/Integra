@@ -1,6 +1,6 @@
 import { CitaForm, citasSchema, TIPO_CITA } from "@/features/citas/citas-schema"
 import { cita$ } from "@/state/cita"
-import { porId } from "@/state/helpers"
+import { retornarObjetoPorId } from "@/state/helpers"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -20,7 +20,7 @@ export default function EditarCita() {
     const perfil = useValue(perfil$)
     const citas = useValue(cita$)
     
-    const citaAEditar = porId(citas, citaId as string)
+    const citaAEditar = retornarObjetoPorId(citas, citaId as string)
 
     const date = new Date(citaAEditar.programada_para)
 

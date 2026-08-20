@@ -32,16 +32,19 @@ export type MedicionForm = {
     nota: string
 }
 
-//Valor inicial del contador
+//---------FUNCIONES HELPERS PARA FORM---------
+
+//Retorna el valor inicial del form redondeado.
 export function valorInicial(min: number, max: number): number {
     return Math.round(((min + max) / 2) * 10) / 10
 }
 
 //Funcion para sumar o restar (determina cuanto avanza). Para la temperatura, de 0.1 en 0.1, para el resto, de 1 en 1
-export function pasoDe(min: number , max: number): number {
+export function alHacerPaso(min: number , max: number): number {
     return (max-min) < 10 ? 0.1 : 1
 }
 
+//Para los pasos, los redondea porque JavaScript agrega una pequeña cantidad extra a los floats. EJ. 1.0 + 1 pasaria a ser 2.00000100..., esto se mostraria en pantalla, y es mejor para el rendimiento redondearlo con una funcion helper.
 export function redondear(n: number): number {
     return Math.round(n * 10) / 10
 }

@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
 import { useValue } from "@legendapp/state/react"
 import TopBar from "@/components/TopBar"
-import { medicamento$, medicamentosActivos, tomasDelDia, toma$, agruparPorHora } from "@/state/medicacion"
+import { medicamento$, medicamentosActivos, tomasDelDia, toma$, agruparTomasPorHora } from "@/state/medicacion"
 import { useCallback, useEffect } from "react"
 import { perfil$ } from "@/state/usuario"
 import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
@@ -31,7 +31,7 @@ export default function MedicacionScreen() {
     )
 
     //Las tomas se agrupan por hora. Retorna una lista con 'hora, Toma'
-    const grupos = agruparPorHora(hoy)
+    const grupos = agruparTomasPorHora(hoy)
 
     const tomasSincronizadas = useValue(syncState(toma$).lastSync)
 

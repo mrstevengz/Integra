@@ -1,4 +1,5 @@
-import { condicion$, porId } from "@/state/condicion";
+import { condicion$} from "@/state/condicion";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
@@ -15,7 +16,7 @@ export default function EditarCondicion() {
     const {condicionId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const condicionesLista = useValue(condicion$)
-    const item = porId(condicionesLista, condicionId as string)
+    const item = retornarObjetoPorId(condicionesLista, condicionId as string)
 
     const {control, handleSubmit, reset} = useForm<CondicionesForm>({
 

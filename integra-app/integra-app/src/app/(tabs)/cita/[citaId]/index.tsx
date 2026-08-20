@@ -1,7 +1,7 @@
 import TopBar from "@/components/TopBar";
 import { cita$ } from "@/state/cita";
-import { porId } from "@/state/helpers";
-import { formatearFecha, formatearHora } from "@/state/medicacion";
+import { retornarObjetoPorId } from "@/state/helpers";
+import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -12,7 +12,7 @@ export default function DetalleCita() {
     const {citaId} = useLocalSearchParams()
     const citas = useValue(cita$)
 
-    const citaAEditar = porId(citas, citaId as string)
+    const citaAEditar = retornarObjetoPorId(citas, citaId as string)
 
     const date = new Date(citaAEditar.programada_para)
     return (
@@ -49,11 +49,11 @@ export default function DetalleCita() {
                         <View className="flex-row gap-4">
                             <View className="flex-1 flex-row gap-2 rounded-xl bg-neutral-color border border-neutral-400 p-6 items-center overflow-auto w-0 ">
                                 <Ionicons name="calendar-outline"/>
-                                <Text>{formatearFecha(date, true, true)}</Text>
+                                <Text>{formatearFechaAString(date, true, true)}</Text>
                             </View>
                             <View className="flex-1 w-0 flex-row gap-2 rounded-xl bg-neutral-color border border-neutral-400 p-6 items-center overflow-hidden">
                                 <Ionicons name="time-outline"/>
-                                <Text>{formatearHora(date.toLocaleTimeString())}</Text>
+                                <Text>{formatearHoraAString(date.toLocaleTimeString())}</Text>
                             </View>
                         </View>
                     </View>

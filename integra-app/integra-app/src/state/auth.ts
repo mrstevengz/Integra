@@ -9,6 +9,8 @@ export const auth$ = observable({
     cerrandoSesion: false
 })
 
+//TODO: POR COMENTAR
+
 async function limpiarDatosLocales() {
     await Promise.all(
         getAllSyncStates().map(([syncState$]) => syncState$.reset())

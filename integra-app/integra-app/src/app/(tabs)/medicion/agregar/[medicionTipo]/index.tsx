@@ -1,6 +1,6 @@
 import { medicionDobleSchema, MedicionForm, medicionSchema, OPCIONES_CONTEXTO, valorInicial } from "@/features/medicion/medicion-schema";
 import TopBar from "@/components/TopBar";
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { esDoble, medicion$, TipoMedicion, tipoMedicion$ } from "@/state/medicion";
 import { perfil$ } from "@/state/usuario";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +20,7 @@ import CampoMedicionDoble from "@/features/medicion/CampoMedicionDoble";
 export default function AgregarMedicionScreen() {
     const {medicionTipo} = useLocalSearchParams()
     const tipos = useValue(tipoMedicion$)
-    const tipo = porId(tipos, medicionTipo as string)
+    const tipo = retornarObjetoPorId(tipos, medicionTipo as string)
 
     return (
          <View className="flex-1">

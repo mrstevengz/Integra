@@ -1,8 +1,8 @@
 import { Alergia } from "@/state/alergia"
 import { Condicion } from "@/state/condicion"
 import { ContactoEmergencia } from "@/state/contactosemergencia"
-import { Medicamento, horariosOrdenados, resumenDias, formatearHora } from "@/state/medicacion"
-import { PerfilRow } from "@/state/usuario"
+import { Medicamento, horariosOrdenadosdeMedicamento, listaDiasAString, formatearHoraAString } from "@/state/medicacion"
+import { Perfil} from "@/state/usuario"
 import { ESTILOS } from "./carnet-estilos"
 import { esc, edadEnAnios, fechaCorta, fechaDeHoy, porCreacion, ORDEN_RELACION } from "./formato"
 
@@ -31,13 +31,13 @@ function seccion(titulo: string, filas: string[]): string {
 }
 
 function pauta(m: Medicamento): string {
-    return horariosOrdenados(m)
-        .map((h) => `${formatearHora(h.hora)} (${resumenDias(h.dias)})`)
+    return horariosOrdenadosdeMedicamento(m)
+        .map((h) => `${formatearHoraAString(h.hora)} (${listaDiasAString(h.dias)})`)
         .join(" · ")
 }
 
 export type DatosCarnet = {
-    perfil: PerfilRow
+    perfil: Perfil
     alergias: Alergia[]
     contactos: ContactoEmergencia[]
     condiciones: Condicion[]

@@ -7,7 +7,7 @@ import { perfil$ } from "@/state/usuario";
 import { toma$, tomasDelDia } from "@/state/medicacion";
 import { TomaComponente } from "@/features/medicacion/TomasComponentes";
 import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
 import CitasComponente from "@/features/citas/CitasComponente";
 import { cita$, citasProximas } from "@/state/cita";
@@ -92,7 +92,7 @@ export default function HomeScreen() {
 
             <View className="flex-row gap-6">
                 {medicionComponente.map((m => {
-                    const t = porId(tipos, m.tipo_medicion_id)
+                    const t = retornarObjetoPorId(tipos, m.tipo_medicion_id)
                     const medidoEn = new Date(m.medido_en)
 
                     return (

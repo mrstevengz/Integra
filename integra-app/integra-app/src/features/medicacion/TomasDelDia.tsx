@@ -13,9 +13,9 @@ import {
 
 import Modal from 'react-native-modal'
 import { useState } from "react"
-import { porId } from "@/state/helpers"
+import { retornarObjetoPorId } from "@/state/helpers"
 import { colorEstado, etiquetaEstado } from "./estados"
-import { marcarTomada, marcarOmitida, posponer, revertir, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
+import { marcarComoTomada, marcarComoOmitida, posponerToma, revertirAccion, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
 import { type FormaFarmaceutica, type GrupoTomas, type Medicamento,} from "@/state/medicacion"
 import { color } from "@/theme/colors";
 
@@ -42,7 +42,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
 
     //Se busca en cada render, asi el modal siempre muestra el estado actual
     const abierta = idAbierto ? grupo.tomas.find((t) => t.id === idAbierto) : undefined
-    const medAbierto = abierta ? porId(medicamentos, abierta.medicamento_id) : undefined
+    const medAbierto = abierta ? retornarObjetoPorId(medicamentos, abierta.medicamento_id) : undefined
     const resueltaAbierta = abierta?.estado === 'tomada' || abierta?.estado === 'omitida'
 
 
@@ -88,7 +88,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
             </View>
 
             {grupo.tomas.map((t) => {
-                const med = porId(medicamentos, t.medicamento_id)
+                const med = retornarObjetoPorId(medicamentos, t.medicamento_id)
 
                 return (
                     <Pressable
@@ -171,7 +171,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
 
                     {resueltaAbierta ? (
                         <Pressable
-                            onPress={() => ejecutar(revertir)}
+                            onPress={() => ejecutar(revertirAccion)}
                             accessibilityRole="button"
                             className="border border-line-strong rounded-control py-4 items-center active:bg-surface"
                         >
@@ -180,7 +180,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                     ) : (
                         <View className="gap-3">
                             <Pressable
-                                onPress={() => ejecutar(marcarTomada)}
+                                onPress={() => ejecutar(marcarComoTomada)}
                                 accessibilityRole="button"
                                 className="bg-primary rounded-control py-4 items-center active:bg-primary-pressed"
                             >
@@ -189,7 +189,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
 
                             <View className="flex flex-row gap-3">
                                 <Pressable
-                                    onPress={() => ejecutar((id) => posponer(id, 15))}
+                                    onPress={() => ejecutar((id) => posponerToma(id, 15))}
                                     accessibilityRole="button"
                                     className="flex-1 border border-line-strong rounded-control py-4 items-center active:bg-danger-subtle"
                                 >
@@ -197,7 +197,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                                 </Pressable>
                         
                                 <Pressable
-                                    onPress={() => ejecutar(marcarOmitida)}
+                                    onPress={() => ejecutar(marcarComoOmitida)}
                                     accessibilityRole="button"
                                     className="flex-1 border border-line-strong rounded-control py-4 items-center active:bg-danger-subtle"
                                 >

@@ -1,6 +1,8 @@
 import { syncedTable } from "@/lib/sync";
 import { observable } from "@legendapp/state";
 
+//TODO: POR COMENTAR
+
 export type Alergia = {
     id: string;
     perfil_id: string;
@@ -19,9 +21,9 @@ export const alergia$ = observable(syncedTable({
     fieldDeleted: 'deleted'
 }))
 
-export function porId(
-    todos: Record<string, Alergia> | undefined,
-    id: string,
-): Alergia | undefined {
-    return todos?.[id]
-}
+// export function porId(
+//     todos: Record<string, Alergia> | undefined,
+//     id: string,
+// ): Alergia | undefined {
+//     return todos?.[id]
+// }

@@ -13,7 +13,6 @@ import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import {
-  Cita,
   cita$,
   citasDelDia,
   citasProximas,
@@ -21,20 +20,19 @@ import {
 } from "@/state/cita";
 import { perfil$ } from "@/state/usuario";
 import {
-  fechaLocalISO,
-  formatearFecha,
-  formatearHora,
+  fechaLocal,
+  formatearFechaAString,
+  formatearHoraAString,
 } from "@/state/medicacion";
 import { Calendar, DateData } from "react-native-calendars";
 import { useMemo, useState } from "react";
-import { comoLista } from "@/state/helpers";
+import { convertirALista } from "@/state/helpers";
 
 export default function CitaScreen() {
   const perfil = useValue(perfil$);
   const citas = useValue(cita$);
 
   const citasProximasLista = citasProximas(citas, new Date(), perfil.id);
-  // const citasDelMes = citasProximasLista.filter((c) => c.)
 
   const [selectedDate, setSelectedDate] = useState<string>("");
 
@@ -45,9 +43,9 @@ export default function CitaScreen() {
 
   const markedDates = useMemo(() => {
     const marcas: Record<string, any> = {};
-    comoLista(citas).forEach((c) => {
+    convertirALista(citas).forEach((c) => {
       if (!c || c.perfil_id !== perfil.id || !c.programada_para) return;
-      const dia = fechaLocalISO(new Date(c.programada_para));
+      const dia = fechaLocal(new Date(c.programada_para));
       marcas[dia] = { marked: true, dotColor: "#000000" };
     });
     if (selectedDate) {
@@ -104,8 +102,8 @@ export default function CitaScreen() {
                 <Text className="text-md text-slate-500 mb-1">{c.medico}</Text>
 
                 <Text className="text-md">
-                  {formatearFecha(date, false)},{" "}
-                  {formatearHora(date.toLocaleTimeString())}
+                  {formatearFechaAString(date, false)},{" "}
+                  {formatearHoraAString(date.toLocaleTimeString())}
                 </Text>
               </View>
             </Pressable>

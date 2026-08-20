@@ -10,7 +10,7 @@ import {condicion$ } from "@/state/condicion";
 import { alergia$ } from "@/state/alergia";
 import { contactoEmergencia$ } from "@/state/contactosemergencia";
 import { router } from "expo-router";
-import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
+import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
 import { expedienteChecklist$ } from "@/state/expedienteChecklist";
 import {QrCode} from "lucide-react-native";
 import { color } from "@/theme/colors";
@@ -130,7 +130,7 @@ export default function ExpedienteScreen() {
 
           <PerfilBox titulo="Contactos de Emergencia" link="/expediente/contactos-emergencia" linkName="Agregar">
             {contactos.map((contacto) => (
-              <ContactoEmergenciaBox key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono}  
+              <ContactoEmergencia key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono}  
               onPress={() => router.navigate({
               pathname: '/expediente/contactos-emergencia',
                     })}/>

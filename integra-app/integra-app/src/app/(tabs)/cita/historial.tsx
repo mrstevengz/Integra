@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { cita$, citasPasadas } from "@/state/cita";
 import { perfil$ } from "@/state/usuario";
-import { formatearFecha, formatearHora } from "@/state/medicacion";
+import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
 
 export default function HistorialCitaScreen() {
 
@@ -40,7 +40,7 @@ export default function HistorialCitaScreen() {
                   <Text className="text-xl font-semibold mb-2">{c.especialidad}</Text>
                   <Text className="text-md text-slate-500 mb-1">{c.medico}</Text>
 
-                  <Text className="text-md">{formatearFecha(date, false)}, {formatearHora(date.toLocaleTimeString())}</Text>
+                  <Text className="text-md">{formatearFechaAString(date, false)}, {formatearHoraAString(date.toLocaleTimeString())}</Text>
               </View>
               
           </Pressable>

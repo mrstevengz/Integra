@@ -3,7 +3,7 @@ import { Alergia } from "@/state/alergia";
 import { Condicion } from "@/state/condicion";
 import { ContactoEmergencia } from "@/state/contactosemergencia";
 import { Medicamento } from "@/state/medicacion";
-import { PerfilRow } from "@/state/usuario";
+import { Perfil } from "@/state/usuario";
 
 //Topes para armar el QR
 const TOPE_CONDICIONES = 4; //Solo 4 condiciones se muestran en el QR
@@ -29,7 +29,7 @@ function seccion(titulo: string, lineas: string[], tope?: number): string {
 }
 
 export function armarQREmergencia(
-  perfil: PerfilRow,
+  perfil: Perfil,
   alergias: Alergia[],
   contactos: ContactoEmergencia[],
   condiciones: Condicion[],

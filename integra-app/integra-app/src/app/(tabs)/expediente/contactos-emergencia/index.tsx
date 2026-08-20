@@ -1,11 +1,10 @@
-import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
+import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
 import TopBar from "@/components/TopBar";
 import { contactoEmergencia$ } from "@/state/contactosemergencia";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { View, ScrollView, Pressable, Text, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import perfil from "../perfil";
 import { perfil$ } from "@/state/usuario";
 
 export default function ContactosEmergenciaScreen() {
@@ -40,7 +39,7 @@ export default function ContactosEmergenciaScreen() {
 
                     <Pressable>
                          {contactos.map((contacto) => (
-                            <ContactoEmergenciaBox key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono} 
+                            <ContactoEmergencia key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono} 
                             onPress={() => router.navigate({
                             pathname: '/expediente/contactos-emergencia/[contactoId]',
                             params: {contactoId: contacto.id}

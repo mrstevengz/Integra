@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useValue } from "@legendapp/state/react";
-import { articulo$, porCategoria, porId } from "@/state/articulos";
+import { articulo$, porCategoria } from "@/state/articulos";
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 

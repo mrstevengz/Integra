@@ -1,6 +1,7 @@
 import { syncedTable } from "@/lib/sync";
 import { observable } from "@legendapp/state";
 
+//Tipo para representar un contacto de emergencia en la base de datos.
 export type ContactoEmergencia = {
     id: string;
     perfil_id: string;
@@ -10,7 +11,7 @@ export type ContactoEmergencia = {
     created_at?: string
 }
 
-//Collection name debe matchear la tabla de Supabase
+//Variable de LegendState para la tabla de la base de datos, permite select, create y update unicamente al usuario que le pertenecen estos campos
 export const contactoEmergencia$ = observable(syncedTable({
     collection: 'contactosemergencia',
     actions: ['read', 'create', 'update'],
@@ -19,9 +20,10 @@ export const contactoEmergencia$ = observable(syncedTable({
     persist: {name: 'contactosemergencia'}
 }))
 
-export function porId(
-    todos: Record<string, ContactoEmergencia> | undefined,
-    id: string,
-): ContactoEmergencia | undefined {
-    return todos?.[id]
-}
+
+// export function porId(
+//     todos: Record<string, ContactoEmergencia> | undefined,
+//     id: string,
+// ): ContactoEmergencia | undefined {
+//     return todos?.[id]
+// }

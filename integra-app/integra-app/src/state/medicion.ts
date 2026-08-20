@@ -1,7 +1,8 @@
 import { syncedTable } from "@/lib/sync";
 import { observable } from "@legendapp/state";
-import { comoLista } from "./helpers";
+import { convertirALista } from "./helpers";
 
+//Tipo para representar la tabla de TipoMedicion para TS
 export type TipoMedicion = {
     id: string
     nombre: string
@@ -20,6 +21,7 @@ export function esDoble(tipo: TipoMedicion): boolean {
     return tipo.etiqueta_secundaria !== null
 }
 
+//Variable / almacenamiento de Legend State. Retorna la tabla de tipo_medicion, y da permisos solo para SELECT
 export const tipoMedicion$ = observable<Record<string, TipoMedicion>>(syncedTable({
     collection: 'tipomedicion',
     actions: ['read'],
@@ -27,12 +29,14 @@ export const tipoMedicion$ = observable<Record<string, TipoMedicion>>(syncedTabl
     persist: {name: 'tipomedicion'},
 }))
 
-export function tiposOrdenados(
+//Funcion helper para ordenar los tipos de mediciones en orden alfabetico.
+export function tiposMedicionesOrdenados(
     todos: Record<string, TipoMedicion> | undefined,
 ): TipoMedicion[] {
-    return comoLista(todos).sort((a, b) => a.nombre.localeCompare(b.nombre))
+    return convertirALista(todos).sort((a, b) => a.nombre.localeCompare(b.nombre))
 }
 
+//Tipo para representar la tabla de Medicion para TS
 export type Medicion = {
     id: string
     perfil_id: string
@@ -46,6 +50,7 @@ export type Medicion = {
     updated_at?: string | null
 }
 
+//Variable de LegendState para la tabla de mediciones. Da los permisos de select, create y update al usuario que tenga el mismo perfilId de la informacion en la tabla
 export const medicion$ = observable<Record<string, Medicion>>(syncedTable({
     collection: 'mediciones',
     actions: ['read', 'create', 'update'],
@@ -54,24 +59,25 @@ export const medicion$ = observable<Record<string, Medicion>>(syncedTable({
     persist: {name: 'mediciones'},
 }))
 
-//Las mediciones de un tipo, de la mas reciente a la mas antigua
-export function medicionesDe(
+//Retorna una array de objetos, donde estan las mediciones de un usuario y de un tipo especifico
+export function medicionesDeTipo(
     todos: Record<string, Medicion> | undefined,
     tipoId: string,
     perfilId: string | undefined,
 ): Medicion[] {
     if (!perfilId) return []
-    return comoLista(todos)
+    return convertirALista(todos)
         .filter((m) => m.perfil_id === perfilId && m.tipo_medicion_id === tipoId)
         .sort((a, b) => new Date(b.medido_en).getTime() - new Date(a.medido_en).getTime())
 }
 
+//Retorna una lista de mediciones ordenadas por la fecha en la que se hicieron. Se usa en index/index.tsx y medicion/historial.tsx para mostrar el historial de mediciones de un usuario
 export function medicionesOrdenadas(
     todos: Record<string, Medicion> | undefined,
     perfilId: string | undefined,
 ): Medicion[] {
     if (!perfilId) return []
-    return comoLista(todos)
+    return convertirALista(todos)
         .filter((m) => m.perfil_id === perfilId)
         .sort((a, b) => new Date(b.medido_en).getTime() - new Date(a.medido_en).getTime())
 }

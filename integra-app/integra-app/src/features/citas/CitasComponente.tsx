@@ -1,5 +1,5 @@
 import { Cita} from "@/state/cita";
-import { formatearFecha, formatearHora } from "@/state/medicacion";
+import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
 import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
@@ -72,7 +72,7 @@ export default function CitasComponente({citasProximas}: ComponenteProps) {
                                 </Text>
 
                                  <Text className="text-base  text-neutral-900 tracking-tight">
-                                    {formatearFecha(fechaCita).slice(0,3)} {formatearHora(fechaCita.toLocaleTimeString())} ⋅ {getDaysRemaining()}
+                                    {formatearFechaAString(fechaCita).slice(0,3)} {formatearHoraAString(fechaCita.toLocaleTimeString())} ⋅ {getDaysRemaining()}
                                 </Text>
                             </View>
 

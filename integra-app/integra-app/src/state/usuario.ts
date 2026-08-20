@@ -1,7 +1,8 @@
 import {observable} from '@legendapp/state'
 import {syncedTable} from '@/lib/sync'
 
-export type PerfilRow = {
+//Tipo para representar el perfil en TS
+export type Perfil = {
     id: string
     nombre: string
     apellidos: string
@@ -17,7 +18,7 @@ export type PerfilRow = {
     deleted: boolean
 }
 
-export const perfil$ = observable<PerfilRow>(syncedTable({
+export const perfil$ = observable<Perfil>(syncedTable({
     collection: 'perfiles',
     
     //Solo se puede leer y actualizar el propio perfil del usuario

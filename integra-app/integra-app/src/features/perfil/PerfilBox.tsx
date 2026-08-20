@@ -13,7 +13,7 @@ type PerfilBoxTextProps = {
     data: string | null
 }
 
-
+//PerfilBox funciona como un contenedor para PerfilBoxText. Recibe un titulo, link y nombre del link, y se le pasa mas componentes en {children}
 export default function PerfilBox({titulo, children, link, linkName}: PerfilBoxProps) {
     return (
         <View className="flex flex-col">
@@ -27,6 +27,7 @@ export default function PerfilBox({titulo, children, link, linkName}: PerfilBoxP
     )
 }
 
+//Fila para poner dentro de PerfilBox y renderizar la informacion del usuario. Recibe un campo generico de data (puede ser fecha de nacimiento, doctor, etc) y un titulo que se le da en la pantalla
 export function PerfilBoxText({titulo, data}: PerfilBoxTextProps) {
     return (
     <View className="flex flex-row justify-between p-4 px-5 bg-white border-b-2 border-black/20 group-active:bg-slate-200 ">

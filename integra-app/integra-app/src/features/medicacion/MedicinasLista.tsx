@@ -1,9 +1,17 @@
-import { formatearHora, horariosOrdenados, Medicamento, resumenDias } from "@/state/medicacion";
-import { View, Text } from "react-native";
+import { formatearHoraAString, horariosOrdenadosdeMedicamento, Medicamento, listaDiasAString } from "@/state/medicacion";
+import { router } from "expo-router";
+import { View, Text, Pressable } from "react-native";
 
 export default function MedicinasLista (m: Medicamento) {
     return (
-        <View key={m.id} className="mx-6 mb-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+        <Pressable key={m.id} className="mx-6 mb-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
+        onPress={() => router.navigate(
+            {
+            pathname: '/medicacion/[medicacionId]/editar',
+            params: {medicacionId: m.id}
+            }
+        )}
+        >
             <Text className="font-semibold text-base text-neutral-900 tracking-tight">
                 {m.nombre} · {m.dosis}{m.unidad}
             </Text>
@@ -13,12 +21,12 @@ export default function MedicinasLista (m: Medicamento) {
                 {m.con_alimentos ? ` · ${m.con_alimentos} alimentos` : ''}
             </Text>
 
-            {horariosOrdenados(m).length === 0 ? (
+            {horariosOrdenadosdeMedicamento(m).length === 0 ? (
                 <Text className="text-neutral-500 text-sm">Sin horarios</Text>
             ) : (
-                horariosOrdenados(m).map((h) => (
+                horariosOrdenadosdeMedicamento(m).map((h) => (
                 <Text key={h.id} className="text-neutral-600 text-sm mb-0.5">
-                    {formatearHora(h.hora)} · {resumenDias(h.dias)}
+                    {formatearHoraAString(h.hora)} · {listaDiasAString(h.dias)}
                 </Text>
                 ))
             )}
@@ -30,6 +38,6 @@ export default function MedicinasLista (m: Medicamento) {
                     </Text>
                 </View>
             )}
-        </View>
+        </Pressable>
     )
 }

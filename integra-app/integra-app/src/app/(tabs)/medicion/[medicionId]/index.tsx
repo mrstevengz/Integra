@@ -1,7 +1,7 @@
 import { deleteAlert } from "@/components/Alert";
 import TopBar from "@/components/TopBar";
-import { porId } from "@/state/helpers";
-import { formatearFecha, formatearHora } from "@/state/medicacion";
+import { retornarObjetoPorId } from "@/state/helpers";
+import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
 import {
   esDoble,
   medicion$,
@@ -58,8 +58,8 @@ export default function DetalleMedicion() {
   const mediciones = useValue(medicion$);
   const tipos = useValue(tipoMedicion$);
 
-  const medicionAEditar = porId(mediciones, medicionId as string);
-  const tipo = porId(tipos, medicionAEditar?.tipo_medicion_id ?? "");
+  const medicionAEditar = retornarObjetoPorId(mediciones, medicionId as string);
+  const tipo = retornarObjetoPorId(tipos, medicionAEditar?.tipo_medicion_id ?? "");
   const date = new Date(medicionAEditar?.medido_en ?? new Date());
 
   const doble = tipo ? esDoble(tipo) : false;
@@ -130,14 +130,14 @@ export default function DetalleMedicion() {
             <View className="flex-row items-center justify-between px-5 py-4 border-b border-line">
               <Text className="text-body text-content-muted">Fecha</Text>
               <Text className="text-body font-semibold text-content">
-                {formatearFecha(date, true, true)}
+                {formatearFechaAString(date, true, true)}
               </Text>
             </View>
 
             <View className="flex-row items-center justify-between px-5 py-4 border-b border-line-strong">
               <Text className="text-body text-content-muted">Hora</Text>
               <Text className="text-body font-semibold text-content">
-                {formatearHora(date.toLocaleTimeString())}
+                {formatearHoraAString(date.toLocaleTimeString())}
               </Text>
             </View>
 

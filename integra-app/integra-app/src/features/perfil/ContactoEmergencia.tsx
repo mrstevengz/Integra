@@ -1,5 +1,4 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
 import { Pressable, View, Text } from "react-native";
 
 export type ContactoEmergenciaProps = {
@@ -9,7 +8,8 @@ export type ContactoEmergenciaProps = {
     onPress: () => void
 }
 
-export default function ContactoEmergenciaBox({nombre, relacion, telefono, onPress}: ContactoEmergenciaProps) {
+//Fila que genera el contacto de emergencia. Recibe nombre, relacion y telefono (datos de la tabla) y una funcion que se le pasa en la pantalla
+export default function ContactoEmergencia({nombre, relacion, telefono, onPress}: ContactoEmergenciaProps) {
     return (
          <Pressable className="flex flex-row items-center gap-3 p-4 px-5 bg-white border-b-2 border-black/20 active:bg-slate-200"
             onPress={onPress}>

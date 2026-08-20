@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Pressable, TouchableOpacity } from "react-native";
 import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { tiposOrdenados, tipoMedicion$ } from "@/state/medicion";
+import { tiposMedicionesOrdenados, tipoMedicion$ } from "@/state/medicion";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -25,7 +25,7 @@ function getIconForMedicion(nombre: string): IconName {
 
 export default function MedicionScreen() {
 
-  const mediciones = tiposOrdenados(useValue(tipoMedicion$))
+  const mediciones = tiposMedicionesOrdenados(useValue(tipoMedicion$))
   const tipos = useValue(tipoMedicion$)
 
   return (

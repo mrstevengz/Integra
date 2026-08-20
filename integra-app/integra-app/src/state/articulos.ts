@@ -1,6 +1,8 @@
 import {observable} from '@legendapp/state'
 import {syncedTable} from '@/lib/sync'
 
+//TODO: POR COMENTAR
+
 export type Articulo = {
     id: string
     titulo: string
@@ -28,9 +30,9 @@ export function porCategoria(
     return Object.values(todos ?? {}).filter((a) => a.categoria === categoria)
 }
 
-export function porId(
-    todos: Record<string, Articulo> | undefined,
-    id: string,
-): Articulo | undefined {
-    return todos?.[id]
-}
+// export function porId(
+//     todos: Record<string, Articulo> | undefined,
+//     id: string,
+// ): Articulo | undefined {
+//     return todos?.[id]
+// }

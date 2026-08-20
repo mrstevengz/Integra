@@ -1,9 +1,11 @@
 import { TipoMedicion } from "@/state/medicion";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 import { useState } from "react";
-import { TextInput, Text, View, Pressable, TouchableOpacity } from "react-native";
-import { pasoDe } from "./medicion-schema";
+import { TextInput, Text, View, TouchableOpacity } from "react-native";
+import { alHacerPaso } from "./medicion-schema";
 
+//Tipo de TS generico para pasar un 'FieldValue', que es un tipo de 'react-hook-forms' que recibe un nombre y un controlador. 
+//Para el campo de presion arterial, existen DOS valores a cambiar. Por lo tanto, el form debe cambiar. Recibe el controlador y el nombre primario y secundario de los valores del schema de zod. El tipo de presion arterial es el unico al que se le pasan valor primario y valor secundario
 type Props<T extends FieldValues> = {
     control: Control<T>
     nombrePrimario: Path<T>
@@ -12,22 +14,33 @@ type Props<T extends FieldValues> = {
 }
 
 export default function CampoMedicionDoble<T extends FieldValues>({control, nombrePrimario, nombreSecundario, tipo}: Props<T>) {
+
+    //Dos valores para los dos campos (se tratan como campos diferentes (lo son))
     const primario = useController({name: nombrePrimario, control})
     const secundario = useController({name: nombreSecundario, control})
 
+    //UseState para determinar que valor esta 'activo' (cuando el usuario presiona sobre el numero)
     const [activo, setActivo] = useState<'primario' | 'secundario'>('primario')
+
+    //Variable para retornar un booleano y saber que campo esta activo
     const campoActivo = activo === 'primario' ? primario : secundario
 
+    //Errores de zod para ambos campos
     const errorPrimario = primario.fieldState.error?.message
     const errorSecundario = secundario.fieldState.error?.message
 
-    const pasoPrimario = pasoDe(tipo.rango_min, tipo.rango_max)
-    const pasoSecundario = pasoDe(tipo.rango_min_secundario ?? 0, tipo.rango_max_secundario ?? 0)
+    //Determina la cantidad que se avanza, segun el campo
+    const pasoPrimario = alHacerPaso(tipo.rango_min, tipo.rango_max)
+    const pasoSecundario = alHacerPaso(tipo.rango_min_secundario ?? 0, tipo.rango_max_secundario ?? 0)
+
+    //Para manejar una sola variable al hacer el paso, y revisar si esta activo antes de cambiar el numero
     const paso = activo === 'primario' ? pasoPrimario : pasoSecundario
 
+    //Para manejar en el UI que etiqueta esta activa
     const etiquetaActiva = activo === 'primario' ? tipo.etiqueta_principal : tipo.etiqueta_secundaria
 
-    const handleButton = (amount: number, type: 'add' | 'restar') => {
+    //Agrega o resta segun el campo
+    const botonManejarClick = (amount: number, type: 'add' | 'restar') => {
         const currVal = Number(campoActivo.field.value) || 0
         if (type === 'add') campoActivo.field.onChange(currVal + amount)
         else campoActivo.field.onChange(currVal - amount)
@@ -67,12 +80,12 @@ export default function CampoMedicionDoble<T extends FieldValues>({control, nomb
 
             <View className="flex flex-row items-center gap-6 mt-2">
                 <TouchableOpacity
-                    onPress={() => handleButton(paso, 'restar')}
+                    onPress={() => botonManejarClick(paso, 'restar')}
                     className="bg-transparent border-slate-300 border rounded-xl px-6 py-2">
                     <Text className="text-[40px]">-</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => handleButton(paso, 'add')}
+                    onPress={() => botonManejarClick(paso, 'add')}
                     className="bg-black border rounded-xl px-6 py-2">
                     <Text className="text-[40px] text-white">+</Text>
                 </TouchableOpacity>

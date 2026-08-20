@@ -1,4 +1,4 @@
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { medicion$, tipoMedicion$, esDoble } from "@/state/medicion";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -12,8 +12,8 @@ export default function ResultadoMedicion() {
     const mediciones = useValue(medicion$)
     const tipos = useValue(tipoMedicion$)
 
-    const medicion = porId(mediciones, resultadoMedicion as string)
-    const tipo = porId(tipos, medicion?.tipo_medicion_id ?? "")
+    const medicion = retornarObjetoPorId(mediciones, resultadoMedicion as string)
+    const tipo = retornarObjetoPorId(tipos, medicion?.tipo_medicion_id ?? "")
 
      if (!medicion) {
             return (

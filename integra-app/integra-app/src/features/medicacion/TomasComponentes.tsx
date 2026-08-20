@@ -1,10 +1,10 @@
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { Toma, medicamento$ } from "@/state/medicacion";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
-import { marcarTomada, posponer } from "./acciones";
+import { marcarComoTomada, posponerToma } from "./acciones";
 import { retornarIcono } from "./TomasDelDia";
 
 interface ComponenteProps {
@@ -36,7 +36,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
       : undefined;
 
   const medicamentoReciente = tomaReciente
-    ? porId(medicinas, tomaReciente.medicamento_id)
+    ? retornarObjetoPorId(medicinas, tomaReciente.medicamento_id)
     : undefined;
 
   const tiempoParaTomar = new Date(tomaReciente?.programada_para ?? "");
@@ -146,7 +146,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
             {/* //Botones */}
             <View className="flex-row gap-3 mt-3">
               <Pressable
-                onPress={() => marcarTomada(tomaReciente.id)}
+                onPress={() => marcarComoTomada(tomaReciente.id)}
                 accessibilityRole="button"
                 className="flex-1 bg-btn-color rounded-2xl py-4 items-center active:opacity-90 shadow-sm"
               >
@@ -157,7 +157,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
 
               <Pressable
                 onPress={() => {
-                  posponer(tomaReciente.id, 15);
+                  posponerToma(tomaReciente.id, 15);
                   setPospuesta(true);
                 }}
                 accessibilityRole="button"

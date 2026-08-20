@@ -9,6 +9,7 @@ type PerfilSummaryProps = {
     cedula: string | null
 }
 
+//Retorna el 'resumen' del perfil del usuario, aqui deberia ir la imagen que seleccionen tambien. Se le pasa el nombre, edad, genero y cedula, y al hacer click (onPress) navega a la pagina /expediente/perfil para que el usuario pueda cambiar su informacion
 export default function PerfilSummary({nombre, edad, genero, cedula}: PerfilSummaryProps) {
     return (
         <Pressable className="flex flex-row gap-4 p-4 border-b border-black/20 active:bg-black/5 bg-white"

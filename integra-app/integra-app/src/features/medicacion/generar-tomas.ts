@@ -1,6 +1,6 @@
-import { comoLista } from "@/state/helpers"
+import { convertirALista } from "@/state/helpers"
 import * as Crypto from 'expo-crypto'
-import { medicamento$, medicamentosActivos, partirHora, Toma, toma$ } from "@/state/medicacion"
+import { medicamento$, medicamentosActivos, dividirHoraAObjeto, Toma, toma$ } from "@/state/medicacion"
 import { batch, syncState } from "@legendapp/state"
 
 const DIAS_ATRAS = 7 //Variable que determina cuantos dias atras va a generar tomas
@@ -32,7 +32,7 @@ export function generarTomasPendientes(perfilId: string): number {
     //Un set que funciona como lista unica de TODAS las dosis que ya existen. Esto luego permite saber si ya existe una dosis con una sola funcion
 
     //La funcion primero convierte las Tomas a lista / arreglo, y de cada una se crea una clave
-    const existentes = new Set(comoLista<Toma>(toma$.get()).map((t) => generarClave(t.medicamento_id, new Date(t.programada_para))))
+    const existentes = new Set(convertirALista<Toma>(toma$.get()).map((t) => generarClave(t.medicamento_id, new Date(t.programada_para))))
 
     //Arreglo para ir acumulando las dosis a crear, de tipo Toma
     const nuevas: Toma[] = []
@@ -69,7 +69,7 @@ export function generarTomasPendientes(perfilId: string): number {
                 if (!horario.dias.includes(diaSemana)) continue
 
                 //Dividir el time a hora y minutos ("8:00" a {horas: 8, minuitos: 0})
-                const {horas, minutos} = partirHora(horario.hora)
+                const {horas, minutos} = dividirHoraAObjeto(horario.hora)
 
                 //Copia del dia del primer loop
                 const programada = new Date(dia)

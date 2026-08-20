@@ -6,7 +6,7 @@ import {
   valorInicial,
 } from "@/features/medicion/medicion-schema";
 import TopBar from "@/components/TopBar";
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import {
   esDoble,
   Medicion,
@@ -39,10 +39,10 @@ export default function EditarMedicionScreen() {
   const { medicionId } = useLocalSearchParams();
   const tiposLista = useValue(tipoMedicion$);
   const medicionesLista = useValue(medicion$);
-  const item = porId(medicionesLista, medicionId as string);
+  const item = retornarObjetoPorId(medicionesLista, medicionId as string);
 
   const tipoId = item?.tipo_medicion_id;
-  const tipo = porId(tiposLista, tipoId ?? "");
+  const tipo = retornarObjetoPorId(tiposLista, tipoId ?? "");
 
   return (
     <View className="flex-1">

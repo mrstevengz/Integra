@@ -1,6 +1,6 @@
 import TopBarSecondary from "@/components/TopBarSecondary";
 import TopBar from "@/components/TopBar";
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
@@ -35,7 +35,7 @@ export default function HistorialMediciones() {
                     )}
 
                     {medicionesHistorial.map((m) => {
-                        const t = porId(tipos, m.tipo_medicion_id)
+                        const t = retornarObjetoPorId(tipos, m.tipo_medicion_id)
                         const medidoEn = new Date(m.medido_en)
 
                         return (

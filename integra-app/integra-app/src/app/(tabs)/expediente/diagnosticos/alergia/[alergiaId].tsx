@@ -1,4 +1,4 @@
-import { porId } from "@/state/helpers";
+import { retornarObjetoPorId } from "@/state/helpers";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
@@ -16,7 +16,7 @@ export default function EditarCondicion() {
     const {alergiaId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const alergiasLista = useValue(alergia$)
-    const item = porId(alergiasLista, alergiaId as string)
+    const item = retornarObjetoPorId(alergiasLista, alergiaId as string)
 
     const {control, handleSubmit, reset} = useForm<AlergiasForm>({
 
