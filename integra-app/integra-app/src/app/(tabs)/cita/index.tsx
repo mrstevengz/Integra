@@ -14,8 +14,9 @@ import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import {
   cita$,
-  citasDelDia,
-  citasProximas,
+  resultadoCita$,
+  citasNoResueltas,
+  filtrarPorDia,
   fechaDesdeLocalISO,
 } from "@/state/cita";
 import { perfil$ } from "@/state/usuario";
@@ -31,22 +32,32 @@ import { convertirALista } from "@/state/helpers";
 export default function CitaScreen() {
   const perfil = useValue(perfil$);
   const citas = useValue(cita$);
-
-  const citasProximasLista = citasProximas(citas, new Date(), perfil.id);
+  const resultados = useValue(resultadoCita$);
 
   const [selectedDate, setSelectedDate] = useState<string>("");
 
-  const citasArray = useMemo(() => {
-    if (!selectedDate) return citasProximasLista;
-    return citasDelDia(citas, fechaDesdeLocalISO(selectedDate), perfil.id);
-  }, [citas, selectedDate, perfil.id]);
+  //Todas las citas sin resolver, sin importar si su fecha ya paso. Si no esta en la tabla de resultados, no esta resuelta
+  const pendientes = useMemo(
+    () => citasNoResueltas(citas, resultados, perfil.id),
+    [citas, resultados, perfil.id],
+  );
 
+  const citasArray = useMemo(
+    () =>
+      selectedDate
+        ? filtrarPorDia(pendientes, fechaDesdeLocalISO(selectedDate))
+        : pendientes,
+    [pendientes, selectedDate],
+  );
+
+  //En el calendario, solo se marcan los dias con citas pendientes de resolver.
   const markedDates = useMemo(() => {
     const marcas: Record<string, any> = {};
-    convertirALista(citas).forEach((c) => {
-      if (!c || c.perfil_id !== perfil.id || !c.programada_para) return;
-      const dia = fechaLocal(new Date(c.programada_para));
-      marcas[dia] = { marked: true, dotColor: "#000000" };
+    pendientes.forEach((c) => {
+      marcas[fechaLocal(new Date(c.programada_para))] = {
+        marked: true,
+        dotColor: "#000000",
+      };
     });
     if (selectedDate) {
       marcas[selectedDate] = {
@@ -56,10 +67,11 @@ export default function CitaScreen() {
       };
     }
     return marcas;
-  }, [citas, perfil.id, selectedDate]);
+  }, [pendientes, selectedDate]);
 
+  //Tocar el mismo dia otra vez limpia el filtro y vuelve a mostrar todas.
   const handleDayPress = (day: DateData) => {
-    setSelectedDate(day.dateString);
+    setSelectedDate((actual) => (actual === day.dateString ? "" : day.dateString));
   };
 
   return (
@@ -69,8 +81,8 @@ export default function CitaScreen() {
       </SafeAreaView>
 
       <TopBarSecondary
-        active="Proximas"
-        tab1="Proximas"
+        active="Pendientes"
+        tab1="Pendientes"
         tab2="Historial"
         route1="/cita"
         route2="/cita/historial"
@@ -81,9 +93,22 @@ export default function CitaScreen() {
       </View>
 
       <ScrollView className="flex-1 bg-slate-100">
-        <Text className="font-semibold uppercase text-label p-4">Citas</Text>
+        <Text className="font-semibold uppercase text-label p-4">
+          {selectedDate ? "Citas del dia" : "Pendientes"}
+        </Text>
+
+        {citasArray.length === 0 && (
+          <Text className="text-content-subtle px-4 pb-4">
+            {selectedDate
+              ? "No hay citas pendientes ese dia."
+              : "No tenes citas pendientes."}
+          </Text>
+        )}
+
         {citasArray.map((c) => {
           const date = new Date(c.programada_para);
+          const sinRegistrar = date.getTime() < Date.now();
+
           return (
             <Pressable
               key={c.id}
@@ -95,12 +120,18 @@ export default function CitaScreen() {
                 })
               }
             >
-              <View>
-                <Text className="text-xl font-semibold mb-2">
-                  {c.especialidad}
-                </Text>
+              <View className="flex-1">
+                <View className="flex-row items-center gap-3 mb-2">
+                  <Text className="text-xl font-semibold">{c.especialidad}</Text>
+                  {sinRegistrar && (
+                    <View className="rounded-chip border border-warning px-2 py-0.5">
+                      <Text className="text-caption text-warning-on-subtle font-semibold">
+                        Sin registrar
+                      </Text>
+                    </View>
+                  )}
+                </View>
                 <Text className="text-md text-slate-500 mb-1">{c.medico}</Text>
-
                 <Text className="text-md">
                   {formatearFechaAString(date, false)},{" "}
                   {formatearHoraAString(date.toLocaleTimeString())}

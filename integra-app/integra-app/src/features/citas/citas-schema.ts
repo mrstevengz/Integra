@@ -26,13 +26,6 @@ export const citasSchema = z.object({
     hora: z.date({ error: 'Selecciona la hora' }),
 
     notas: z.string().trim().max(200, {error: 'Maximo 200 caracteres'}),
-
-    cancelada: z.boolean().optional(),
-
-    notaCancelacion: z.string().trim().optional()
-
-
-
 })
 
 export type CitaForm = z.infer<typeof citasSchema>

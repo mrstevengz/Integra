@@ -82,25 +82,6 @@ export default function EditarCita() {
         }
     }
 
-        function onCancel(formValues: CitaForm) {
-        if (isSubmitting) return 
-        setIsSubmitting(true)
-        
-        try {
-            const id = citaId as string
-            cita$[id].assign!({
-            cancelada: true,
-            nota_cancelacion: formValues.notaCancelacion
-        })
-        reset(formValues)
-        router.back()
-        } catch (error) {
-            console.error('No se pudo guardar la condicion', error)
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
-    
         if (!citaAEditar) {
             return (
                 <View className="flex-1 justify-center items-center px-6">
@@ -155,26 +136,6 @@ export default function EditarCita() {
                                 {isSubmitting? "Guardando..." : "Guardar cambios"}
                             </Text>
                         </Pressable>
-
-                        <View className="flex-col gap-3 mt-4 border rounded-3xl p-4">
-                            <Text className="text-lg font-bold">
-                                Cancelar esta cita
-                            </Text>
-                            <Text className="text-neutral-500">
-                                La cita quedara marcada como cancelada. No se elimina del historial.
-                            </Text>
-
-                            <CampoTexto name="notaCancelacion" control={control} title="Motivo de cancelacion" opcional={true} placeholder="Ej. Me reprogramaron"/>
-
-                            <Pressable onPress={
-                                handleSubmit(onCancel)
-                            } disabled={isSubmitting}
-                            className="border py-4 rounded-lg active:bg-black/50">
-                            <Text className="text-txt-color text-center text-lg">
-                                {isSubmitting? "Cancelando..." : "Cancelar cita"}
-                            </Text>
-                        </Pressable>
-                        </View>
 
                     </ScrollView>
                 </KeyboardAvoidingView>
