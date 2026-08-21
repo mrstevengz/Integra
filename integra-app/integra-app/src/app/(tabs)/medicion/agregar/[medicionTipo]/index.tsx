@@ -78,9 +78,11 @@ function Formulario({tipo}: {tipo: TipoMedicion}) {
                 nota: values.nota
             })
             reset(values)
-            router.navigate({pathname: "/medicion/agregar/[medicionTipo]/[resultadoMedicion]" ,
-            params: {resultadoMedicion: id}
-            })
+            router.navigate(
+                {
+                    pathname: "/medicion/agregar/[medicionTipo]/[resultadoMedicion]" , 
+                    params: {resultadoMedicion: id, medicionTipo: tipo.id}
+                })
     
         } catch (error) {
             console.error('No se pudo guardar la medicion', error)

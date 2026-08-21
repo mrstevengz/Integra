@@ -39,7 +39,7 @@ export default function NuevaExportacionScreen() {
 
             <ScrollView
                 className="flex-1 bg-surface"
-                contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+                contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
             >
                 <Text className="text-body text-content-muted mb-6">
                     Selecciona las secciones a incluir y el rango de fechas del
