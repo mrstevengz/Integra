@@ -48,3 +48,7 @@ export function alHacerPaso(min: number , max: number): number {
 export function redondear(n: number): number {
     return Math.round(n * 10) / 10
 }
+
+export function numeroDesdeTexto(texto: string): number {
+    return texto === '' ? NaN : Number(texto.replace(',', '.'))
+}

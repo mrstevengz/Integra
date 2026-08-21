@@ -30,8 +30,9 @@ export const perfilSchema = z.object({
 
     tipoSangre: z.string().trim(),
 
-    telefono: z.string().min(8, {error: 'Ingresa tu numero de telefono'}).max(20, {error: 'Maximo 20 caracteres'})
+    telefono: z.string().min(8, {error: 'Ingresa tu numero de telefono'}).max(15, {error: 'Maximo 15 caracteres'})
     .regex(/^[\d+()\s-]+$/, { error: 'Solo números, espacios y + ( ) -' }),
+    
     medicoTratante: z.string().trim().max(20, {error: 'Maximo 40 caracteres'}).refine((v) => v === '' || v.length >= 5, { error: 'Ingrese el nombre del medico' }),
 })
 

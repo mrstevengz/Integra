@@ -96,7 +96,7 @@ export default function EditarMedicamentoScreen() {
     return (
         <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
-                <TopBar name='Agregar medicamento' canGoBack={true}/>
+                <TopBar name='Editar medicamento' canGoBack={true}/>
             </SafeAreaView>
 
         <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
