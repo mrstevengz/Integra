@@ -1,5 +1,5 @@
 import { convertirALista } from "@/state/consultas"
-import * as Crypto from 'expo-crypto'
+import { crearId } from "@/lib/ids"
 import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";
 import { dividirHora } from "@/lib/fechas";
 import { Toma, tomas$ } from "@/state/tomas";
@@ -93,7 +93,7 @@ export function generarTomasPendientes(perfilId: string): number {
                 //Finalmente, si la toma paso todos los filtros, se crea
 
                 nuevas.push({
-                    id: Crypto.randomUUID(),
+                    id: crearId(),
                     perfil_id: perfilId,
                     medicamento_id: med.id,
                     horario_id: horario.id,

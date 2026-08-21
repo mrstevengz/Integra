@@ -4,7 +4,7 @@ import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/components/TopBar";
-import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA} from "@/features/condicion/condiciones-schema";
+import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA} from "@/features/alergias/alergias-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";

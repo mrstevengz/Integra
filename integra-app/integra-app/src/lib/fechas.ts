@@ -68,3 +68,9 @@ export function formatearFecha(
 
     return cleanDate.charAt(0).toUpperCase() + cleanDate.slice(1)
 }
+
+export function combinarFechaHora(fecha: Date, hora: Date): Date {
+    const combinado = new Date(fecha)
+    combinado.setHours(hora.getHours(), hora.getMinutes(), 0, 0)
+    return combinado
+}

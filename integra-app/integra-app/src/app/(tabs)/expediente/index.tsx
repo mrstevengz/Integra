@@ -1,5 +1,5 @@
 import {cerrarSesion } from "@/state/auth";
-import { perfil$ } from "@/state/usuario";
+import { edadEnAnios, nombreCompleto, perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { Text, View, ScrollView, Pressable, ActivityIndicator } from "react-native";
 import TopBar from "@/components/TopBar";
@@ -10,48 +10,32 @@ import {condiciones$ } from "@/state/condiciones";
 import { alergias$ } from "@/state/alergias";
 import { contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { router } from "expo-router";
-import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
+import ContactoEmergencia from "@/features/contactos-emergencia/ContactoEmergencia";
 import { checklistExpediente$ } from "@/state/checklist-expediente";
 import {QrCode} from "lucide-react-native";
 import { color } from "@/theme/colors";
+import { convertirALista } from "@/state/consultas";
 
-
-
-export function getAge(edadNacimiento: string) {
-      const yearUsuario = (edadNacimiento ?? "").slice(0,10)
-      const fechaLimpia = yearUsuario.toString().replaceAll("-", "")
-
-      const hoy = new Date().toISOString().slice(0,10).replaceAll("-", "")
-      const edad = parseInt(hoy) - parseInt(fechaLimpia)
-      return edad.toString().slice(0,2)
-  }
 
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(
-        (c) => c.perfil_id === perfil.id 
-    )
-    const alergias = Object.values(useValue(alergias$) ?? {}).filter(
-        (a) => a.perfil_id === perfil.id 
-    )
+    const condiciones = convertirALista(useValue(condiciones$))
+    const alergias = convertirALista(useValue(alergias$))
 
-    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(
-        (ce) => ce.perfil_id === perfil.id 
-    )
-
+    const contactos = convertirALista(useValue(contactosEmergencia$))
     const confirmadas = useValue(checklistExpediente$)
 
     
 
-    if(!perfil.id || !condiciones$) {
+    if(!perfil.id || !condiciones) {
       return (
         <View className="flex-1">
                 <SafeAreaView edges={['top']} className="bg-slate-100">
                     <TopBar name='Mi Expediente' canGoBack={false}/>
                 </SafeAreaView>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#0F7C7C"/>
+                    <ActivityIndicator size="large" color={color.primary}/>
                 </View> 
             </View>
       )
@@ -66,19 +50,23 @@ export default function ExpedienteScreen() {
     ].some((incompleta, i) => incompleta && !confirmadas[(['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'] as const)[i]])
 
 
-    const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
+    const nombre = nombreCompleto(perfil)
 
   return (
+
     <View className="flex-1">
         <SafeAreaView edges={['top']} className="bg-slate-100">
+
             <TopBar name='Mi Expediente' canGoBack={false} grande={true} subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
             accion={() => router.navigate("/expediente/exportar")}
             accionIcono={<QrCode size={25} color={color.primary}/>}
             />
+
         </SafeAreaView>
+
         <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100, paddingTop: 15 }}>
 
-          <PerfilSummary nombre={nombreCompleto} edad={getAge(perfil.fecha_nacimiento ?? '')} genero={perfil.genero} cedula={perfil.cedula}/>
+          <PerfilSummary nombre={nombre} edad={perfil.fecha_nacimiento ? edadEnAnios(perfil.fecha_nacimiento) : null} genero={perfil.genero} cedula={perfil.cedula}/>
 
           {expedienteIncompleto && (
               <Pressable className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500"

@@ -35,8 +35,3 @@ export const ORDEN_RELACION: Record<string, number> = {
     Primaria: 0, Secundaria: 1, Especializada: 2,
 }
 
-export function esc(s: unknown): string {
-    return String(s ?? "")
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
-}

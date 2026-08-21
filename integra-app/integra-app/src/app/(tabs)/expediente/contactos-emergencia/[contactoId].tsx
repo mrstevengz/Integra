@@ -10,7 +10,7 @@ import { CampoTexto } from "@/components/CampoTexto";
 import { CampoSelect } from "@/components/CampoSelect";
 import { contactosEmergencia$} from "@/state/contactos-emergencia";
 import { buscarPorId } from "@/state/consultas";
-import { EmergenciaForm, emergenciaSchema, TIPO_RELACION } from "@/features/perfil/emergencia-schema";
+import { ContactosForm, contactosSchema, TIPO_RELACION } from "@/features/contactos-emergencia/contactos-schema";
 
 export default function EditarCondicion() {
     const {contactoId} = useLocalSearchParams()
@@ -18,9 +18,9 @@ export default function EditarCondicion() {
     const contactosLista = useValue(contactosEmergencia$)
     const item = buscarPorId(contactosLista, contactoId as string)
 
-    const {control, handleSubmit, reset, formState: {isDirty}} = useForm<EmergenciaForm>({
+    const {control, handleSubmit, reset, formState: {isDirty}} = useForm<ContactosForm>({
 
-        resolver: zodResolver(emergenciaSchema),
+        resolver: zodResolver(contactosSchema),
         mode: 'onTouched',
         defaultValues: {
             nombre: '',
@@ -36,7 +36,7 @@ export default function EditarCondicion() {
     })
 
 
-    function onSubmit(formValues: EmergenciaForm) {
+    function onSubmit(formValues: ContactosForm) {
         if (!item) return
         const id = item.id
         try {

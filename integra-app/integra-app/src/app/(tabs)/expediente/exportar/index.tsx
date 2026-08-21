@@ -7,7 +7,7 @@ import { useValue } from "@legendapp/state/react";
 import { useCallback, useRef, useState } from "react";
 import * as Brightness from "expo-brightness";
 import * as Print from "expo-print";
-import { shareAsync, isAvailableAsync } from "expo-sharing";
+import { shareAsync } from "expo-sharing";
 import { useFocusEffect } from "expo-router";
 import {
   ActivityIndicator,
@@ -22,7 +22,9 @@ import TopBar from "@/components/TopBar";
 import { armarCarnetHTML } from "@/features/emergencia/carnet-html";
 import QRCode from "react-native-qrcode-svg";
 import TopBarSecondary from "@/components/TopBarSecondary";
-import { armarQREmergencia, LARGO } from "@/features/emergencia/armarqr";
+import { armarQREmergencia, LARGO } from "@/features/emergencia/armar-qr";
+import VistaPreviaQR from "@/features/emergencia/VistaPreviaQR";
+import { useBrilloMaximo } from "@/hooks/useBrilloMaximo";
 
 //Propiedades del QR. El tamaño determina que tanto puede leerse en caso de corromperse. Asociado a la propiedad L, M, Q Y H de los SVGs.
 const SIZE_QR = 280;
@@ -56,30 +58,7 @@ export default function ExportarScreen() {
 
   const refQR = useRef<any>(null);
 
-  //UseEffect en la pagina cuando se abre el QR. Si se inicializa la variable de generado, se le sube el brillo al maximo al dispositivo, y si se regresa se le baja.
-  useFocusEffect(
-    useCallback(() => {
-      if (!generado) return;
-
-      let previo: number | null = null;
-      let cancelado = false;
-
-      (async () => {
-        try {
-          previo = await Brightness.getBrightnessAsync();
-          if (!cancelado) await Brightness.setBrightnessAsync(1);
-        } catch (e) {
-          console.warn("[qr] no se pudo ajustar el brillo", e);
-        }
-      })();
-
-      return () => {
-        cancelado = true;
-        if (previo != null)
-          Brightness.setBrightnessAsync(previo).catch(() => {});
-      };
-    }, [generado]),
-  );
+  useBrilloMaximo(generado);
 
   if (!perfil.id) {
     return (
@@ -106,8 +85,6 @@ export default function ExportarScreen() {
   //Variable bool para manejar el caso donde la longitud de QR es mayor a la establecida.
   const largoDeMas = textoQR.length > LARGO;
 
-  const bloques = textoQR.split("\n\n");
-
   //Funcion para manejar la alerta al exportar el PDF (Cuando se le da al boton de exportar)
   async function exportarPDF() {
     const qrBase64 = await new Promise<string>((r) => refQR.current.toDataURL(r));
@@ -129,7 +106,7 @@ export default function ExportarScreen() {
         tab1="Emergencia"
         tab2="Expediente"
         route1="/expediente/emergencia"
-        route2="/cita/historial"
+        route2="/expediente/exportar/historial"
       />
 
       <ScrollView
@@ -154,58 +131,7 @@ export default function ExportarScreen() {
               </Text>
             </View>
 
-            <View className="bg-surface-raised rounded-card border border-line p-5">
-              {bloques.map((bloque, i) => {
-                const lineas = bloque.split("\n");
-
-                //Primer bloque: identidad. Ultimo: el pie de fecha.
-                if (i === 0) {
-                  return (
-                    <View key={i} className="mb-5">
-                      {lineas.map((l, j) => (
-                        <Text
-                          key={j}
-                          className={
-                            j === 1
-                              ? "text-heading font-bold text-content"
-                              : "text-caption text-content-muted"
-                          }
-                        >
-                          {l}
-                        </Text>
-                      ))}
-                    </View>
-                  );
-                }
-
-                if (lineas.length === 1) {
-                  return (
-                    <Text
-                      key={i}
-                      className="text-caption text-content-subtle mt-3"
-                    >
-                      {lineas[0]}
-                    </Text>
-                  );
-                }
-
-                return (
-                  <View key={i} className="mb-5">
-                    <Text className="text-label font-bold tracking-wider text-content-subtle mb-2">
-                      {lineas[0]}
-                    </Text>
-                    {lineas.slice(1).map((l, j) => (
-                      <Text
-                        key={j}
-                        className="text-body text-content leading-6"
-                      >
-                        {l}
-                      </Text>
-                    ))}
-                  </View>
-                );
-              })}
-            </View>
+            <VistaPreviaQR texto={textoQR} />
 
             <Text className="text-caption text-content-subtle mt-3 text-center">
               {textoQR.length} caracteres

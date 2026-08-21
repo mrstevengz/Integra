@@ -1,4 +1,4 @@
-import MedicinasLista from "@/features/medicacion/MedicinasLista";
+import MedicinasLista from "@/features/medicamentos/MedicinasLista";
 import TopBarSecondary from "@/components/TopBarSecondary";
 import TopBar from "@/components/TopBar";
 import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";

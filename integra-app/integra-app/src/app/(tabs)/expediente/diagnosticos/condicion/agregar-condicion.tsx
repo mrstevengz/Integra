@@ -1,5 +1,5 @@
 import { CampoTexto } from "@/components/CampoTexto"
-import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condicion/condiciones-schema"
+import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condiciones/condiciones-schema"
 import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
 import { condiciones$ } from "@/state/condiciones"
@@ -13,6 +13,8 @@ import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import * as Crypto from 'expo-crypto';
 import { useState } from "react"
+import { crearId } from "@/lib/ids"
+import { color } from "@/theme/colors"
 
 export default function AgregarCondicionScreen() {
     const perfil = useValue(perfil$)
@@ -27,18 +29,13 @@ export default function AgregarCondicionScreen() {
         }
     })
 
-    function generateUUID(): string {
-        return Crypto.randomUUID()
-    }
-
-    
 
     function onSubmit(formValues: CondicionesForm) {
         if (isSubmitting) return 
         setIsSubmitting(true)
         
         try {
-            const id = generateUUID()
+            const id = crearId()
             condiciones$[id].set({
             id,
             perfil_id: perfil.id,
@@ -62,7 +59,7 @@ export default function AgregarCondicionScreen() {
                 <TopBar name='Agregar condicion' canGoBack={true}/>
             </SafeAreaView>
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#0F7C7C"/>
+                <ActivityIndicator size="large" color={color.primary}/>
             </View>
         </View>
     )

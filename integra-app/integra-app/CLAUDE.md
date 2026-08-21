@@ -98,7 +98,8 @@ Lo genérico vive en `src/lib/`.
 
 | Elemento | Convención | Ejemplo |
 |---|---|---|
-| Archivos y carpetas | `kebab-case` | `contactos-emergencia.ts` |
+| Carpetas y archivos que no son componentes | `kebab-case` | `contactos-emergencia.ts` |
+| Archivos que exportan un componente React | `PascalCase`, igual al componente | `ProximaCita.tsx` |
 | Tipos y componentes | `PascalCase` singular | `ContactoEmergencia` |
 | Funciones y variables | `camelCase` | `medicamentosActivos` |
 | Observables de Legend-State | `camelCase` plural + `$` | `alergias$` |
@@ -124,6 +125,13 @@ src/
 
 Las pantallas leen observables y componen; no contienen reglas de negocio. Toda
 derivación de datos vive en `src/state/`.
+
+`features/` se agrupa **por dominio**, no por tipo de archivo: el esquema de Zod
+y los componentes de un dominio viven juntos. Una carpeta por dominio, en plural
+cuando el dominio son varias filas (`alergias/`, `condiciones/`).
+
+**Si un archivo de `features/` no importa React, no pertenece ahí.** Las
+mutaciones y la generación de datos son estado: van en `src/state/`.
 
 ---
 

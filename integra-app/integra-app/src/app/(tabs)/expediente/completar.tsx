@@ -1,20 +1,21 @@
 import TopBar from "@/components/TopBar";
 import { alergias$ } from "@/state/alergias";
-import { condiciones$ } from "@/state/condiciones";
-import { contactosEmergencia$ } from "@/state/contactos-emergencia";
+import { condiciones$, condicionesDelPerfil } from "@/state/condiciones";
+import { contactosDelPerfil, contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { Checklist, ClaveChecklist, checklistExpediente$ } from "@/state/checklist-expediente";
 import { perfil$ } from "@/state/usuario";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { delPerfil } from "@/state/consultas";
 
 export default function CompletarPerfil() {
 
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(c => c.perfil_id === perfil.id)
-    const alergias = Object.values(useValue(alergias$) ?? {}).filter(a => a.perfil_id === perfil.id)
-    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(c => c.perfil_id === perfil.id)
+    const condiciones = condicionesDelPerfil(useValue(condiciones$), perfil.id)
+    const alergias = delPerfil(useValue(alergias$), perfil.id)
+    const contactos = contactosDelPerfil(useValue(contactosEmergencia$), perfil.id)
 
         const secciones: Checklist[] = [
         { id: 'datosPersonales',    label: 'Datos personales',       incompleta: perfil.genero == null || perfil.cedula == null },

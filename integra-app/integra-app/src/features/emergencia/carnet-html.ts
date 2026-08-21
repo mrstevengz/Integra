@@ -5,7 +5,8 @@ import { Medicamento, horariosOrdenados, formatearDias } from "@/state/medicamen
 import { formatearHoraDeTexto } from "@/lib/fechas";
 import { Perfil} from "@/state/usuario"
 import { ESTILOS } from "./carnet-estilos"
-import { esc, edadEnAnios, fechaCorta, fechaDeHoy, porCreacion, ORDEN_RELACION } from "./formato"
+import { edadEnAnios, fechaCorta, fechaDeHoy, porCreacion, ORDEN_RELACION } from "./formato"
+import { esc } from "@/lib/html"
 
 //APARTADO DEL LOGO
 // const LOGO = `

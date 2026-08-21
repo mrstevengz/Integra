@@ -599,3 +599,61 @@ export const citasResultado = pgTable(
     }),
   ],
 ).enableRLS();
+
+
+//Expediente
+
+export const rangoHistorialEnum = pgEnum("rango_historial", [
+  "1m",
+  "3m",
+  "6m",
+  "todo",
+]);
+
+export const exportacionesExpediente = pgTable(
+  "exportaciones_expediente",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    perfil_id: uuid("perfil_id")
+      .notNull()
+      .references(() => perfiles.id, { onDelete: "cascade" }),
+
+    token: text("token").notNull().unique(),
+    codigo: text("codigo").notNull(),
+
+    secciones: jsonb("secciones").notNull(),
+    rangoHistorial: rangoHistorialEnum("rango_historial").notNull().default("3m"),
+
+    expiraEn: timestamp("expira_en", { withTimezone: true }).notNull(),
+    revocadaEn: timestamp("revocada_en", { withTimezone: true }),
+
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    deleted: boolean("deleted").notNull().default(false),
+  },
+  (table) => [
+    index("exportaciones_perfil_idx").on(table.perfil_id),
+    index("exportaciones_token_idx").on(table.token),
+
+    pgPolicy("exportaciones_select_propio", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy("exportaciones_create_propio", {
+      for: "insert",
+      to: authenticatedRole,
+      withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+    pgPolicy("exportaciones_update_propio", {
+      for: "update",
+      to: authenticatedRole,
+      using: sql`${authUid} = ${table.perfil_id}`,
+      withCheck: sql`${authUid} = ${table.perfil_id}`,
+    }),
+  ],
+).enableRLS();

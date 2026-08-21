@@ -5,11 +5,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useValue } from "@legendapp/state/react";
 import { perfil$ } from "@/state/usuario";
 import { tomas$, tomasDelDia } from "@/state/tomas";
-import { TomaComponente } from "@/features/medicacion/TomasComponentes";
+import { ProximaToma } from "@/features/medicamentos/ProximaToma";
 import { mediciones$, medicionesDelPerfil, tiposMedicion$ } from "@/state/mediciones";
 import { buscarPorId } from "@/state/consultas";
-import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
-import CitasComponente from "@/features/citas/CitasComponente";
+import ArticulosDestacados from "@/features/articulos/ArticulosDestacados";
+import ProximaCita from "@/features/citas/ProximaCita";
 import { citas$, resultadosCita$, citasNoResueltas } from "@/state/citas";
 import { color } from "@/theme/colors";
 import { User } from "lucide-react-native";
@@ -59,7 +59,7 @@ export default function HomeScreen() {
                 contentContainerStyle={{ paddingTop: 20, paddingBottom: 120, paddingHorizontal: 15 }}
         >
 
-            <TomaComponente tomas = {tomasDeHoy}/>
+            <ProximaToma tomas = {tomasDeHoy}/>
 
             <View className="flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm mt-4">
                 <View className="flex-row justify-between mb-2">
@@ -74,7 +74,7 @@ export default function HomeScreen() {
                 </View>
             </View>
 
-            <CitasComponente citasProximas={citasProximasLista}/>
+            <ProximaCita citasProximas={citasProximasLista}/>
 
              <View className="flex-row items-center justify-between my-5">
                 <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
@@ -120,7 +120,7 @@ export default function HomeScreen() {
                 
             </View>
 
-            <ArticulosDestacadoComponente/>
+            <ArticulosDestacados/>
 
         </ScrollView>
     </View>

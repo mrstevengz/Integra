@@ -8,7 +8,7 @@ import { elegirAleatorios } from "./DestacadosBox"
 import { useMemo } from "react"
 
 
-export default function ArticulosDestacadoComponente() {
+export default function ArticulosDestacados() {
     const articulosLista = convertirALista(useValue(articulos$))
     const condiciones = convertirALista(useValue(condiciones$))
     

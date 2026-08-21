@@ -1,9 +1,9 @@
-import { getAge } from "@/app/(tabs)/expediente";
 import { Alergia } from "@/state/alergias";
 import { Condicion } from "@/state/condiciones";
 import { ContactoEmergencia } from "@/state/contactos-emergencia";
 import { Medicamento } from "@/state/medicamentos";
 import { Perfil } from "@/state/usuario";
+import { edadEnAnios } from "./formato";
 
 //Topes para armar el QR
 const TOPE_CONDICIONES = 4; //Solo 4 condiciones se muestran en el QR
@@ -38,7 +38,7 @@ export function armarQREmergencia(
   const nombre = `${perfil.nombre} ${perfil.apellidos}`.trim();
 
   const edad = perfil.fecha_nacimiento
-    ? `${getAge(perfil.fecha_nacimiento)} años`
+    ? `${edadEnAnios(perfil.fecha_nacimiento)} años`
     : null;
   const nacimiento = perfil.fecha_nacimiento
     ? `- Fecha de nacimiento: ${new Date(perfil.fecha_nacimiento).toLocaleDateString()}`

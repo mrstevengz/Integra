@@ -10,16 +10,17 @@ import { useForm, useWatch } from "react-hook-form"
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text } from "react-native"
 import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import * as Crypto from 'expo-crypto';
 import { useState } from "react"
 import { z } from "zod"
-import { resultadoCitasSchema, RESULTADO_CITA } from "@/features/citas/resultadocitas-schema"
+import { resultadoCitasSchema, RESULTADO_CITA } from "@/features/citas/resultado-cita-schema"
 import { citas$, resultadosCita$, resultadoDeCita, type TipoResultado } from "@/state/citas";
 import { CampoFecha } from "@/components/CampoFecha"
 import { buscarPorId } from "@/state/consultas"
-import { combinarFechaHora } from "../agregar-cita"
+import { combinarFechaHora } from "@/lib/fechas"
 import { formatearFecha } from "@/lib/fechas";
 import { formatearHora } from "@/lib/fechas";
+import { crearId } from "@/lib/ids"
+import { color } from "@/theme/colors"
 
 const proximaCitaSchema = resultadoCitasSchema.extend({
     programarProximaCita: z.boolean().optional(),
@@ -76,16 +77,13 @@ export default function RegistrarResultadoScreen() {
     const resultado = useWatch({control, name: 'resultado'})
     const programarProximaCita = useWatch({control, name: 'programarProximaCita'})
 
-    function generateUUID(): string {
-        return Crypto.randomUUID()
-    }
 
     function onSubmit(formValues: ProximaCitaForm) {
         if (isSubmitting) return
         setIsSubmitting(true)
 
         try {
-            const id = generateUUID()
+            const id = crearId()
 
             resultadosCita$[id].set({
                 id,
@@ -100,7 +98,7 @@ export default function RegistrarResultadoScreen() {
 
 
             if (formValues.programarProximaCita && formValues.proximaFecha && formValues.proximaHora && cita) {
-                const proximaId = generateUUID()
+                const proximaId = crearId()
                 const programadaPara = combinarFechaHora(formValues.proximaFecha, formValues.proximaHora)
 
                 citas$[proximaId].set({
@@ -126,7 +124,7 @@ export default function RegistrarResultadoScreen() {
 
     if (!perfil.id) return (
         <Pantalla>
-            <ActivityIndicator size="large" color="#0F7C7C"/>
+            <ActivityIndicator size="large" color={color.primary}/>
         </Pantalla>
     )
 

@@ -5,14 +5,14 @@ import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
 import { View, Pressable, Text } from "react-native";
-import { marcarComoTomada, posponerToma } from "./acciones";
-import { retornarIcono } from "./TomasDelDia";
+import { marcarComoTomada, posponerToma } from "@/state/tomas-acciones";
+import { iconoDeForma } from "./iconos";
 
 interface ComponenteProps {
   tomas: Toma[];
 }
 
-export function TomaComponente({ tomas }: ComponenteProps) {
+export function ProximaToma({ tomas }: ComponenteProps) {
   const sinResolver = tomas.filter(
     (t) => t.estado === "pendiente" || t.estado === "pospuesta",
   );
@@ -108,7 +108,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
             {/* //Texto, icono y hora */}
             <View className="flex flex-row items-center">
               <View className="flex-2 p-4 items-center justify-center rounded-xl bg-slate-200 border border-slate-300 mr-4">
-                {retornarIcono(medicamentoReciente?.forma)}
+                {iconoDeForma(medicamentoReciente?.forma)}
               </View>
 
               <View className="flex-1 pr-3">

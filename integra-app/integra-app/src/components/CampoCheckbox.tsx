@@ -18,7 +18,7 @@ export function CampoCheckbox<T extends FieldValues>({
     return (
         <Pressable onPress={() => field.onChange(!activo)} className="flex-row items-center gap-2">
             <Ionicons
-                name={activo ? 'checkbox' : 'square-outline'}
+                name={activo ? 'radio-button-on-outline' : 'radio-button-off-outline'}
                 size={22}
                 color={activo ? '#000000' : '#94a3b8'}
             />

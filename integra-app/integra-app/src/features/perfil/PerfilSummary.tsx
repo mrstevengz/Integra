@@ -4,7 +4,7 @@ import { View, Text, Pressable } from "react-native";
 
 type PerfilSummaryProps = {
     nombre: string;
-    edad: string;
+    edad: number | null;
     genero: string | null
     cedula: string | null
 }

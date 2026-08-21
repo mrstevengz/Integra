@@ -1,27 +1,26 @@
-import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
+import ContactoEmergencia from "@/features/contactos-emergencia/ContactoEmergencia";
 import TopBar from "@/components/TopBar";
-import { contactosEmergencia$ } from "@/state/contactos-emergencia";
+import { contactosDelPerfil, contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { View, ScrollView, Pressable, Text, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { perfil$ } from "@/state/usuario";
+import { color } from "@/theme/colors";
 
 export default function ContactosEmergenciaScreen() {
 
     const perfil = useValue(perfil$)
-    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(
-        (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
-    )
-
-    if(!perfil.id || !contactosEmergencia$) {
+    const contactos = contactosDelPerfil(useValue(contactosEmergencia$), perfil.id)
+    
+    if(!perfil.id || !contactos) {
           return (
             <View className="flex-1">
                     <SafeAreaView edges={['top']} className="bg-slate-100">
                         <TopBar name='Mi Expediente' canGoBack={false}/>
                     </SafeAreaView>
                     <View className="flex-1 items-center justify-center">
-                        <ActivityIndicator size="large" color="#0F7C7C"/>
+                        <ActivityIndicator size="large" color={color.primary}/>
                     </View> 
                 </View>
           )

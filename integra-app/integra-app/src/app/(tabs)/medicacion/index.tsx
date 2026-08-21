@@ -8,8 +8,8 @@ import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";
 import { tomasDelDia, tomas$, agruparTomasPorHora } from "@/state/tomas";
 import { useCallback, useEffect } from "react"
 import { perfil$ } from "@/state/usuario"
-import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
-import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
+import { generarTomasPendientes } from "@/state/tomas-generar"
+import {TomasDelDia} from "@/features/medicamentos/TomasDelDia"
 import TopBarSecondary from "@/components/TopBarSecondary"
 import { GlassView } from "expo-glass-effect"
 

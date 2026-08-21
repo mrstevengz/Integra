@@ -8,7 +8,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { View, Text, KeyboardAvoidingView, Platform, Pressable, ScrollView } from "react-native"
-import { combinarFechaHora } from "../agregar-cita"
+import { combinarFechaHora } from "@/lib/fechas";
 import { SafeAreaView } from "react-native-safe-area-context"
 import { CampoFecha } from "@/components/CampoFecha"
 import { CampoSelect } from "@/components/CampoSelect"

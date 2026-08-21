@@ -15,10 +15,11 @@ import Modal from 'react-native-modal'
 import { useState } from "react"
 import { buscarPorId } from "@/state/consultas"
 import { colorEstado, etiquetaEstado } from "./estados"
-import { marcarComoTomada, marcarComoOmitida, posponerToma, revertirAccion, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
+import { marcarComoTomada, marcarComoOmitida, posponerToma, revertirAccion, marcarTodasTomadas, revertirTodasTomadas } from "@/state/tomas-acciones"
 import { type FormaFarmaceutica, type Medicamento } from "@/state/medicamentos";
 import { type GrupoTomas } from "@/state/tomas";
 import { color } from "@/theme/colors";
+import { iconoDeForma } from "./iconos";
 
 type Props = {
     grupo: GrupoTomas
@@ -99,7 +100,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
                         className={`px-5 py-4 active:bg-surface flex-row flex'}`}
                     >
                         <View className="flex-2 flex p-3 items-center justify-center rounded-control bg-surface border border-line mr-4">
-                            {retornarIcono(med?.forma)}
+                            {iconoDeForma(med?.forma)}
                         </View>
 
                         <View className="flex-1 flex-row items-center justify-between">
@@ -212,20 +213,4 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
             </Modal>
         </View>
     )
-}
-
-
-export function retornarIcono(forma: FormaFarmaceutica | undefined) {
-    if (forma === "tableta") return <Tablets color={color.contentMuted}/>
-    if (forma === "capsula") return <Pill color={color.contentMuted}/>
-    if (forma === "jarabe") return <Droplet color={color.contentMuted}/>
-    if (forma === "suspension") return <TestTubes color={color.contentMuted}/>
-    if (forma === "inyeccion") return <Syringe color={color.contentMuted}/>
-    if (forma === "gotas") return <Pipette color={color.contentMuted}/>
-    if (forma === "crema") return <Droplet color={color.contentMuted}/>
-    if (forma === "inhalador") return <Wind color={color.contentMuted}/>
-    if (forma === "supositorio") return <Pill color={color.contentMuted}/>
-    if (forma === "parche") return <Bandage color={color.contentMuted}/>
-
-    return <Pill/>
 }

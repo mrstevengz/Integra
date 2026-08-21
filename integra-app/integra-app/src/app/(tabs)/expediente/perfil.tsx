@@ -11,6 +11,7 @@ import { CampoTexto } from "@/components/CampoTexto";
 import { CampoSelect } from "@/components/CampoSelect";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { color } from "@/theme/colors";
 
 export default function PerfilScreen() {
     const perfil = useValue(perfil$)
@@ -53,7 +54,7 @@ export default function PerfilScreen() {
             <TopBar name='Mi Expediente' canGoBack={false}/>
         </SafeAreaView>
         <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size="large" color="#0F7C7C"/>
+            <ActivityIndicator size="large" color={color.primary}/>
         </View>
     </View>
     )

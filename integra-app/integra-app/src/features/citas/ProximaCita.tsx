@@ -8,7 +8,7 @@ interface ComponenteProps {
     citasProximas: Cita[]
 }
 
-export default function CitasComponente({citasProximas}: ComponenteProps) {
+export default function ProximaCita({citasProximas}: ComponenteProps) {
     const citaReciente = citasProximas.length > 0
         ? citasProximas.reduce((a, b) =>
             new Date(b.programada_para).getTime() < new Date(a.programada_para).getTime() ? b : a

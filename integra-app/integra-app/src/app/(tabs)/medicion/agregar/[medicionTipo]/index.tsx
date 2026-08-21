@@ -1,4 +1,4 @@
-import { medicionDobleSchema, MedicionForm, medicionSchema, OPCIONES_CONTEXTO, valorInicial } from "@/features/medicion/medicion-schema";
+import { medicionDobleSchema, MedicionForm, medicionSchema, OPCIONES_CONTEXTO, valorInicial } from "@/features/mediciones/medicion-schema";
 import TopBar from "@/components/TopBar";
 import { buscarPorId } from "@/state/consultas";
 import { esDoble, mediciones$, TipoMedicion, tiposMedicion$ } from "@/state/mediciones";
@@ -10,12 +10,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ActivityIndicator, Pressable, ScrollView, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Crypto from 'expo-crypto';
 import { CampoTexto } from "@/components/CampoTexto";
 import { CampoFecha } from "@/components/CampoFecha";
 import { CampoSelect } from "@/components/CampoSelect";
-import CampoMedicion from "@/features/medicion/CampoMedicion";
-import CampoMedicionDoble from "@/features/medicion/CampoMedicionDoble";
+import CampoMedicion from "@/features/mediciones/CampoMedicion";
+import CampoMedicionDoble from "@/features/mediciones/CampoMedicionDoble";
+import { crearId } from "@/lib/ids";
+import { color } from "@/theme/colors";
 
 export default function AgregarMedicionScreen() {
     const {medicionTipo} = useLocalSearchParams()
@@ -32,7 +33,7 @@ export default function AgregarMedicionScreen() {
                 <Formulario tipo={tipo} />
             ) : (
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#0F7C7C"/>
+                    <ActivityIndicator size="large" color={color.primary}/>
                 </View>
             )}
         </View>
@@ -59,16 +60,12 @@ function Formulario({tipo}: {tipo: TipoMedicion}) {
         },
     })
 
-    function generateUUID(): string {
-            return Crypto.randomUUID()
-        }
-
     function onSubmit(values: MedicionForm) {
         if (isSubmitting) return
         setIsSubmitting(true)
 
         try {
-            const id = generateUUID()
+            const id = crearId()
 
             mediciones$[id].set({
                 id,

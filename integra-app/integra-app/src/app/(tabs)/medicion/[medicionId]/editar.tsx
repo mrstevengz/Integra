@@ -4,7 +4,7 @@ import {
   medicionSchema,
   OPCIONES_CONTEXTO,
   valorInicial,
-} from "@/features/medicion/medicion-schema";
+} from "@/features/mediciones/medicion-schema";
 import TopBar from "@/components/TopBar";
 import { buscarPorId } from "@/state/consultas";
 import {
@@ -28,12 +28,11 @@ import {
   Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Crypto from "expo-crypto";
 import { CampoTexto } from "@/components/CampoTexto";
 import { CampoFecha } from "@/components/CampoFecha";
 import { CampoSelect } from "@/components/CampoSelect";
-import CampoMedicion from "@/features/medicion/CampoMedicion";
-import CampoMedicionDoble from "@/features/medicion/CampoMedicionDoble";
+import CampoMedicion from "@/features/mediciones/CampoMedicion";
+import CampoMedicionDoble from "@/features/mediciones/CampoMedicionDoble";
 
 export default function EditarMedicionScreen() {
   const { medicionId } = useLocalSearchParams();
@@ -101,9 +100,6 @@ function Formulario({ tipo, item }: { tipo: TipoMedicion; item: Medicion }) {
       : undefined,
   });
 
-  function generateUUID(): string {
-    return Crypto.randomUUID();
-  }
 
   function onSubmit(values: MedicionForm) {
     if (isSubmitting) return;
