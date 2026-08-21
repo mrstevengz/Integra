@@ -1,5 +1,5 @@
 import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicacion/medicacion-schema"
-import { medicamento$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicacion"
+import { medicamentos$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicamentos";
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -40,7 +40,7 @@ export default function AgregarMedicamentoScreen() {
     try {
         const medId = Crypto.randomUUID()
 
-        medicamento$[medId].set({
+        medicamentos$[medId].set({
             id: medId,
             perfil_id: perfil.id,
             nombre: v.nombre,

@@ -2,7 +2,7 @@ import { CampoTexto } from "@/components/CampoTexto"
 import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condicion/condiciones-schema"
 import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
-import { condicion$ } from "@/state/condicion"
+import { condiciones$ } from "@/state/condiciones"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -39,7 +39,7 @@ export default function AgregarCondicionScreen() {
         
         try {
             const id = generateUUID()
-            condicion$[id].set({
+            condiciones$[id].set({
             id,
             perfil_id: perfil.id,
             nombre: formValues.nombre,

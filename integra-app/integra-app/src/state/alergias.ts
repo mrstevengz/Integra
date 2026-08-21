@@ -12,18 +12,11 @@ export type Alergia = {
     created_at?: string
 }
 
-export const alergia$ = observable(syncedTable({
+export const alergias$ = observable(syncedTable({
     collection: 'alergias',
     actions: ['read', 'create', 'update'],
     initial: {} as Record<string, Alergia>,
     realtime: true,
     persist: {name: 'alergias'},
-    fieldDeleted: 'deleted'
 }))
 
-// export function porId(
-//     todos: Record<string, Alergia> | undefined,
-//     id: string,
-// ): Alergia | undefined {
-//     return todos?.[id]
-// }

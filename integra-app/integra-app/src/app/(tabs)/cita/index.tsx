@@ -12,27 +12,19 @@ import TopBarSecondary from "@/components/TopBarSecondary";
 import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
-import {
-  cita$,
-  resultadoCita$,
-  citasNoResueltas,
-  filtrarPorDia,
-  fechaDesdeLocalISO,
-} from "@/state/cita";
+import { citas$, resultadosCita$, citasNoResueltas, filtrarPorDia } from "@/state/citas";
+import { desdeFechaLocal } from "@/lib/fechas";
 import { perfil$ } from "@/state/usuario";
-import {
-  fechaLocal,
-  formatearFechaAString,
-  formatearHoraAString,
-} from "@/state/medicacion";
+import { fechaLocal, formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 import { Calendar, DateData } from "react-native-calendars";
 import { useMemo, useState } from "react";
-import { convertirALista } from "@/state/helpers";
+import { convertirALista } from "@/state/consultas";
 
 export default function CitaScreen() {
   const perfil = useValue(perfil$);
-  const citas = useValue(cita$);
-  const resultados = useValue(resultadoCita$);
+  const citas = useValue(citas$);
+  const resultados = useValue(resultadosCita$);
 
   const [selectedDate, setSelectedDate] = useState<string>("");
 
@@ -40,7 +32,7 @@ export default function CitaScreen() {
   const pendientes = citasNoResueltas(citas, resultados, perfil.id);
 
   const citasArray = selectedDate
-    ? filtrarPorDia(pendientes, fechaDesdeLocalISO(selectedDate))
+    ? filtrarPorDia(pendientes, desdeFechaLocal(selectedDate))
     : pendientes;
 
   //En el calendario, solo se marcan los dias con citas pendientes de resolver.
@@ -131,8 +123,8 @@ export default function CitaScreen() {
                 </View>
                 <Text className="text-md text-slate-500 mb-1">{c.medico}</Text>
                 <Text className="text-md">
-                  {formatearFechaAString(date, false)},{" "}
-                  {formatearHoraAString(date.toLocaleTimeString())}
+                  {formatearFecha(date)},{" "}
+                  {formatearHora(date)}
                 </Text>
               </View>
             </Pressable>

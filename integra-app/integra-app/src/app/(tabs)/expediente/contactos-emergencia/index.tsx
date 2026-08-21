@@ -1,6 +1,6 @@
 import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
 import TopBar from "@/components/TopBar";
-import { contactoEmergencia$ } from "@/state/contactosemergencia";
+import { contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { View, ScrollView, Pressable, Text, ActivityIndicator } from "react-native";
@@ -10,11 +10,11 @@ import { perfil$ } from "@/state/usuario";
 export default function ContactosEmergenciaScreen() {
 
     const perfil = useValue(perfil$)
-    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
+    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(
         (ce) => ce.perfil_id === perfil.id && ce.deleted !== true
     )
 
-    if(!perfil.id || !contactoEmergencia$) {
+    if(!perfil.id || !contactosEmergencia$) {
           return (
             <View className="flex-1">
                     <SafeAreaView edges={['top']} className="bg-slate-100">

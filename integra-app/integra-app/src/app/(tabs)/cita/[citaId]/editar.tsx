@@ -1,6 +1,6 @@
 import { CitaForm, citasSchema, TIPO_CITA } from "@/features/citas/citas-schema"
-import { cita$, resultadoCita$, resultadoDeCita } from "@/state/cita"
-import { retornarObjetoPorId } from "@/state/helpers"
+import { citas$, resultadosCita$, resultadoDeCita, type TipoCita } from "@/state/citas";
+import { buscarPorId } from "@/state/consultas"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -32,10 +32,10 @@ function Aviso({texto}: {texto: string}) {
 export default function EditarCita() {
     const {citaId} = useLocalSearchParams()
     const perfil = useValue(perfil$)
-    const citas = useValue(cita$)
-    const resultados = useValue(resultadoCita$)
+    const citas = useValue(citas$)
+    const resultados = useValue(resultadosCita$)
 
-    const citaAEditar = retornarObjetoPorId(citas, citaId as string)
+    const citaAEditar = buscarPorId(citas, citaId as string)
     const yaRegistrada = !!resultadoDeCita(resultados, citaId as string)
 
     const date = citaAEditar ? new Date(citaAEditar.programada_para) : new Date()
@@ -74,10 +74,10 @@ export default function EditarCita() {
             const id = citaId as string
             const programadaPara = combinarFechaHora(formValues.fecha, formValues.hora)
 
-            cita$[id].set({
+            citas$[id].set({
                 id,
                 perfil_id: perfil.id,
-                tipo_citas: formValues.tipoCita,
+                tipo_citas: formValues.tipoCita as TipoCita,
                 especialidad: formValues.especialidad,
                 medico: formValues.medico,
                 institucion: formValues.institucion,

@@ -3,14 +3,14 @@ import { SQLiteStorage } from 'expo-sqlite/kv-store'
 import { AppState } from 'react-native'
 import { Database } from './database.types'
 
-export const authStorage = new SQLiteStorage('supabase-auth')
+export const almacenamientoAuth = new SQLiteStorage('supabase-auth')
 
 export const supabase = createClient<Database>(
     process.env.EXPO_PUBLIC_SUPABASE_URL!,
     process.env.EXPO_PUBLIC_SUPABASE_KEY!,
     {
         auth: {
-            storage: authStorage,
+            storage: almacenamientoAuth,
             autoRefreshToken: true,
             persistSession: true,
             detectSessionInUrl: false

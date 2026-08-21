@@ -28,3 +28,19 @@ export const perfil$ = observable<Perfil>(syncedTable({
     realtime: true,
     persist: {name: 'perfil'}
 }))
+
+export function nombreCompleto(perfil: Perfil): string {
+    return `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
+}
+
+export function edadEnAnios(fechaNacimiento: string): number | null {
+    const [anio, mes, dia] = fechaNacimiento.slice(0, 10).split('-').map(Number)
+    if (!anio || !mes || !dia) return null
+
+    const hoy = new Date()
+    let edad = hoy.getFullYear() - anio
+    const diferenciaMeses = hoy.getMonth() + 1 - mes
+
+    if (diferenciaMeses < 0 || (diferenciaMeses === 0 && hoy.getDate() < dia)) edad--
+    return edad >= 0 ? edad : null
+}

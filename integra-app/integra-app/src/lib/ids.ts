@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto'
 
-export function createId(): string {
+export function crearId(): string {
     return Crypto.randomUUID()
 }

@@ -14,11 +14,12 @@ import * as Crypto from 'expo-crypto';
 import { useState } from "react"
 import { z } from "zod"
 import { resultadoCitasSchema, RESULTADO_CITA } from "@/features/citas/resultadocitas-schema"
-import { cita$, resultadoCita$, resultadoDeCita } from "@/state/cita"
+import { citas$, resultadosCita$, resultadoDeCita, type TipoResultado } from "@/state/citas";
 import { CampoFecha } from "@/components/CampoFecha"
-import { retornarObjetoPorId } from "@/state/helpers"
+import { buscarPorId } from "@/state/consultas"
 import { combinarFechaHora } from "../agregar-cita"
-import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion"
+import { formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 
 const proximaCitaSchema = resultadoCitasSchema.extend({
     programarProximaCita: z.boolean().optional(),
@@ -49,11 +50,11 @@ export default function RegistrarResultadoScreen() {
     //TODOS los hooks van antes de cualquier return, si no React tira
     //"Rendered more hooks than during the previous render".
     const perfil = useValue(perfil$)
-    const citas = useValue(cita$)
-    const resultados = useValue(resultadoCita$)
+    const citas = useValue(citas$)
+    const resultados = useValue(resultadosCita$)
     const {citaId} = useLocalSearchParams()
 
-    const cita = retornarObjetoPorId(citas, citaId as string)
+    const cita = buscarPorId(citas, citaId as string)
     const yaRegistrada = !!resultadoDeCita(resultados, citaId as string)
 
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -86,11 +87,11 @@ export default function RegistrarResultadoScreen() {
         try {
             const id = generateUUID()
 
-            resultadoCita$[id].set({
+            resultadosCita$[id].set({
                 id,
                 perfil_id: perfil.id,
                 cita_id: citaId as string,
-                tipo_resultado: formValues.resultado,
+                tipo_resultado: formValues.resultado as TipoResultado,
                 diagnostico: formValues.resultado === 'asistida' ? formValues.diagnostico : '',
                 instruccion: formValues.resultado === 'asistida' ? formValues.instruccion : '',
                 ajuste_medicacion: formValues.resultado === 'asistida' ? formValues.ajusteMedicacion : '',
@@ -102,7 +103,7 @@ export default function RegistrarResultadoScreen() {
                 const proximaId = generateUUID()
                 const programadaPara = combinarFechaHora(formValues.proximaFecha, formValues.proximaHora)
 
-                cita$[proximaId].set({
+                citas$[proximaId].set({
                     id: proximaId,
                     perfil_id: perfil.id,
                     tipo_citas: cita.tipo_citas,
@@ -169,7 +170,7 @@ export default function RegistrarResultadoScreen() {
                             {cita.especialidad} --- {cita.medico}
                         </Text>
                         <Text className="text-content-subtle text-label">
-                            {formatearFechaAString(fechaCita)} {formatearHoraAString(fechaCita.toLocaleTimeString())}
+                            {formatearFecha(fechaCita)} {formatearHora(fechaCita)}
                         </Text>
                     </View>
 

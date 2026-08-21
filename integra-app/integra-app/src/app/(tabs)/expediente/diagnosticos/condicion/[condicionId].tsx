@@ -1,5 +1,5 @@
-import { condicion$} from "@/state/condicion";
-import { retornarObjetoPorId } from "@/state/helpers";
+import { condiciones$} from "@/state/condiciones";
+import { buscarPorId } from "@/state/consultas";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
@@ -15,8 +15,8 @@ import { CampoSelect } from "@/components/CampoSelect";
 export default function EditarCondicion() {
     const {condicionId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const condicionesLista = useValue(condicion$)
-    const item = retornarObjetoPorId(condicionesLista, condicionId as string)
+    const condicionesLista = useValue(condiciones$)
+    const item = buscarPorId(condicionesLista, condicionId as string)
 
     const {control, handleSubmit, reset} = useForm<CondicionesForm>({
 
@@ -40,7 +40,7 @@ export default function EditarCondicion() {
         if (!item) return
         const id = item.id
         try {
-            condicion$[id].assign!({
+            condiciones$[id].assign!({
             nombre: formValues.nombre,
             tipo: formValues.tipo,
             detalles: formValues.detalles

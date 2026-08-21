@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import * as Crypto from 'expo-crypto';
 import { useState } from "react"
 import { CitaForm, citasSchema, TIPO_CITA } from "@/features/citas/citas-schema"
-import { cita$ } from "@/state/cita"
+import { citas$, type TipoCita } from "@/state/citas";
 import { CampoFecha } from "@/components/CampoFecha"
 
 export default function AgregarCitaScreen() {
@@ -47,10 +47,10 @@ export default function AgregarCitaScreen() {
             const id = generateUUID()
             const programadaPara = combinarFechaHora(formValues.fecha, formValues.hora)
 
-            cita$[id].set({
+            citas$[id].set({
             id,
             perfil_id: perfil.id,
-            tipo_citas: formValues.tipoCita,
+            tipo_citas: formValues.tipoCita as TipoCita,
             especialidad: formValues.especialidad,
             medico: formValues.medico,
             institucion: formValues.institucion,

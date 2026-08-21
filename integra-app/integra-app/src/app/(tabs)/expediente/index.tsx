@@ -6,12 +6,12 @@ import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PerfilSummary from "@/features/perfil/PerfilSummary";
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox";
-import {condicion$ } from "@/state/condicion";
-import { alergia$ } from "@/state/alergia";
-import { contactoEmergencia$ } from "@/state/contactosemergencia";
+import {condiciones$ } from "@/state/condiciones";
+import { alergias$ } from "@/state/alergias";
+import { contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { router } from "expo-router";
 import ContactoEmergencia from "@/features/perfil/ContactoEmergencia";
-import { expedienteChecklist$ } from "@/state/expedienteChecklist";
+import { checklistExpediente$ } from "@/state/checklist-expediente";
 import {QrCode} from "lucide-react-native";
 import { color } from "@/theme/colors";
 
@@ -29,22 +29,22 @@ export function getAge(edadNacimiento: string) {
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
+    const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(
         (c) => c.perfil_id === perfil.id 
     )
-    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
+    const alergias = Object.values(useValue(alergias$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id 
     )
 
-    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
+    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(
         (ce) => ce.perfil_id === perfil.id 
     )
 
-    const confirmadas = useValue(expedienteChecklist$)
+    const confirmadas = useValue(checklistExpediente$)
 
     
 
-    if(!perfil.id || !condicion$) {
+    if(!perfil.id || !condiciones$) {
       return (
         <View className="flex-1">
                 <SafeAreaView edges={['top']} className="bg-slate-100">
@@ -63,7 +63,7 @@ export default function ExpedienteScreen() {
       condiciones.length === 0,
       alergias.length === 0,
       contactos.length === 0,
-    ].some((incompleta, i) => incompleta && !confirmadas[['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'][i]])
+    ].some((incompleta, i) => incompleta && !confirmadas[(['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'] as const)[i]])
 
 
     const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()

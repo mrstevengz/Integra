@@ -5,15 +5,16 @@ import TopBarSecondary from "@/components/TopBarSecondary";
 import { GlassView } from "expo-glass-effect";
 import { router } from "expo-router";
 import { useValue } from "@legendapp/state/react";
-import { cita$, resultadoCita$, citasResueltas, resultadoDeCita } from "@/state/cita";
+import { citas$, resultadosCita$, citasResueltas, resultadoDeCita } from "@/state/citas";
 import { perfil$ } from "@/state/usuario";
-import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
+import { formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 import EstadoCita from "@/features/citas/EstadoCita";
 
 export default function HistorialCitaScreen() {
   const perfil = useValue(perfil$)
-  const citas = useValue(cita$)
-  const resultados = useValue(resultadoCita$)
+  const citas = useValue(citas$)
+  const resultados = useValue(resultadosCita$)
 
   //Solo las que ya tienen resultado registrado: asistida, no asistida o cancelada.
   const historial = citasResueltas(citas, resultados, perfil.id)
@@ -48,7 +49,7 @@ export default function HistorialCitaScreen() {
                 <Text className="text-xl font-semibold">{c.especialidad}</Text>
                 <Text className="text-md text-slate-500">{c.medico}</Text>
                 <Text className="text-md">
-                  {formatearFechaAString(date, false)}, {formatearHoraAString(date.toLocaleTimeString())}
+                  {formatearFecha(date)}, {formatearHora(date)}
                 </Text>
                 {resultado && <EstadoCita resultado={resultado.tipo_resultado} />}
               </View>

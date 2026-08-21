@@ -1,13 +1,14 @@
 import { deleteAlert } from "@/components/Alert";
 import TopBar from "@/components/TopBar";
-import { retornarObjetoPorId } from "@/state/helpers";
-import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
+import { buscarPorId } from "@/state/consultas";
+import { formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 import {
   esDoble,
-  medicion$,
-  tipoMedicion$,
+  mediciones$,
+  tiposMedicion$,
   TipoMedicion,
-} from "@/state/medicion";
+} from "@/state/mediciones";
 import { useValue } from "@legendapp/state/react";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -55,11 +56,11 @@ function labelContexto(contexto: string | null) {
 
 export default function DetalleMedicion() {
   const { medicionId } = useLocalSearchParams();
-  const mediciones = useValue(medicion$);
-  const tipos = useValue(tipoMedicion$);
+  const mediciones = useValue(mediciones$);
+  const tipos = useValue(tiposMedicion$);
 
-  const medicionAEditar = retornarObjetoPorId(mediciones, medicionId as string);
-  const tipo = retornarObjetoPorId(tipos, medicionAEditar?.tipo_medicion_id ?? "");
+  const medicionAEditar = buscarPorId(mediciones, medicionId as string);
+  const tipo = buscarPorId(tipos, medicionAEditar?.tipo_medicion_id ?? "");
   const date = new Date(medicionAEditar?.medido_en ?? new Date());
 
   const doble = tipo ? esDoble(tipo) : false;
@@ -130,14 +131,14 @@ export default function DetalleMedicion() {
             <View className="flex-row items-center justify-between px-5 py-4 border-b border-line">
               <Text className="text-body text-content-muted">Fecha</Text>
               <Text className="text-body font-semibold text-content">
-                {formatearFechaAString(date, true, true)}
+                {formatearFecha(date, { mesLargo: true, conAnio: true })}
               </Text>
             </View>
 
             <View className="flex-row items-center justify-between px-5 py-4 border-b border-line-strong">
               <Text className="text-body text-content-muted">Hora</Text>
               <Text className="text-body font-semibold text-content">
-                {formatearHoraAString(date.toLocaleTimeString())}
+                {formatearHora(date)}
               </Text>
             </View>
 
@@ -176,7 +177,7 @@ export default function DetalleMedicion() {
               className="flex-1 py-4 bg-surface-raised rounded-control border border-line-strong items-center active:bg-danger-subtle"
               onPress={() => {
                 deleteAlert(() => {
-                  medicion$[id].delete();
+                  mediciones$[id].delete();
                   router.back();
                 });
               }}

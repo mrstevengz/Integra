@@ -13,10 +13,11 @@ import {
 
 import Modal from 'react-native-modal'
 import { useState } from "react"
-import { retornarObjetoPorId } from "@/state/helpers"
+import { buscarPorId } from "@/state/consultas"
 import { colorEstado, etiquetaEstado } from "./estados"
 import { marcarComoTomada, marcarComoOmitida, posponerToma, revertirAccion, marcarTodasTomadas, revertirTodasTomadas } from "./acciones"
-import { type FormaFarmaceutica, type GrupoTomas, type Medicamento,} from "@/state/medicacion"
+import { type FormaFarmaceutica, type Medicamento } from "@/state/medicamentos";
+import { type GrupoTomas } from "@/state/tomas";
 import { color } from "@/theme/colors";
 
 type Props = {
@@ -42,7 +43,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
 
     //Se busca en cada render, asi el modal siempre muestra el estado actual
     const abierta = idAbierto ? grupo.tomas.find((t) => t.id === idAbierto) : undefined
-    const medAbierto = abierta ? retornarObjetoPorId(medicamentos, abierta.medicamento_id) : undefined
+    const medAbierto = abierta ? buscarPorId(medicamentos, abierta.medicamento_id) : undefined
     const resueltaAbierta = abierta?.estado === 'tomada' || abierta?.estado === 'omitida'
 
 
@@ -88,7 +89,7 @@ export function TomasDelDia({ grupo, medicamentos }: Props) {
             </View>
 
             {grupo.tomas.map((t) => {
-                const med = retornarObjetoPorId(medicamentos, t.medicamento_id)
+                const med = buscarPorId(medicamentos, t.medicamento_id)
 
                 return (
                     <Pressable

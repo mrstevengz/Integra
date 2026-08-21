@@ -1,7 +1,8 @@
-import { Alergia } from "@/state/alergia"
-import { Condicion } from "@/state/condicion"
-import { ContactoEmergencia } from "@/state/contactosemergencia"
-import { Medicamento, horariosOrdenadosdeMedicamento, listaDiasAString, formatearHoraAString } from "@/state/medicacion"
+import { Alergia } from "@/state/alergias"
+import { Condicion } from "@/state/condiciones"
+import { ContactoEmergencia } from "@/state/contactos-emergencia"
+import { Medicamento, horariosOrdenados, formatearDias } from "@/state/medicamentos";
+import { formatearHoraDeTexto } from "@/lib/fechas";
 import { Perfil} from "@/state/usuario"
 import { ESTILOS } from "./carnet-estilos"
 import { esc, edadEnAnios, fechaCorta, fechaDeHoy, porCreacion, ORDEN_RELACION } from "./formato"
@@ -31,8 +32,8 @@ function seccion(titulo: string, filas: string[]): string {
 }
 
 function pauta(m: Medicamento): string {
-    return horariosOrdenadosdeMedicamento(m)
-        .map((h) => `${formatearHoraAString(h.hora)} (${listaDiasAString(h.dias)})`)
+    return horariosOrdenados(m)
+        .map((h) => `${formatearHoraDeTexto(h.hora)} (${formatearDias(h.dias)})`)
         .join(" · ")
 }
 

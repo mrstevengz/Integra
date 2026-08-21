@@ -1,6 +1,6 @@
-import { Articulo, articulo$ } from "@/state/articulos"
-import { Condicion, condicion$ } from "@/state/condicion"
-import { convertirALista } from "@/state/helpers"
+import { Articulo, articulos$ } from "@/state/articulos"
+import { Condicion, condiciones$ } from "@/state/condiciones"
+import { convertirALista } from "@/state/consultas"
 import { useValue } from "@legendapp/state/react"
 import { router } from "expo-router"
 import { View, Text, Pressable } from "react-native"
@@ -9,8 +9,8 @@ import { useMemo } from "react"
 
 
 export default function ArticulosDestacadoComponente() {
-    const articulosLista = convertirALista(useValue(articulo$))
-    const condiciones = convertirALista(useValue(condicion$))
+    const articulosLista = convertirALista(useValue(articulos$))
+    const condiciones = convertirALista(useValue(condiciones$))
     
     const matches = compararListas(condiciones, articulosLista)
 

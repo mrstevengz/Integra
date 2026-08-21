@@ -1,6 +1,7 @@
 import {z} from 'zod'
+import type { TipoResultado } from '@/state/citas'
 
-export const RESULTADO_CITA = [
+export const RESULTADO_CITA: { valor: TipoResultado; etiqueta: string }[] = [
     {valor: 'asistida', etiqueta: 'Si, asisti'},
     {valor: 'no asistida', etiqueta: 'No asisti'},
     {valor: 'cancelada', etiqueta: 'Se cancelo'},

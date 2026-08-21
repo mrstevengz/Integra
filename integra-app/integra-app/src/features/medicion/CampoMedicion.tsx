@@ -1,4 +1,4 @@
-import { esDoble, TipoMedicion } from "@/state/medicion";
+import { esDoble, TipoMedicion } from "@/state/mediciones";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 import { TextInput, Text, View, Pressable, TouchableOpacity } from "react-native";
 import { alHacerPaso, redondear } from "./medicion-schema";

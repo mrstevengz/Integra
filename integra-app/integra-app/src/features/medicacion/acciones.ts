@@ -1,10 +1,10 @@
-import { convertirALista } from "@/state/helpers";
-import { toma$ } from "@/state/medicacion";
+import { convertirALista } from "@/state/consultas";
+import { tomas$ } from "@/state/tomas";
 import { batch } from "@legendapp/state";
 
 //Para marcar como tomada, se le asigna al registro de SQLite y se le cambia el estado a tomada, y la fecha en la que fue tomada a hora local.
 export function marcarComoTomada(tomaId: string) {
-    toma$[tomaId].assign({
+    tomas$[tomaId].assign({
         estado: 'tomada',
         registrada_en: new Date().toISOString(),
         pospuesta_hasta: null
@@ -13,7 +13,7 @@ export function marcarComoTomada(tomaId: string) {
 
 //El usuario decide saltarsela, se marca como omitida y se le manda la fecha de registro
 export function marcarComoOmitida(tomaId: string) {
-    toma$[tomaId].assign({
+    tomas$[tomaId].assign({
         estado: 'omitida',
         registrada_en: new Date().toISOString(),
         pospuesta_hasta: null,
@@ -23,7 +23,7 @@ export function marcarComoOmitida(tomaId: string) {
 //El usuario decide posponerla, se cambia el estado a pospuesta y se le agrega los minutos a la fecha de hoy.
 export function posponerToma(tomaId: string, minutos = 15){
     const hasta = new Date(Date.now() + minutos * 60_000)
-    toma$[tomaId].assign({
+    tomas$[tomaId].assign({
         estado: 'pospuesta',
         registrada_en: null,
         pospuesta_hasta: hasta.toISOString(),
@@ -33,7 +33,7 @@ export function posponerToma(tomaId: string, minutos = 15){
 
 //El usuario le da al boton de revertir, regresa la toma a su forma base, estado pendiente y sin registro.
 export function revertirAccion(tomaId: string) {
-    toma$[tomaId].assign({
+    tomas$[tomaId].assign({
         estado: 'pendiente',
         registrada_en: null,
         pospuesta_hasta: null,
@@ -60,13 +60,13 @@ export function eliminarTomasFuturasPendientes(medicamentoId: string) {
     const hoy = new Date()
 
     //Filtra la lista de tomas para obtener las tomas que tienen el id del medicamento que le paso, tienen estado pendiente o pospuesto, y la fecha de programado es hoy o mayor (al futuro)
-    const aEliminar = convertirALista(toma$.get()).filter((t) => 
+    const aEliminar = convertirALista(tomas$.get()).filter((t) => 
         t.medicamento_id === medicamentoId && (t.estado === 'pendiente' || t.estado === 'pospuesta')
     )
 
     //Para cada toma, eliminarla (se generara una nueva al confirmar el editar)
     batch(() => {
-        for (const t of aEliminar) toma$[t.id].delete()
+        for (const t of aEliminar) tomas$[t.id].delete()
     })
 }
 

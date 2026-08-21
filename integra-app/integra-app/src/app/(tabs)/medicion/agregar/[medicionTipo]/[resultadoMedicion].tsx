@@ -1,5 +1,5 @@
-import { retornarObjetoPorId } from "@/state/helpers";
-import { medicion$, tipoMedicion$, esDoble } from "@/state/medicion";
+import { buscarPorId } from "@/state/consultas";
+import { mediciones$, tiposMedicion$, esDoble } from "@/state/mediciones";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
@@ -9,11 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ResultadoMedicion() {
     const {resultadoMedicion} = useLocalSearchParams()
-    const mediciones = useValue(medicion$)
-    const tipos = useValue(tipoMedicion$)
+    const mediciones = useValue(mediciones$)
+    const tipos = useValue(tiposMedicion$)
 
-    const medicion = retornarObjetoPorId(mediciones, resultadoMedicion as string)
-    const tipo = retornarObjetoPorId(tipos, medicion?.tipo_medicion_id ?? "")
+    const medicion = buscarPorId(mediciones, resultadoMedicion as string)
+    const tipo = buscarPorId(tipos, medicion?.tipo_medicion_id ?? "")
 
      if (!medicion) {
             return (

@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import * as Crypto from 'expo-crypto';
 import { useState } from "react"
 import { EmergenciaForm, emergenciaSchema, TIPO_RELACION } from "@/features/perfil/emergencia-schema"
-import { contactoEmergencia$ } from "@/state/contactosemergencia"
+import { contactosEmergencia$ } from "@/state/contactos-emergencia"
 
 export default function AgregarAlergiaScreen() {
     const perfil = useValue(perfil$)
@@ -39,7 +39,7 @@ export default function AgregarAlergiaScreen() {
         
         try {
             const id = generateUUID()
-            contactoEmergencia$[id].set({
+            contactosEmergencia$[id].set({
             id,
             perfil_id: perfil.id,
             nombre: formValues.nombre,
@@ -56,7 +56,7 @@ export default function AgregarAlergiaScreen() {
        
     }
 
-     if (!perfil.id || !contactoEmergencia$) return (
+     if (!perfil.id || !contactosEmergencia$) return (
         <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
                 <TopBar name='Agregar contacto de emergencia' canGoBack={true}/>

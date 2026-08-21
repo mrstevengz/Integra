@@ -8,15 +8,15 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { CampoTexto } from "@/components/CampoTexto";
 import { CampoSelect } from "@/components/CampoSelect";
-import { contactoEmergencia$} from "@/state/contactosemergencia";
-import { retornarObjetoPorId } from "@/state/helpers";
+import { contactosEmergencia$} from "@/state/contactos-emergencia";
+import { buscarPorId } from "@/state/consultas";
 import { EmergenciaForm, emergenciaSchema, TIPO_RELACION } from "@/features/perfil/emergencia-schema";
 
 export default function EditarCondicion() {
     const {contactoId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const contactosLista = useValue(contactoEmergencia$)
-    const item = retornarObjetoPorId(contactosLista, contactoId as string)
+    const contactosLista = useValue(contactosEmergencia$)
+    const item = buscarPorId(contactosLista, contactoId as string)
 
     const {control, handleSubmit, reset, formState: {isDirty}} = useForm<EmergenciaForm>({
 
@@ -40,7 +40,7 @@ export default function EditarCondicion() {
         if (!item) return
         const id = item.id
         try {
-            contactoEmergencia$[id].assign!({
+            contactosEmergencia$[id].assign!({
             nombre: formValues.nombre,
             relacion: formValues.relacion,
             telefono: formValues.telefono

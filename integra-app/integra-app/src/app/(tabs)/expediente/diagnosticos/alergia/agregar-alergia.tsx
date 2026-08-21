@@ -2,7 +2,7 @@ import { CampoTexto } from "@/components/CampoTexto"
 import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA } from "@/features/condicion/condiciones-schema"
 import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
-import { alergia$ } from "@/state/alergia"
+import { alergias$ } from "@/state/alergias"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -39,7 +39,7 @@ export default function AgregarAlergiaScreen() {
         
         try {
             const id = generateUUID()
-            alergia$[id].set({
+            alergias$[id].set({
             id,
             perfil_id: perfil.id,
             nombre: formValues.nombre,

@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useValue } from "@legendapp/state/react";
-import { articulo$, porCategoria } from "@/state/articulos";
+import { articulos$, articulosDeCategoria } from "@/state/articulos";
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -45,7 +45,7 @@ function CategoriasBox({categoriaNombre, count, icon}: CategoriasBoxProps) {
 }
 
 export default function Categorias() {
-    const articulos = useValue(articulo$)
+    const articulos = useValue(articulos$)
 
     if (!articulos) {
         return (
@@ -65,7 +65,7 @@ export default function Categorias() {
             <Text className="text-lg mb-2 font-semibold">CATEGORIAS</Text>
             <View className="flex-row flex-wrap justify-between">
                 {CATEGORIAS.map((cat) => (
-                    <CategoriasBox key={cat.categoriaNombre} count={porCategoria(articulos, cat.categoriaNombre).length} categoriaNombre={cat.categoriaNombre} icon={cat.icon}/>
+                    <CategoriasBox key={cat.categoriaNombre} count={articulosDeCategoria(articulos, cat.categoriaNombre).length} categoriaNombre={cat.categoriaNombre} icon={cat.icon}/>
                 ))}
             </View>
         </View>

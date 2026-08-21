@@ -1,4 +1,5 @@
-import { formatearHoraAString, horariosOrdenadosdeMedicamento, Medicamento, listaDiasAString } from "@/state/medicacion";
+import { formatearHoraDeTexto } from "@/lib/fechas";
+import { horariosOrdenados, Medicamento, formatearDias } from "@/state/medicamentos";
 import { router } from "expo-router";
 import { View, Text, Pressable } from "react-native";
 
@@ -21,12 +22,12 @@ export default function MedicinasLista (m: Medicamento) {
                 {m.con_alimentos ? ` · ${m.con_alimentos} alimentos` : ''}
             </Text>
 
-            {horariosOrdenadosdeMedicamento(m).length === 0 ? (
+            {horariosOrdenados(m).length === 0 ? (
                 <Text className="text-neutral-500 text-sm">Sin horarios</Text>
             ) : (
-                horariosOrdenadosdeMedicamento(m).map((h) => (
+                horariosOrdenados(m).map((h) => (
                 <Text key={h.id} className="text-neutral-600 text-sm mb-0.5">
-                    {formatearHoraAString(h.hora)} · {listaDiasAString(h.dias)}
+                    {formatearHoraDeTexto(h.hora)} · {formatearDias(h.dias)}
                 </Text>
                 ))
             )}

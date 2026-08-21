@@ -1,8 +1,8 @@
 import TopBar from "@/components/TopBar";
-import { alergia$ } from "@/state/alergia";
-import { condicion$ } from "@/state/condicion";
-import { contactoEmergencia$ } from "@/state/contactosemergencia";
-import { Checklist, expedienteChecklist$ } from "@/state/expedienteChecklist";
+import { alergias$ } from "@/state/alergias";
+import { condiciones$ } from "@/state/condiciones";
+import { contactosEmergencia$ } from "@/state/contactos-emergencia";
+import { Checklist, ClaveChecklist, checklistExpediente$ } from "@/state/checklist-expediente";
 import { perfil$ } from "@/state/usuario";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
@@ -12,9 +12,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function CompletarPerfil() {
 
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(c => c.perfil_id === perfil.id)
-    const alergias = Object.values(useValue(alergia$) ?? {}).filter(a => a.perfil_id === perfil.id)
-    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(c => c.perfil_id === perfil.id)
+    const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(c => c.perfil_id === perfil.id)
+    const alergias = Object.values(useValue(alergias$) ?? {}).filter(a => a.perfil_id === perfil.id)
+    const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(c => c.perfil_id === perfil.id)
 
         const secciones: Checklist[] = [
         { id: 'datosPersonales',    label: 'Datos personales',       incompleta: perfil.genero == null || perfil.cedula == null },
@@ -25,7 +25,7 @@ export default function CompletarPerfil() {
     ]
 
 
-    const confirmadas = useValue(expedienteChecklist$)
+    const confirmadas = useValue(checklistExpediente$)
 
     const seccionesLista = secciones.map(seccion => ({
         ...seccion,
@@ -34,8 +34,8 @@ export default function CompletarPerfil() {
 
     const completas = seccionesLista.filter(seccion => seccion.completada)
 
-    const checkSeccion = (id: string) => {
-        expedienteChecklist$[id].set(true)
+    const checkSeccion = (id: ClaveChecklist) => {
+        checklistExpediente$[id].set(true)
     }
 
     return (

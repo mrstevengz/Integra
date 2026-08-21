@@ -1,8 +1,8 @@
 import { getAge } from "@/app/(tabs)/expediente";
-import { Alergia } from "@/state/alergia";
-import { Condicion } from "@/state/condicion";
-import { ContactoEmergencia } from "@/state/contactosemergencia";
-import { Medicamento } from "@/state/medicacion";
+import { Alergia } from "@/state/alergias";
+import { Condicion } from "@/state/condiciones";
+import { ContactoEmergencia } from "@/state/contactos-emergencia";
+import { Medicamento } from "@/state/medicamentos";
 import { Perfil } from "@/state/usuario";
 
 //Topes para armar el QR

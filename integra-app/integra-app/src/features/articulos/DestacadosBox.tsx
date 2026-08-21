@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { View,ScrollView, Text, Pressable } from "react-native";
 import { useMemo } from "react";
 import { useValue } from "@legendapp/state/react";
-import { articulo$, type Articulo } from "@/state/articulos";
+import { articulos$, type Articulo } from "@/state/articulos";
 
 
 
@@ -39,7 +39,7 @@ function DestacadoCard({ categoriaNombre, articuloId, titulo }: DestacadoCardPro
 }
 
 export default function Destacados() {
-    const articulos = Object.values(useValue(articulo$) ?? {});
+    const articulos = Object.values(useValue(articulos$) ?? {});
 
     const idsKey = articulos.map((a) => a.id).join(",");
 

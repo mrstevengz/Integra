@@ -4,9 +4,9 @@ import TopBar from "@/components/TopBar"
 import { useValue } from "@legendapp/state/react"
 import { perfil$ } from "@/state/usuario"
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox"
-import { condicion$ } from "@/state/condicion"
+import { condiciones$ } from "@/state/condiciones"
 import { router } from "expo-router"
-import { alergia$ } from "@/state/alergia"
+import { alergias$ } from "@/state/alergias"
 import Swipeable, { SwipeableMethods, SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { RectButton } from "react-native-gesture-handler"
 import Reanimated from 'react-native-reanimated'
@@ -18,11 +18,11 @@ import { useRef } from "react"
 export default function DiagnosticosScreen() {
     const perfil = useValue(perfil$)
     
-    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
+    const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(
         (c) => c.perfil_id === perfil.id
     )
 
-    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
+    const alergias = Object.values(useValue(alergias$) ?? {}).filter(
         (a) => a.perfil_id === perfil.id
     )
 
@@ -30,7 +30,7 @@ export default function DiagnosticosScreen() {
     const swipeableRef = useRef<SwipeableMethods>(null)
 
 
-    if (!perfil.id || !condicion$ || !alergia$) return (
+    if (!perfil.id || !condiciones$ || !alergias$) return (
             <View className="flex-1">
                 <SafeAreaView edges={['top']} className="bg-slate-100">
                     <TopBar name='Condiciones y alergias' canGoBack={true}/>
@@ -62,7 +62,7 @@ export default function DiagnosticosScreen() {
                     RightSwipe(
                     prog, drag, methods, 
                     () => router.navigate({pathname: '/expediente/diagnosticos/condicion/[condicionId]', params: {condicionId: condicion.id}}), 
-                    () => deleteAlert(() => condicion$[condicion.id].delete())
+                    () => deleteAlert(() => condiciones$[condicion.id].delete())
                     )} 
                     ref={swipeableRef}
                     >
@@ -86,7 +86,7 @@ export default function DiagnosticosScreen() {
                     RightSwipe(
                     prog, drag, methods, 
                     () => router.navigate({pathname: '/expediente/diagnosticos/alergia/[alergiaId]', params: {alergiaId: alergia.id}}), 
-                    () => deleteAlert(() => alergia$[alergia.id].delete())
+                    () => deleteAlert(() => alergias$[alergia.id].delete())
                     )} 
                     ref={swipeableRef}
                     >

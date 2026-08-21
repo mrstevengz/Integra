@@ -1,4 +1,4 @@
-import { TipoMedicion } from "@/state/medicion";
+import { TipoMedicion } from "@/state/mediciones";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 import { useState } from "react";
 import { TextInput, Text, View, TouchableOpacity } from "react-native";

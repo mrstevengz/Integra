@@ -1,5 +1,6 @@
-import { retornarObjetoPorId } from "@/state/helpers";
-import { Toma, medicamento$ } from "@/state/medicacion";
+import { buscarPorId } from "@/state/consultas";
+import { Toma } from "@/state/tomas";
+import { medicamentos$ } from "@/state/medicamentos";
 import { useValue } from "@legendapp/state/react";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
@@ -18,7 +19,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
 
   const [pospuesta, setPospuesta] = useState(false);
 
-  const medicinas = useValue(medicamento$);
+  const medicinas = useValue(medicamentos$);
 
   const hoy = new Date();
 
@@ -36,7 +37,7 @@ export function TomaComponente({ tomas }: ComponenteProps) {
       : undefined;
 
   const medicamentoReciente = tomaReciente
-    ? retornarObjetoPorId(medicinas, tomaReciente.medicamento_id)
+    ? buscarPorId(medicinas, tomaReciente.medicamento_id)
     : undefined;
 
   const tiempoParaTomar = new Date(tomaReciente?.programada_para ?? "");

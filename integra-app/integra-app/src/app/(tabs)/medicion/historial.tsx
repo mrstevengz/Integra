@@ -1,21 +1,22 @@
 import TopBarSecondary from "@/components/TopBarSecondary";
 import TopBar from "@/components/TopBar";
-import { retornarObjetoPorId } from "@/state/helpers";
-import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
+import { buscarPorId } from "@/state/consultas";
+import { mediciones$, medicionesDelPerfil, tiposMedicion$ } from "@/state/mediciones";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { labelHelper } from "./agregar/[medicionTipo]/[resultadoMedicion]";
 import { router } from "expo-router";
-import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
+import { formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 
 export default function HistorialMediciones() {
     const perfil = useValue(perfil$)
-    const mediciones = useValue(medicion$)
-    const tipos = useValue(tipoMedicion$)
+    const mediciones = useValue(mediciones$)
+    const tipos = useValue(tiposMedicion$)
     
-    const medicionesHistorial = medicionesOrdenadas(mediciones, perfil.id)
+    const medicionesHistorial = medicionesDelPerfil(mediciones, perfil.id)
 
     return (
          <View className="flex-1">
@@ -36,7 +37,7 @@ export default function HistorialMediciones() {
                     )}
 
                     {medicionesHistorial.map((m) => {
-                        const t = retornarObjetoPorId(tipos, m.tipo_medicion_id)
+                        const t = buscarPorId(tipos, m.tipo_medicion_id)
                         const medidoEn = new Date(m.medido_en)
 
                         return (
@@ -48,7 +49,7 @@ export default function HistorialMediciones() {
                             >
                                 <View>
                                     <Text className="text-md font-semibold">{t?.nombre}</Text>
-                                    <Text className="text-sm text-slate-500">{formatearFechaAString(medidoEn)} ⋅ {formatearHoraAString(medidoEn.toLocaleTimeString())} {labelHelper(m.contexto)}</Text>
+                                    <Text className="text-sm text-slate-500">{formatearFecha(medidoEn)} ⋅ {formatearHora(medidoEn)} {labelHelper(m.contexto)}</Text>
                                 </View>
                                 
                                 <Text className="text-lg font-bold">{m.valor} {m.valor_secundario && `/ ${m.valor_secundario}`} {t?.unidad} </Text>

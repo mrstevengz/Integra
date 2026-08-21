@@ -1,7 +1,7 @@
-import { alergia$ } from "@/state/alergia";
-import { condicion$ } from "@/state/condicion";
-import { contactoEmergencia$ } from "@/state/contactosemergencia";
-import { medicamento$ } from "@/state/medicacion";
+import { alergias$ } from "@/state/alergias";
+import { condiciones$ } from "@/state/condiciones";
+import { contactosEmergencia$ } from "@/state/contactos-emergencia";
+import { medicamentos$ } from "@/state/medicamentos";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { useCallback, useRef, useState } from "react";
@@ -33,16 +33,16 @@ export default function ExportarScreen() {
   //Inicializacion de los valores utilizados, respectivos al usuario.
   const perfil = useValue(perfil$);
 
-  const alergias = Object.values(useValue(alergia$) ?? {}).filter(
+  const alergias = Object.values(useValue(alergias$) ?? {}).filter(
     (a) => a.perfil_id === perfil.id,
   );
-  const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
+  const contactos = Object.values(useValue(contactosEmergencia$) ?? {}).filter(
     (c) => c.perfil_id === perfil.id,
   );
-  const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
+  const condiciones = Object.values(useValue(condiciones$) ?? {}).filter(
     (c) => c.perfil_id === perfil.id,
   );
-  const medicamentos = Object.values(useValue(medicamento$) ?? {}).filter(
+  const medicamentos = Object.values(useValue(medicamentos$) ?? {}).filter(
     (m) => m.perfil_id === perfil.id,
   );
 

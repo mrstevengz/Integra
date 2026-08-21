@@ -6,14 +6,14 @@ import {
   valorInicial,
 } from "@/features/medicion/medicion-schema";
 import TopBar from "@/components/TopBar";
-import { retornarObjetoPorId } from "@/state/helpers";
+import { buscarPorId } from "@/state/consultas";
 import {
   esDoble,
   Medicion,
-  medicion$,
+  mediciones$,
   TipoMedicion,
-  tipoMedicion$,
-} from "@/state/medicion";
+  tiposMedicion$,
+} from "@/state/mediciones";
 import { perfil$ } from "@/state/usuario";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useValue } from "@legendapp/state/react";
@@ -37,12 +37,12 @@ import CampoMedicionDoble from "@/features/medicion/CampoMedicionDoble";
 
 export default function EditarMedicionScreen() {
   const { medicionId } = useLocalSearchParams();
-  const tiposLista = useValue(tipoMedicion$);
-  const medicionesLista = useValue(medicion$);
-  const item = retornarObjetoPorId(medicionesLista, medicionId as string);
+  const tiposLista = useValue(tiposMedicion$);
+  const medicionesLista = useValue(mediciones$);
+  const item = buscarPorId(medicionesLista, medicionId as string);
 
   const tipoId = item?.tipo_medicion_id;
-  const tipo = retornarObjetoPorId(tiposLista, tipoId ?? "");
+  const tipo = buscarPorId(tiposLista, tipoId ?? "");
 
   return (
     <View className="flex-1">
@@ -110,7 +110,7 @@ function Formulario({ tipo, item }: { tipo: TipoMedicion; item: Medicion }) {
     setIsSubmitting(true);
 
     try {
-      medicion$[item.id].assign!({
+      mediciones$[item.id].assign!({
         valor: values.valor,
         valor_secundario: doble ? values.valorSecundario : undefined,
         medido_en: values.medidoEn,

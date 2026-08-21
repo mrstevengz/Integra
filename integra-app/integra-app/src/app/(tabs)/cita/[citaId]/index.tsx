@@ -1,8 +1,9 @@
 import TopBar from "@/components/TopBar";
 import { deleteAlert } from "@/components/Alert";
-import { cita$, resultadoCita$, resultadoDeCita } from "@/state/cita";
-import { retornarObjetoPorId } from "@/state/helpers";
-import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
+import { citas$, resultadosCita$, resultadoDeCita } from "@/state/citas";
+import { buscarPorId } from "@/state/consultas";
+import { formatearFecha } from "@/lib/fechas";
+import { formatearHora } from "@/lib/fechas";
 import EstadoCita from "@/features/citas/EstadoCita";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
@@ -24,10 +25,10 @@ export default function DetalleCita() {
     const { citaId } = useLocalSearchParams()
     const id = citaId as string
 
-    const citas = useValue(cita$)
-    const resultados = useValue(resultadoCita$)
+    const citas = useValue(citas$)
+    const resultados = useValue(resultadosCita$)
 
-    const cita = retornarObjetoPorId(citas, id)
+    const cita = buscarPorId(citas, id)
     const resultado = resultadoDeCita(resultados, id)
 
 
@@ -81,11 +82,11 @@ export default function DetalleCita() {
                         <View className="flex-row gap-4">
                             <View className="flex-1 flex-row gap-2 rounded-xl bg-neutral-color border border-neutral-400 p-6 items-center overflow-auto w-0">
                                 <Ionicons name="calendar-outline"/>
-                                <Text>{formatearFechaAString(date, true, true)}</Text>
+                                <Text>{formatearFecha(date, { mesLargo: true, conAnio: true })}</Text>
                             </View>
                             <View className="flex-1 w-0 flex-row gap-2 rounded-xl bg-neutral-color border border-neutral-400 p-6 items-center overflow-hidden">
                                 <Ionicons name="time-outline"/>
-                                <Text>{formatearHoraAString(date.toLocaleTimeString())}</Text>
+                                <Text>{formatearHora(date)}</Text>
                             </View>
                         </View>
                     </View>
@@ -134,7 +135,7 @@ export default function DetalleCita() {
                                 nunca queda una fila de citas_resultado sin su cita. */}
                             <Pressable
                                 onPress={() => deleteAlert(() => {
-                                    cita$[id].delete()
+                                    citas$[id].delete()
                                     router.back()
                                 })}
                                 className="py-4 rounded-xl border-2 border-danger active:bg-danger-subtle">

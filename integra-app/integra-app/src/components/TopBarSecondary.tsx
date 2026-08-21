@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Pressable, View, Text } from "react-native";
 
 type TopBarSecondaryProps = {
-  active: "Registrar" | "Historial" | "Tomas" | "Medicamentos" | "Pendientes" | "Pasadas";
+  active: "Registrar" | "Historial" | "Tomas" | "Medicamentos" | "Pendientes" | "Pasadas" | "Emergencia" | "Expediente";
   tab1: string
   tab2: string
   route1: string
@@ -11,7 +11,7 @@ type TopBarSecondaryProps = {
 
 export default function TopBarSecondary({ active, tab1, tab2, route1, route2 }: TopBarSecondaryProps) {
   //Si es la primera, se muestra con color de fondo y borde, si no, con color de fondo y borde opaco
-    const primeraActiva = active === "Registrar" || active === "Tomas" || active === "Pendientes"
+    const primeraActiva = active === "Registrar" || active === "Tomas" || active === "Pendientes" || active === "Emergencia"
 
   const tabs = [
     { texto: tab1, ruta: route1, esActiva: primeraActiva },

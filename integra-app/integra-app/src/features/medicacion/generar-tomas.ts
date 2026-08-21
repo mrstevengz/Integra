@@ -1,6 +1,8 @@
-import { convertirALista } from "@/state/helpers"
+import { convertirALista } from "@/state/consultas"
 import * as Crypto from 'expo-crypto'
-import { medicamento$, medicamentosActivos, dividirHoraAObjeto, Toma, toma$ } from "@/state/medicacion"
+import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";
+import { dividirHora } from "@/lib/fechas";
+import { Toma, tomas$ } from "@/state/tomas";
 import { batch, syncState } from "@legendapp/state"
 
 const DIAS_ATRAS = 7 //Variable que determina cuantos dias atras va a generar tomas
@@ -15,8 +17,8 @@ function generarClave(medicamentoId: string, programada: Date): string {
 //Funcion para crear las filas de dosis que faltan. Devuelve el numero que creo
 export function generarTomasPendientes(perfilId: string): number {
     
-    const estadoTomas = syncState(toma$)
-    const estadoMeds = syncState(medicamento$)
+    const estadoTomas = syncState(tomas$)
+    const estadoMeds = syncState(medicamentos$)
 
     if (!estadoTomas.isPersistLoaded.get()) return 0
     if (!estadoMeds.isPersistLoaded.get()) return 0
@@ -25,14 +27,14 @@ export function generarTomasPendientes(perfilId: string): number {
     if (!estadoMeds.isLoaded.get()) return 0
 
     //Se filtra la lista de medicamentos por los que tienen activos, y los ordena
-    const medicamentos = medicamentosActivos(medicamento$.get(), perfilId)
+    const medicamentos = medicamentosActivos(medicamentos$.get(), perfilId)
     //Si no hay medicamentos activos, retorna 0
     if (medicamentos.length === 0) return 0
 
     //Un set que funciona como lista unica de TODAS las dosis que ya existen. Esto luego permite saber si ya existe una dosis con una sola funcion
 
     //La funcion primero convierte las Tomas a lista / arreglo, y de cada una se crea una clave
-    const existentes = new Set(convertirALista<Toma>(toma$.get()).map((t) => generarClave(t.medicamento_id, new Date(t.programada_para))))
+    const existentes = new Set(convertirALista<Toma>(tomas$.get()).map((t) => generarClave(t.medicamento_id, new Date(t.programada_para))))
 
     //Arreglo para ir acumulando las dosis a crear, de tipo Toma
     const nuevas: Toma[] = []
@@ -69,7 +71,7 @@ export function generarTomasPendientes(perfilId: string): number {
                 if (!horario.dias.includes(diaSemana)) continue
 
                 //Dividir el time a hora y minutos ("8:00" a {horas: 8, minuitos: 0})
-                const {horas, minutos} = dividirHoraAObjeto(horario.hora)
+                const {horas, minutos} = dividirHora(horario.hora)
 
                 //Copia del dia del primer loop
                 const programada = new Date(dia)
@@ -109,7 +111,7 @@ export function generarTomasPendientes(perfilId: string): number {
     if (nuevas.length > 0) {
         //Batch es una funcion de legend state que agrupa todas las escrituras en un ciclo y luego las manda cuando detecta que no se agrega nada mas. 
         batch(() => {
-            for (const toma of nuevas) toma$[toma.id].set(toma)
+            for (const toma of nuevas) tomas$[toma.id].set(toma)
         })
     }
 

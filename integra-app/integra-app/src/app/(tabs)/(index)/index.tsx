@@ -4,13 +4,13 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useValue } from "@legendapp/state/react";
 import { perfil$ } from "@/state/usuario";
-import { toma$, tomasDelDia } from "@/state/medicacion";
+import { tomas$, tomasDelDia } from "@/state/tomas";
 import { TomaComponente } from "@/features/medicacion/TomasComponentes";
-import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
-import { retornarObjetoPorId } from "@/state/helpers";
+import { mediciones$, medicionesDelPerfil, tiposMedicion$ } from "@/state/mediciones";
+import { buscarPorId } from "@/state/consultas";
 import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
 import CitasComponente from "@/features/citas/CitasComponente";
-import { cita$, resultadoCita$, citasNoResueltas } from "@/state/cita";
+import { citas$, resultadosCita$, citasNoResueltas } from "@/state/citas";
 import { color } from "@/theme/colors";
 import { User } from "lucide-react-native";
 
@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const perfil = useValue(perfil$)
     
 
-    const tomas = useValue(toma$)
+    const tomas = useValue(tomas$)
     const tomasDeHoy = tomasDelDia(tomas, new Date(), perfil?.id)
     const sinResolver = tomasDeHoy.filter(
         (t) => t.estado === 'pendiente' || t.estado === 'pospuesta'
@@ -29,15 +29,15 @@ export default function HomeScreen() {
     const hoy = new Date()
     const day = new Intl.DateTimeFormat('es-ni', {weekday: "long"}).format(hoy)
 
-    const mediciones = useValue(medicion$)
-    const tipos = useValue(tipoMedicion$)
-    const citas = useValue(cita$)
+    const mediciones = useValue(mediciones$)
+    const tipos = useValue(tiposMedicion$)
+    const citas = useValue(citas$)
     
-    const resultados = useValue(resultadoCita$)
+    const resultados = useValue(resultadosCita$)
     const citasProximasLista = citasNoResueltas(citas, resultados, perfil.id)
         .filter((c) => new Date(c.programada_para).getTime() >= hoy.getTime())
         
-    const medicionesHistorial = medicionesOrdenadas(mediciones, perfil.id)
+    const medicionesHistorial = medicionesDelPerfil(mediciones, perfil.id)
 
     const medicionComponente = medicionesHistorial.slice(0, 2)
     
@@ -94,7 +94,7 @@ export default function HomeScreen() {
 
             <View className="flex-row gap-6">
                 {medicionComponente.map((m => {
-                    const t = retornarObjetoPorId(tipos, m.tipo_medicion_id)
+                    const t = buscarPorId(tipos, m.tipo_medicion_id)
                     const medidoEn = new Date(m.medido_en)
 
                     return (

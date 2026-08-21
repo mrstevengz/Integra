@@ -1,5 +1,5 @@
 import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicacion/medicacion-schema"
-import { medicamento$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicacion"
+import { medicamentos$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicamentos";
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -13,14 +13,14 @@ import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
 import { View, Text, ActivityIndicator, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { retornarObjetoPorId } from "@/state/helpers"
+import { buscarPorId } from "@/state/consultas"
 import { eliminarTomasFuturasPendientes } from "@/features/medicacion/acciones"
 
 export default function EditarMedicamentoScreen() {
     const perfil = useValue(perfil$)
     const {medicacionId} = useLocalSearchParams()
-    const medicacion = useValue(medicamento$)
-    const item = retornarObjetoPorId(medicacion, medicacionId as string)
+    const medicacion = useValue(medicamentos$)
+    const item = buscarPorId(medicacion, medicacionId as string)
 
     
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -58,7 +58,7 @@ export default function EditarMedicamentoScreen() {
     setIsSubmitting(true)
 
     try {
-        medicamento$[item!.id].assign({
+        medicamentos$[item!.id].assign({
             nombre: v.nombre,
             dosis: dosisANumero(v.dosis),
             unidad: v.unidad,

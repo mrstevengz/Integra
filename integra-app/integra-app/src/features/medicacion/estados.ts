@@ -1,4 +1,4 @@
-import { EstadoToma } from "@/state/medicacion";
+import { EstadoToma } from "@/state/tomas";
 
 
 export type EstadoVisual = {

@@ -1,4 +1,4 @@
-import { retornarObjetoPorId } from "@/state/helpers";
+import { buscarPorId } from "@/state/consultas";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
@@ -10,13 +10,13 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { CampoTexto } from "@/components/CampoTexto";
 import { CampoSelect } from "@/components/CampoSelect";
-import { alergia$ } from "@/state/alergia";
+import { alergias$ } from "@/state/alergias";
 
 export default function EditarCondicion() {
     const {alergiaId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const alergiasLista = useValue(alergia$)
-    const item = retornarObjetoPorId(alergiasLista, alergiaId as string)
+    const alergiasLista = useValue(alergias$)
+    const item = buscarPorId(alergiasLista, alergiaId as string)
 
     const {control, handleSubmit, reset} = useForm<AlergiasForm>({
 
@@ -40,7 +40,7 @@ export default function EditarCondicion() {
         if (!item) return
         const id = item.id
         try {
-            alergia$[id].assign!({
+            alergias$[id].assign!({
             nombre: formValues.nombre,
             severidad: formValues.severidad,
             detalles: formValues.detalles
