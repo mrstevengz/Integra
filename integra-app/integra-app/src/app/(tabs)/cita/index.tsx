@@ -37,18 +37,11 @@ export default function CitaScreen() {
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   //Todas las citas sin resolver, sin importar si su fecha ya paso. Si no esta en la tabla de resultados, no esta resuelta
-  const pendientes = useMemo(
-    () => citasNoResueltas(citas, resultados, perfil.id),
-    [citas, resultados, perfil.id],
-  );
+  const pendientes = citasNoResueltas(citas, resultados, perfil.id);
 
-  const citasArray = useMemo(
-    () =>
-      selectedDate
-        ? filtrarPorDia(pendientes, fechaDesdeLocalISO(selectedDate))
-        : pendientes,
-    [pendientes, selectedDate],
-  );
+  const citasArray = selectedDate
+    ? filtrarPorDia(pendientes, fechaDesdeLocalISO(selectedDate))
+    : pendientes;
 
   //En el calendario, solo se marcan los dias con citas pendientes de resolver.
   const markedDates = useMemo(() => {
@@ -88,11 +81,16 @@ export default function CitaScreen() {
         route2="/cita/historial"
       />
 
-      <View>
-        <Calendar onDayPress={handleDayPress} markedDates={markedDates} />
-      </View>
+      
 
-      <ScrollView className="flex-1 bg-slate-100">
+      <ScrollView className="flex-1 bg-slate-100"
+      contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingBottom: 120
+        }}>
+        <View>
+        <Calendar onDayPress={handleDayPress} markedDates={markedDates} />
+        </View>
         <Text className="font-semibold uppercase text-label p-4">
           {selectedDate ? "Citas del dia" : "Pendientes"}
         </Text>

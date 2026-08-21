@@ -8,6 +8,7 @@ import { ScrollView, View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { labelHelper } from "./agregar/[medicionTipo]/[resultadoMedicion]";
 import { router } from "expo-router";
+import { formatearFechaAString, formatearHoraAString } from "@/state/medicacion";
 
 export default function HistorialMediciones() {
     const perfil = useValue(perfil$)
@@ -47,7 +48,7 @@ export default function HistorialMediciones() {
                             >
                                 <View>
                                     <Text className="text-md font-semibold">{t?.nombre}</Text>
-                                    <Text className="text-sm text-slate-500">{medidoEn.toDateString().slice(4, 10)} ⋅ {medidoEn.toTimeString().slice(0,5)} {labelHelper(m.contexto)}</Text>
+                                    <Text className="text-sm text-slate-500">{formatearFechaAString(medidoEn)} ⋅ {formatearHoraAString(medidoEn.toLocaleTimeString())} {labelHelper(m.contexto)}</Text>
                                 </View>
                                 
                                 <Text className="text-lg font-bold">{m.valor} {m.valor_secundario && `/ ${m.valor_secundario}`} {t?.unidad} </Text>

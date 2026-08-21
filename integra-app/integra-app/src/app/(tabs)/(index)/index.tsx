@@ -10,7 +10,7 @@ import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion"
 import { retornarObjetoPorId } from "@/state/helpers";
 import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
 import CitasComponente from "@/features/citas/CitasComponente";
-import { cita$, citasProximas } from "@/state/cita";
+import { cita$, resultadoCita$, citasNoResueltas } from "@/state/cita";
 import { color } from "@/theme/colors";
 import { User } from "lucide-react-native";
 
@@ -33,7 +33,9 @@ export default function HomeScreen() {
     const tipos = useValue(tipoMedicion$)
     const citas = useValue(cita$)
     
-    const citasProximasLista = citasProximas(citas, hoy, perfil.id)
+    const resultados = useValue(resultadoCita$)
+    const citasProximasLista = citasNoResueltas(citas, resultados, perfil.id)
+        .filter((c) => new Date(c.programada_para).getTime() >= hoy.getTime())
         
     const medicionesHistorial = medicionesOrdenadas(mediciones, perfil.id)
 
