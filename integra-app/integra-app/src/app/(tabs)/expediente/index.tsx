@@ -1,45 +1,41 @@
 import {cerrarSesion } from "@/state/auth";
-import { perfil$ } from "@/state/usuario";
+import { edadEnAnios, nombreCompleto, perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { Text, View, ScrollView, Pressable, ActivityIndicator } from "react-native";
 import TopBar from "@/components/TopBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PerfilSummary from "@/features/perfil/PerfilSummary";
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox";
-import {condicion$ } from "@/state/condicion";
-import { alergia$ } from "@/state/alergia";
-import { contactoEmergencia$ } from "@/state/contactosemergencia";
+import {condiciones$ } from "@/state/condiciones";
+import { alergias$ } from "@/state/alergias";
+import { contactosEmergencia$ } from "@/state/contactos-emergencia";
 import { router } from "expo-router";
-import ContactoEmergenciaBox from "@/features/perfil/ContactoEmergenciaBox";
-import { expedienteChecklist$ } from "@/state/expedienteChecklist";
+import ContactoEmergencia from "@/features/contactos-emergencia/ContactoEmergencia";
+import { checklistExpediente$ } from "@/state/checklist-expediente";
+import {QrCode} from "lucide-react-native";
+import { color } from "@/theme/colors";
+import { convertirALista } from "@/state/consultas";
 
 
 export default function ExpedienteScreen() {
     //Obtener datos de sesion y perfil
     const perfil = useValue(perfil$)
-    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
-        (c) => c.perfil_id === perfil.id 
-    )
-    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
-        (a) => a.perfil_id === perfil.id 
-    )
+    const condiciones = convertirALista(useValue(condiciones$))
+    const alergias = convertirALista(useValue(alergias$))
 
-    const contactos = Object.values(useValue(contactoEmergencia$) ?? {}).filter(
-        (ce) => ce.perfil_id === perfil.id 
-    )
-
-    const confirmadas = useValue(expedienteChecklist$)
+    const contactos = convertirALista(useValue(contactosEmergencia$))
+    const confirmadas = useValue(checklistExpediente$)
 
     
 
-    if(!perfil.id || !condicion$) {
+    if(!perfil.id || !condiciones) {
       return (
         <View className="flex-1">
                 <SafeAreaView edges={['top']} className="bg-slate-100">
                     <TopBar name='Mi Expediente' canGoBack={false}/>
                 </SafeAreaView>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#0F7C7C"/>
+                    <ActivityIndicator size="large" color={color.primary}/>
                 </View> 
             </View>
       )
@@ -51,28 +47,26 @@ export default function ExpedienteScreen() {
       condiciones.length === 0,
       alergias.length === 0,
       contactos.length === 0,
-    ].some((incompleta, i) => incompleta && !confirmadas[['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'][i]])
+    ].some((incompleta, i) => incompleta && !confirmadas[(['datosPersonales','tipoSangre','condiciones','alergias','contactoEmergencia'] as const)[i]])
 
 
-    const nombreCompleto = `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
-    const usersYear = (perfil.fecha_nacimiento ?? "").slice(0,10)
-    const cleanDate = usersYear.toString().replaceAll("-", "")
-
-    const todaysDate = new Date().toISOString().slice(0,10).replaceAll("-", "")
-
-    const age = (parseInt(todaysDate) - parseInt(cleanDate))
-
-    const usersAge = age.toString().slice(0,2)
-
+    const nombre = nombreCompleto(perfil)
 
   return (
+
     <View className="flex-1">
         <SafeAreaView edges={['top']} className="bg-slate-100">
-            <TopBar name='Mi Expediente' canGoBack={false}/>
-        </SafeAreaView>
-        <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100 }}>
 
-          <PerfilSummary nombre={nombreCompleto} edad={usersAge} genero={perfil.genero} cedula={perfil.cedula}/>
+            <TopBar name='Mi Expediente' canGoBack={false} grande={true} subtitulo={`${new Date().toLocaleDateString('es-CR', {weekday: 'long'})}, ${new Date().getDate()} de ${new Date().toLocaleString('es-ES', {month: 'long'})}`}
+            accion={() => router.navigate("/expediente/exportar")}
+            accionIcono={<QrCode size={25} color={color.primary}/>}
+            />
+
+        </SafeAreaView>
+
+        <ScrollView className="flex-grow bg-slate-100" contentContainerStyle={{paddingBottom: 100, paddingTop: 15 }}>
+
+          <PerfilSummary nombre={nombre} edad={perfil.fecha_nacimiento ? edadEnAnios(perfil.fecha_nacimiento) : null} genero={perfil.genero} cedula={perfil.cedula}/>
 
           {expedienteIncompleto && (
               <Pressable className="mt-3 p-4 px-5 bg-slate-200 border-l-2 border-slate-700 text-slate-500"
@@ -124,7 +118,7 @@ export default function ExpedienteScreen() {
 
           <PerfilBox titulo="Contactos de Emergencia" link="/expediente/contactos-emergencia" linkName="Agregar">
             {contactos.map((contacto) => (
-              <ContactoEmergenciaBox key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono}  
+              <ContactoEmergencia key={contacto.id} nombre={contacto.nombre} relacion={contacto.relacion} telefono = {contacto.telefono}  
               onPress={() => router.navigate({
               pathname: '/expediente/contactos-emergencia',
                     })}/>

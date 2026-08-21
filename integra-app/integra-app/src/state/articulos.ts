@@ -1,5 +1,8 @@
-import {observable} from '@legendapp/state'
-import {syncedTable} from '@/lib/sync'
+import { syncedTable } from '@/lib/sync'
+import { observable } from '@legendapp/state'
+import { convertirALista } from './consultas'
+
+//TODO: POR COMENTAR
 
 export type Articulo = {
     id: string
@@ -12,25 +15,18 @@ export type Articulo = {
 }
 
 //Esta variable funciona como el API call, se llama en la pantalla y carga directamente de la memoria del celular
-export const articulo$ = observable(syncedTable({
+//Par la tabla de articulo, no escribe ni actualiza, solo lee
+export const articulos$ = observable<Record<string, Articulo>>(syncedTable({
     collection: 'articulos',
-    //Par la tabla de articulo, no escribe ni actualiza, solo lee
     actions: ['read'],
     initial: {} as Record<string, Articulo>,
     realtime: true,
     persist: {name: 'articulos'}
 }))
 
-export function porCategoria(
+export function articulosDeCategoria(
     todos: Record<string, Articulo> | undefined,
     categoria: string,
 ): Articulo[] {
-    return Object.values(todos ?? {}).filter((a) => a.categoria === categoria)
-}
-
-export function porId(
-    todos: Record<string, Articulo> | undefined,
-    id: string,
-): Articulo | undefined {
-    return todos?.[id]
+    return convertirALista(todos).filter((a) => a.categoria === categoria)
 }

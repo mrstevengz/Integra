@@ -1,10 +1,11 @@
-import { condicion$, porId } from "@/state/condicion";
+import { condiciones$} from "@/state/condiciones";
+import { buscarPorId } from "@/state/consultas";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/components/TopBar";
-import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condicion/condiciones-schema";
+import { CondicionesForm, condicionesSchema, TIPO_CONDICION } from "@/features/condiciones/condiciones-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -14,8 +15,8 @@ import { CampoSelect } from "@/components/CampoSelect";
 export default function EditarCondicion() {
     const {condicionId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const condicionesLista = useValue(condicion$)
-    const item = porId(condicionesLista, condicionId as string)
+    const condicionesLista = useValue(condiciones$)
+    const item = buscarPorId(condicionesLista, condicionId as string)
 
     const {control, handleSubmit, reset} = useForm<CondicionesForm>({
 
@@ -39,7 +40,7 @@ export default function EditarCondicion() {
         if (!item) return
         const id = item.id
         try {
-            condicion$[id].assign!({
+            condiciones$[id].assign!({
             nombre: formValues.nombre,
             tipo: formValues.tipo,
             detalles: formValues.detalles

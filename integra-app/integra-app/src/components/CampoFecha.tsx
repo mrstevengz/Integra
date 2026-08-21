@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, Platform, TouchableWithoutFeedback, Modal, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable, Platform, TouchableWithoutFeedback, Modal, TouchableOpacity } from 'react-native'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useState } from 'react'

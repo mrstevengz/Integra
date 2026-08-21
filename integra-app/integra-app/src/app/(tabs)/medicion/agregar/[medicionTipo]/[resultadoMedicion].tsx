@@ -1,5 +1,5 @@
-import { porId } from "@/state/helpers";
-import { medicion$, tipoMedicion$, esDoble } from "@/state/medicion";
+import { buscarPorId } from "@/state/consultas";
+import { mediciones$, tiposMedicion$, esDoble } from "@/state/mediciones";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useValue } from "@legendapp/state/react";
@@ -9,11 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ResultadoMedicion() {
     const {resultadoMedicion} = useLocalSearchParams()
-    const mediciones = useValue(medicion$)
-    const tipos = useValue(tipoMedicion$)
+    const mediciones = useValue(mediciones$)
+    const tipos = useValue(tiposMedicion$)
 
-    const medicion = porId(mediciones, resultadoMedicion as string)
-    const tipo = porId(tipos, medicion?.tipo_medicion_id ?? "")
+    const medicion = buscarPorId(mediciones, resultadoMedicion as string)
+    const tipo = buscarPorId(tipos, medicion?.tipo_medicion_id ?? "")
 
      if (!medicion) {
             return (
@@ -64,7 +64,7 @@ export default function ResultadoMedicion() {
 
 
                 {/* //Valores de referencia view */}
-                <View className="justify-between bg-slate-200/80 w-full gap-2 rounded-xl p-2">
+            <View className="justify-between bg-slate-200/80 w-full gap-2 rounded-xl p-2">
                 <Text className="font-bold p-3">Valores de referencia</Text>
                 <View className="flex-row p-3 justify-between border-b border-slate-400">
                     <Text>Bajo</Text>
@@ -86,7 +86,7 @@ export default function ResultadoMedicion() {
                         ? `> ${tipo?.rango_max}/${tipo?.rango_max_secundario} ${tipo?.unidad}`
                         : `> ${tipo?.rango_max} ${tipo?.unidad}`}</Text>
                 </View>
-</View>
+            </View>
 
 
                 <View className="flex-row gap-4 flex">

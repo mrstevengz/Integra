@@ -1,0 +1,3 @@
+ALTER TABLE "citas_resultado" ALTER COLUMN "tipo_resultado" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "citas_resultado" ALTER COLUMN "tipo_resultado" SET DATA TYPE "public"."tipo_resultado" USING (CASE WHEN "tipo_resultado" THEN 'asistida' ELSE 'no asistida' END)::"public"."tipo_resultado";--> statement-breakpoint
+ALTER TABLE "citas_resultado" ALTER COLUMN "tipo_resultado" SET DEFAULT 'no asistida';

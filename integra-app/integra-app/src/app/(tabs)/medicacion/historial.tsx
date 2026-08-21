@@ -1,7 +1,7 @@
-import MedicinasLista from "@/features/medicacion/MedicinasLista";
+import MedicinasLista from "@/features/medicamentos/MedicinasLista";
 import TopBarSecondary from "@/components/TopBarSecondary";
 import TopBar from "@/components/TopBar";
-import { medicamento$, medicamentosActivos } from "@/state/medicacion";
+import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";
 import { perfil$ } from "@/state/usuario";
 import { useValue } from "@legendapp/state/react";
 import { ScrollView, View, Text } from "react-native";
@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function HistorialMedicamentos() {
         const perfil = useValue(perfil$)
     
-        const medicamentos = useValue(medicamento$)
+        const medicamentos = useValue(medicamentos$)
     
         const lista = medicamentosActivos(medicamentos, perfil?.id)
     

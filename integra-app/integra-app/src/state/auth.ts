@@ -1,4 +1,4 @@
-import {supabase, authStorage} from '@/lib/supabase'
+import {supabase, almacenamientoAuth} from '@/lib/supabase'
 import { observable } from '@legendapp/state'
 import { getAllSyncStates } from '@legendapp/state/sync'
 import type { Session } from '@supabase/supabase-js'
@@ -9,12 +9,17 @@ export const auth$ = observable({
     cerrandoSesion: false
 })
 
+//TODO: POR COMENTAR
+
 async function limpiarDatosLocales() {
+    //Resetear TODAS las tablas sincronizadas 
+    //en memoria y en su cache persistida
     await Promise.all(
         getAllSyncStates().map(([syncState$]) => syncState$.reset())
     )
 
-    await authStorage.clear()
+    //Borrar el resto de la cache local (sesion de supabase, por ej)
+    await almacenamientoAuth.clear()
 }
 
 supabase.auth.onAuthStateChange((evento, sesion) => {
@@ -33,15 +38,7 @@ export async function cerrarSesion() {
     try {
         //Invalidar la sesion local y del servidor
         await supabase.auth.signOut()
-
-        //Resetear TODAS las tablas sincronizadas 
-        //en memoria y en su cache persistida
-        await Promise.all(
-            getAllSyncStates().map(([syncState$]) => syncState$.reset())
-        )
-
-        //Borrar el resto de la cache local (sesion de supabase, por ej)
-        await authStorage.clear()
+        await limpiarDatosLocales()
     } finally {
         auth$.cerrandoSesion.set(false)
     }

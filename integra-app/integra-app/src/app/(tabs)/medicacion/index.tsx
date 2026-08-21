@@ -4,20 +4,21 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { router, useFocusEffect } from "expo-router"
 import { useValue } from "@legendapp/state/react"
 import TopBar from "@/components/TopBar"
-import { medicamento$, medicamentosActivos, tomasDelDia, toma$, agruparPorHora } from "@/state/medicacion"
+import { medicamentos$, medicamentosActivos } from "@/state/medicamentos";
+import { tomasDelDia, tomas$, agruparTomasPorHora } from "@/state/tomas";
 import { useCallback, useEffect } from "react"
 import { perfil$ } from "@/state/usuario"
-import { generarTomasPendientes } from "@/features/medicacion/generar-tomas"
-import {TomasDelDia} from "@/features/medicacion/TomasDelDia"
+import { generarTomasPendientes } from "@/state/tomas-generar"
+import {TomasDelDia} from "@/features/medicamentos/TomasDelDia"
 import TopBarSecondary from "@/components/TopBarSecondary"
 import { GlassView } from "expo-glass-effect"
 
 export default function MedicacionScreen() {
     const perfil = useValue(perfil$)
 
-    const medicamentos = useValue(medicamento$)
+    const medicamentos = useValue(medicamentos$)
 
-    const tomas = useValue(toma$)
+    const tomas = useValue(tomas$)
 
     //Lista de medicamentos activos
     const lista = medicamentosActivos(medicamentos, perfil?.id)
@@ -31,12 +32,12 @@ export default function MedicacionScreen() {
     )
 
     //Las tomas se agrupan por hora. Retorna una lista con 'hora, Toma'
-    const grupos = agruparPorHora(hoy)
+    const grupos = agruparTomasPorHora(hoy)
 
-    const tomasSincronizadas = useValue(syncState(toma$).lastSync)
+    const tomasSincronizadas = useValue(syncState(tomas$).lastSync)
 
-    const tomasListas = useValue(syncState(toma$).isLoaded)
-    const medsListos = useValue(syncState(medicamento$).isLoaded)
+    const tomasListas = useValue(syncState(tomas$).isLoaded)
+    const medsListos = useValue(syncState(medicamentos$).isLoaded)
 
     const sincronizados = lista.filter((m) => m.created_at).length
 

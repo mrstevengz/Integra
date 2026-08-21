@@ -9,11 +9,13 @@ import { useForm } from "react-hook-form"
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text } from "react-native"
 import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import * as Crypto from 'expo-crypto';
 import { useState } from "react"
 import { CitaForm, citasSchema, TIPO_CITA } from "@/features/citas/citas-schema"
-import { cita$ } from "@/state/cita"
+import { citas$, type TipoCita } from "@/state/citas";
 import { CampoFecha } from "@/components/CampoFecha"
+import { crearId } from "@/lib/ids"
+import { color } from "@/theme/colors"
+import { combinarFechaHora } from "@/lib/fechas"
 
 export default function AgregarCitaScreen() {
     const perfil = useValue(perfil$)
@@ -34,9 +36,6 @@ export default function AgregarCitaScreen() {
         }
     })
 
-    function generateUUID(): string {
-        return Crypto.randomUUID()
-    }
 
 
     function onSubmit(formValues: CitaForm) {
@@ -44,13 +43,13 @@ export default function AgregarCitaScreen() {
         setIsSubmitting(true)
         
         try {
-            const id = generateUUID()
             const programadaPara = combinarFechaHora(formValues.fecha, formValues.hora)
+            const id = crearId()
 
-            cita$[id].set({
+            citas$[id].set({
             id,
             perfil_id: perfil.id,
-            tipo_citas: formValues.tipoCita,
+            tipo_citas: formValues.tipoCita as TipoCita,
             especialidad: formValues.especialidad,
             medico: formValues.medico,
             institucion: formValues.institucion,
@@ -73,7 +72,7 @@ export default function AgregarCitaScreen() {
                 <TopBar name='Agregar cita' canGoBack={true}/>
             </SafeAreaView>
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#0F7C7C"/>
+                <ActivityIndicator size="large" color={color.primary}/>
             </View>
         </View>
     )
@@ -130,8 +129,3 @@ export default function AgregarCitaScreen() {
     )
 }
 
-export function combinarFechaHora(fecha: Date, hora: Date): Date {
-    const combinado = new Date(fecha)
-    combinado.setHours(hora.getHours(), hora.getMinutes(), 0, 0)
-    return combinado
-    }

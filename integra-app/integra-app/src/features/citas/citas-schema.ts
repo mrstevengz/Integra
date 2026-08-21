@@ -1,6 +1,7 @@
 import {z} from 'zod'
+import type { TipoCita } from '@/state/citas'
 
-export const TIPO_CITA = [
+export const TIPO_CITA: { valor: TipoCita; etiqueta: string }[] = [
     {valor: 'primera', etiqueta: 'Primera vez'},
     {valor: 'control', etiqueta: 'Control o seguimiento'},
     {valor: 'rutina', etiqueta: 'Rutina o preventiva'},
@@ -26,13 +27,6 @@ export const citasSchema = z.object({
     hora: z.date({ error: 'Selecciona la hora' }),
 
     notas: z.string().trim().max(200, {error: 'Maximo 200 caracteres'}),
-
-    cancelada: z.boolean().optional(),
-
-    notaCancelacion: z.string().trim().optional()
-
-
-
 })
 
 export type CitaForm = z.infer<typeof citasSchema>

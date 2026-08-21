@@ -1,5 +1,5 @@
-import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicacion/medicacion-schema"
-import { medicamento$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicacion"
+import { dosisANumero, MedicamentoForm, medicamentoSchema, OPCIONES_ALIMENTOS, OPCIONES_FORMA, OPCIONES_UNIDAD, TODOS_LOS_DIAS } from "@/features/medicamentos/medicacion-schema"
+import { medicamentos$, type FormaFarmaceutica, type ConAlimentos } from "@/state/medicamentos";
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -8,11 +8,13 @@ import { useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as Crypto from 'expo-crypto';
 import { CampoTexto } from "@/components/CampoTexto"
-import { CampoHorario } from "@/features/medicacion/CampoHorario"
+import { CampoHorario } from "@/features/medicamentos/CampoHorario"
 import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
 import { View, Text, ActivityIndicator, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+import { crearId } from "@/lib/ids";
+import { color } from "@/theme/colors";
 
 export default function AgregarMedicamentoScreen() {
     const perfil = useValue(perfil$)
@@ -38,9 +40,9 @@ export default function AgregarMedicamentoScreen() {
     setIsSubmitting(true)
 
     try {
-        const medId = Crypto.randomUUID()
+        const medId = crearId()
 
-        medicamento$[medId].set({
+        medicamentos$[medId].set({
             id: medId,
             perfil_id: perfil.id,
             nombre: v.nombre,
@@ -71,7 +73,7 @@ export default function AgregarMedicamentoScreen() {
                 <TopBar name='Agregar medicamento' canGoBack={true}/>
             </SafeAreaView>
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#0F7C7C"/>
+                <ActivityIndicator size="large" color={color.primary}/>
             </View>
         </View>
     )

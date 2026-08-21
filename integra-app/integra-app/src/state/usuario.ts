@@ -1,7 +1,8 @@
 import {observable} from '@legendapp/state'
 import {syncedTable} from '@/lib/sync'
 
-export type PerfilRow = {
+//Tipo para representar el perfil en TS
+export type Perfil = {
     id: string
     nombre: string
     apellidos: string
@@ -17,7 +18,7 @@ export type PerfilRow = {
     deleted: boolean
 }
 
-export const perfil$ = observable<PerfilRow>(syncedTable({
+export const perfil$ = observable<Perfil>(syncedTable({
     collection: 'perfiles',
     
     //Solo se puede leer y actualizar el propio perfil del usuario
@@ -27,3 +28,19 @@ export const perfil$ = observable<PerfilRow>(syncedTable({
     realtime: true,
     persist: {name: 'perfil'}
 }))
+
+export function nombreCompleto(perfil: Perfil): string {
+    return `${perfil.nombre ?? ''} ${perfil.apellidos ?? ''}`.trim()
+}
+
+export function edadEnAnios(fechaNacimiento: string): number | null {
+    const [anio, mes, dia] = fechaNacimiento.slice(0, 10).split('-').map(Number)
+    if (!anio || !mes || !dia) return null
+
+    const hoy = new Date()
+    let edad = hoy.getFullYear() - anio
+    const diferenciaMeses = hoy.getMonth() + 1 - mes
+
+    if (diferenciaMeses < 0 || (diferenciaMeses === 0 && hoy.getDate() < dia)) edad--
+    return edad >= 0 ? edad : null
+}

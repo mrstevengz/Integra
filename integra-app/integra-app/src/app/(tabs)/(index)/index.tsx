@@ -4,13 +4,13 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useValue } from "@legendapp/state/react";
 import { perfil$ } from "@/state/usuario";
-import { toma$, tomasDelDia } from "@/state/medicacion";
-import { TomaComponente } from "@/features/medicacion/TomasComponentes";
-import { medicion$, medicionesOrdenadas, tipoMedicion$ } from "@/state/medicion";
-import { porId } from "@/state/helpers";
-import ArticulosDestacadoComponente from "@/features/articulos/ArticulosComponente";
-import CitasComponente from "@/features/citas/CitasComponente";
-import { cita$, citasProximas } from "@/state/cita";
+import { tomas$, tomasDelDia } from "@/state/tomas";
+import { ProximaToma } from "@/features/medicamentos/ProximaToma";
+import { mediciones$, medicionesDelPerfil, tiposMedicion$ } from "@/state/mediciones";
+import { buscarPorId } from "@/state/consultas";
+import ArticulosDestacados from "@/features/articulos/ArticulosDestacados";
+import ProximaCita from "@/features/citas/ProximaCita";
+import { citas$, resultadosCita$, citasNoResueltas } from "@/state/citas";
 import { color } from "@/theme/colors";
 import { User } from "lucide-react-native";
 
@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const perfil = useValue(perfil$)
     
 
-    const tomas = useValue(toma$)
+    const tomas = useValue(tomas$)
     const tomasDeHoy = tomasDelDia(tomas, new Date(), perfil?.id)
     const sinResolver = tomasDeHoy.filter(
         (t) => t.estado === 'pendiente' || t.estado === 'pospuesta'
@@ -29,13 +29,15 @@ export default function HomeScreen() {
     const hoy = new Date()
     const day = new Intl.DateTimeFormat('es-ni', {weekday: "long"}).format(hoy)
 
-    const mediciones = useValue(medicion$)
-    const tipos = useValue(tipoMedicion$)
-    const citas = useValue(cita$)
+    const mediciones = useValue(mediciones$)
+    const tipos = useValue(tiposMedicion$)
+    const citas = useValue(citas$)
     
-    const citasProximasLista = citasProximas(citas, hoy, perfil.id)
+    const resultados = useValue(resultadosCita$)
+    const citasProximasLista = citasNoResueltas(citas, resultados, perfil.id)
+        .filter((c) => new Date(c.programada_para).getTime() >= hoy.getTime())
         
-    const medicionesHistorial = medicionesOrdenadas(mediciones, perfil.id)
+    const medicionesHistorial = medicionesDelPerfil(mediciones, perfil.id)
 
     const medicionComponente = medicionesHistorial.slice(0, 2)
     
@@ -57,7 +59,7 @@ export default function HomeScreen() {
                 contentContainerStyle={{ paddingTop: 20, paddingBottom: 120, paddingHorizontal: 15 }}
         >
 
-            <TomaComponente tomas = {tomasDeHoy}/>
+            <ProximaToma tomas = {tomasDeHoy}/>
 
             <View className="flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm mt-4">
                 <View className="flex-row justify-between mb-2">
@@ -72,7 +74,7 @@ export default function HomeScreen() {
                 </View>
             </View>
 
-            <CitasComponente citasProximas={citasProximasLista}/>
+            <ProximaCita citasProximas={citasProximasLista}/>
 
              <View className="flex-row items-center justify-between my-5">
                 <Text className="text-btn-color text-md font-semibold uppercase tracking-wider">
@@ -92,7 +94,7 @@ export default function HomeScreen() {
 
             <View className="flex-row gap-6">
                 {medicionComponente.map((m => {
-                    const t = porId(tipos, m.tipo_medicion_id)
+                    const t = buscarPorId(tipos, m.tipo_medicion_id)
                     const medidoEn = new Date(m.medido_en)
 
                     return (
@@ -118,7 +120,7 @@ export default function HomeScreen() {
                 
             </View>
 
-            <ArticulosDestacadoComponente/>
+            <ArticulosDestacados/>
 
         </ScrollView>
     </View>

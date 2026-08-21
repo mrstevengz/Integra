@@ -9,17 +9,18 @@ import { useForm } from "react-hook-form"
 import { ActivityIndicator, Pressable, ScrollView, Text } from "react-native"
 import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import * as Crypto from 'expo-crypto';
 import { useState } from "react"
-import { EmergenciaForm, emergenciaSchema, TIPO_RELACION } from "@/features/perfil/emergencia-schema"
-import { contactoEmergencia$ } from "@/state/contactosemergencia"
+import { ContactosForm, contactosSchema, TIPO_RELACION } from "@/features/contactos-emergencia/contactos-schema"
+import { contactosEmergencia$ } from "@/state/contactos-emergencia"
+import { crearId } from "@/lib/ids"
+import { color } from "@/theme/colors"
 
 export default function AgregarAlergiaScreen() {
     const perfil = useValue(perfil$)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const {control, handleSubmit, reset} = useForm<EmergenciaForm>({
-        resolver: zodResolver(emergenciaSchema),
+    const {control, handleSubmit, reset} = useForm<ContactosForm>({
+        resolver: zodResolver(contactosSchema),
         defaultValues: {
             nombre: '',
             telefono: '',
@@ -27,19 +28,13 @@ export default function AgregarAlergiaScreen() {
         }
     })
 
-    function generateUUID(): string {
-        return Crypto.randomUUID()
-    }
-
-    
-
-    function onSubmit(formValues: EmergenciaForm) {
+    function onSubmit(formValues: ContactosForm) {
         if (isSubmitting) return 
         setIsSubmitting(true)
         
         try {
-            const id = generateUUID()
-            contactoEmergencia$[id].set({
+            const id = crearId()
+            contactosEmergencia$[id].set({
             id,
             perfil_id: perfil.id,
             nombre: formValues.nombre,
@@ -56,13 +51,13 @@ export default function AgregarAlergiaScreen() {
        
     }
 
-     if (!perfil.id || !contactoEmergencia$) return (
+     if (!perfil.id || !contactosEmergencia$) return (
         <View className="flex-1">
             <SafeAreaView edges={['top']} className="bg-slate-100">
                 <TopBar name='Agregar contacto de emergencia' canGoBack={true}/>
             </SafeAreaView>
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#0F7C7C"/>
+                <ActivityIndicator size="large" color={color.primary}/>
             </View>
         </View>
     )

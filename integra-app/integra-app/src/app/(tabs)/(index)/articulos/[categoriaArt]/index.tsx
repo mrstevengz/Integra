@@ -1,4 +1,4 @@
-import { articulo$, porCategoria } from "@/state/articulos"
+import { articulos$, articulosDeCategoria } from "@/state/articulos"
 import { useLocalSearchParams, router } from "expo-router"
 import { View, Text, FlatList, Pressable } from "react-native"
 import { useMemo } from "react"
@@ -9,9 +9,9 @@ import TopBar from "@/components/TopBar"
 export default function CategoriaListScreen() {
     const { categoriaArt } = useLocalSearchParams()
 
-    const todos = useValue(articulo$)
+    const todos = useValue(articulos$)
 
-    const articulos = useMemo(() => porCategoria(todos, categoriaArt as string), [todos, categoriaArt])
+    const articulos = useMemo(() => articulosDeCategoria(todos, categoriaArt as string), [todos, categoriaArt])
 
     return (
         <View className="flex-1">

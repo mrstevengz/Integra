@@ -4,9 +4,9 @@ import TopBar from "@/components/TopBar"
 import { useValue } from "@legendapp/state/react"
 import { perfil$ } from "@/state/usuario"
 import PerfilBox, { PerfilBoxText } from "@/features/perfil/PerfilBox"
-import { condicion$ } from "@/state/condicion"
+import { condiciones$, condicionesDelPerfil } from "@/state/condiciones"
 import { router } from "expo-router"
-import { alergia$ } from "@/state/alergia"
+import { alergias$ } from "@/state/alergias"
 import Swipeable, { SwipeableMethods, SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { RectButton } from "react-native-gesture-handler"
 import Reanimated from 'react-native-reanimated'
@@ -14,29 +14,26 @@ import { SharedValue, useAnimatedStyle } from "react-native-reanimated"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { deleteAlert } from "@/components/Alert"
 import { useRef } from "react"
+import { color } from "@/theme/colors"
+import { delPerfil } from "@/state/consultas"
 
 export default function DiagnosticosScreen() {
     const perfil = useValue(perfil$)
     
-    const condiciones = Object.values(useValue(condicion$) ?? {}).filter(
-        (c) => c.perfil_id === perfil.id
-    )
-
-    const alergias = Object.values(useValue(alergia$) ?? {}).filter(
-        (a) => a.perfil_id === perfil.id
-    )
+    const condiciones = condicionesDelPerfil(useValue(condiciones$), perfil.id)
+    const alergias = delPerfil(useValue(alergias$), perfil.id)
 
     const direction = SwipeDirection
     const swipeableRef = useRef<SwipeableMethods>(null)
 
 
-    if (!perfil.id || !condicion$ || !alergia$) return (
+    if (!perfil.id || !condiciones$ || !alergias$) return (
             <View className="flex-1">
                 <SafeAreaView edges={['top']} className="bg-slate-100">
                     <TopBar name='Condiciones y alergias' canGoBack={true}/>
                 </SafeAreaView>
                 <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#0F7C7C"/>
+                    <ActivityIndicator size="large" color={color.primary}/>
                 </View>
             </View>
     )
@@ -62,7 +59,7 @@ export default function DiagnosticosScreen() {
                     RightSwipe(
                     prog, drag, methods, 
                     () => router.navigate({pathname: '/expediente/diagnosticos/condicion/[condicionId]', params: {condicionId: condicion.id}}), 
-                    () => deleteAlert(() => condicion$[condicion.id].delete())
+                    () => deleteAlert(() => condiciones$[condicion.id].delete())
                     )} 
                     ref={swipeableRef}
                     >
@@ -86,7 +83,7 @@ export default function DiagnosticosScreen() {
                     RightSwipe(
                     prog, drag, methods, 
                     () => router.navigate({pathname: '/expediente/diagnosticos/alergia/[alergiaId]', params: {alergiaId: alergia.id}}), 
-                    () => deleteAlert(() => alergia$[alergia.id].delete())
+                    () => deleteAlert(() => alergias$[alergia.id].delete())
                     )} 
                     ref={swipeableRef}
                     >

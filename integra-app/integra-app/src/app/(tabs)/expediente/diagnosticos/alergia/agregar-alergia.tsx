@@ -1,8 +1,8 @@
 import { CampoTexto } from "@/components/CampoTexto"
-import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA } from "@/features/condicion/condiciones-schema"
+import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA } from "@/features/alergias/alergias-schema"
 import { CampoSelect } from "@/components/CampoSelect"
 import TopBar from "@/components/TopBar"
-import { alergia$ } from "@/state/alergia"
+import { alergias$ } from "@/state/alergias"
 import { perfil$ } from "@/state/usuario"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useValue } from "@legendapp/state/react"
@@ -13,6 +13,8 @@ import { View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import * as Crypto from 'expo-crypto';
 import { useState } from "react"
+import { crearId } from "@/lib/ids"
+import { color } from "@/theme/colors"
 
 export default function AgregarAlergiaScreen() {
     const perfil = useValue(perfil$)
@@ -26,20 +28,14 @@ export default function AgregarAlergiaScreen() {
             detalles: ''
         }
     })
-
-    function generateUUID(): string {
-        return Crypto.randomUUID()
-    }
-
     
-
     function onSubmit(formValues: AlergiasForm) {
         if (isSubmitting) return 
         setIsSubmitting(true)
         
         try {
-            const id = generateUUID()
-            alergia$[id].set({
+            const id = crearId()
+            alergias$[id].set({
             id,
             perfil_id: perfil.id,
             nombre: formValues.nombre,
@@ -62,7 +58,7 @@ export default function AgregarAlergiaScreen() {
                 <TopBar name='Agregar alergia' canGoBack={true}/>
             </SafeAreaView>
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#0F7C7C"/>
+                <ActivityIndicator size="large" color={color.primary}/>
             </View>
         </View>
     )

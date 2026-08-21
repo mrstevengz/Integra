@@ -1,7 +1,5 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-
-import {Icon, Label, NativeTabs, VectorIcon} from 'expo-router/unstable-native-tabs'
-import { DynamicColorIOS, Platform } from 'react-native';
+import {Icon, Label, NativeTabs} from 'expo-router/unstable-native-tabs'
+import {Platform } from 'react-native';
 
 
 

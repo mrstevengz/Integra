@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router"
-import { articulo$ } from "@/state/articulos"
-import { porId } from "@/state/articulos"
+import { articulos$ } from "@/state/articulos"
+import { buscarPorId } from "@/state/consultas"
 import { View, Text, ScrollView } from "react-native"
 import { useValue } from "@legendapp/state/react"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -8,9 +8,9 @@ import TopBar from "@/components/TopBar"
 
 export default function ArticuloScreen() {
     const {articuloId } = useLocalSearchParams()
-    const todos = useValue(articulo$)
+    const todos = useValue(articulos$)
 
-    const articulo = porId(todos, articuloId as string)
+    const articulo = buscarPorId(todos, articuloId as string)
 
 
     if (!articulo) {

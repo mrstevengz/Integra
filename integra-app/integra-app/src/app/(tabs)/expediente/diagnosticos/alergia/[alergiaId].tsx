@@ -1,22 +1,22 @@
-import { porId } from "@/state/helpers";
+import { buscarPorId } from "@/state/consultas";
 import { router, useLocalSearchParams } from "expo-router";
 import { useValue } from "@legendapp/state/react";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/components/TopBar";
-import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA} from "@/features/condicion/condiciones-schema";
+import { AlergiasForm, alergiasSchema, SEVERIDAD_ALERGIA} from "@/features/alergias/alergias-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { CampoTexto } from "@/components/CampoTexto";
 import { CampoSelect } from "@/components/CampoSelect";
-import { alergia$ } from "@/state/alergia";
+import { alergias$ } from "@/state/alergias";
 
 export default function EditarCondicion() {
     const {alergiaId} = useLocalSearchParams()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const alergiasLista = useValue(alergia$)
-    const item = porId(alergiasLista, alergiaId as string)
+    const alergiasLista = useValue(alergias$)
+    const item = buscarPorId(alergiasLista, alergiaId as string)
 
     const {control, handleSubmit, reset} = useForm<AlergiasForm>({
 
@@ -40,7 +40,7 @@ export default function EditarCondicion() {
         if (!item) return
         const id = item.id
         try {
-            alergia$[id].assign!({
+            alergias$[id].assign!({
             nombre: formValues.nombre,
             severidad: formValues.severidad,
             detalles: formValues.detalles
