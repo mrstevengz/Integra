@@ -38,8 +38,7 @@ su propio expediente. El único "permiso" que existe es *"esta fila es mía"*.
 | Método | Estado | Dónde |
 |---|---|---|
 | Email + contraseña | ✅ Activo | `supabase.auth.signInWithPassword` / `signUp` en las pantallas de `(auth)` |
-| Google (OAuth) | ✅ Activo (builds nativos) | [`src/state/auth.ts`](../src/state/auth.ts) |
-| Autenticación de dos factores (MFA) | ⚠️ **Disponible en Supabase, no implementada en Integra** | §1.5 |
+| 2 factores - Google (OAuth) | ✅ Activo (builds nativos) | [`src/state/auth.ts`](../src/state/auth.ts) |
 
 ### 1.2 Email y contraseña
 
