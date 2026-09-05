@@ -1,118 +1,92 @@
-# Despliegue
+# Despliegue de Integra
 
-Guía para llevar Integra a producción. Cubre las tres piezas que se publican por separado y en este orden.
+Guía para llevar Integra a producción y para entender cómo queda desplegada una vez publicada.
 
-| Pieza | Dónde vive | Con qué se publica |
-|---|---|---|
-| **Esquema de la base** | `integra-app/integra-app/drizzle/` | `drizzle-kit migrate` |
-| **Edge Function** | `integra-app/integra-app/supabase/functions/` | Supabase CLI |
-| **Aplicación móvil** | `integra-app/integra-app/` | EAS Build |
+El sistema se despliega en **tres piezas**, cada una con su propia herramienta:
 
-El orden importa: la aplicación asume que las tablas, las políticas y los buckets ya existen. Si publicás la app primero, los usuarios ven pantallas vacías y errores de permisos.
+| Pieza | Dónde vive | Herramienta | Se despliega cuando |
+|---|---|---|---|
+| **Base de datos** | `db/schema.ts` → `drizzle/` | `drizzle-kit migrate` | Cambia el modelo de datos |
+| **Edge Function** | `supabase/functions/expediente/` | Supabase CLI | Cambia la lógica del expediente compartido |
+| **Aplicación móvil** | raíz del proyecto | EAS Build | Cada versión publicada |
 
-> Todas las rutas de este documento son relativas a `integra-app/integra-app/`, salvo que se indique otra cosa.
+**El orden importa:** base de datos → Edge Function → aplicación. La app asume que las tablas, las políticas y el bucket de imágenes ya existen; publicarla antes deja al usuario con pantallas vacías y errores de permisos.
+
+> Todas las rutas son relativas a `integra-app/integra-app/`.
 
 ---
 
-## Antes de empezar: tres bloqueadores
-
-Estos tres puntos hacen fallar la compilación o degradan el resultado. Resolvelos antes de la primera build.
-
-### 1. Los íconos están en SVG
-
-`app.json` apunta a archivos `.svg`:
-
-```json
-"icon": "./assets/icon.svg",
-"splash": { "image": "./assets/splash-icon.svg" },
-"android": { "adaptiveIcon": { "foregroundImage": "./assets/adaptive-icon.svg" } },
-"web": { "favicon": "./assets/favicon.svg" }
-```
-
-**Expo no procesa SVG en esos campos.** Espera PNG. En Expo Go no se nota porque el ícono que ves es el de Expo Go, pero una build de producción sale con el ícono en blanco o falla al generar los recursos.
-
-Exportá los PNG desde el SVG y actualizá las cuatro rutas:
-
-| Campo | Tamaño | Nota |
-|---|---|---|
-| `icon` | 1024 × 1024 | Sin transparencia, sin esquinas redondeadas — el sistema las aplica |
-| `splash.image` | 1284 × 2778 o el logo centrado | Se escala según `resizeMode: "contain"` |
-| `android.adaptiveIcon.foregroundImage` | 1024 × 1024 | Dejá margen: Android recorta el 33% exterior |
-| `web.favicon` | 48 × 48 | — |
-
-El SVG puede quedarse en `assets/` para el README, que sí lo renderiza.
-
-### 2. Falta el identificador de iOS
-
-`app.json` tiene `android.package` pero el bloque de iOS solo trae `supportsTablet`. **Sin `bundleIdentifier` no se puede compilar para iOS.**
-
-```json
-"ios": {
-  "supportsTablet": true,
-  "bundleIdentifier": "com.mrstevengz.integraapp"
-}
-```
-
-Usá el mismo identificador que en Android para no llevar dos nombres. Una vez publicado en la App Store **no se puede cambiar**, así que elegilo con calma.
-
-### 3. La tipografía no está resolviendo
-
-`app.json` carga tres familias:
+## Cómo queda desplegado
 
 ```
-LexendDeca-Black.ttf · LexendDeca-Bold.ttf · LexendDeca-Regular.ttf
+   ┌─────────────────────┐
+   │   Aplicación móvil  │   Android (Play Store / APK)
+   │   Expo SDK 57       │   iOS (App Store)
+   └──────────┬──────────┘
+              │  HTTPS + JWT del usuario
+              ▼
+   ┌─────────────────────────────────────────────┐
+   │              Supabase (producción)          │
+   │                                             │
+   │  Auth ──── correo/contraseña + Google       │
+   │  Postgres ─ 12 tablas, RLS en todas         │
+   │  Storage ── bucket `avatares`               │
+   │  Edge Fn ── `expediente` (QR de emergencia) │
+   └─────────────────────────────────────────────┘
 ```
 
-Pero `tailwind.config.js` mapea la clase `font-lexend` a la familia `"Lexend_Font"`, que ya no existe. Resultado: **toda la aplicación está usando la fuente del sistema**, no Lexend.
-
-No rompe la compilación, pero shippea una tipografía distinta a la diseñada. En `tailwind.config.js`:
-
-```js
-      fontFamily: {
-        lexend: ["LexendDeca-Regular"],
-      },
-```
-
-Y ojo con los pesos: al ser tres archivos con tres familias distintas, `font-bold` no cambia nada — hay que cambiar de `fontFamily`, no de `fontWeight`. Si querés que los pesos funcionen con clases, conviene pasar a la versión variable de Lexend.
+- **Todo el estado del usuario vive en Supabase.** No hay servidor propio que mantener.
+- **La autorización se impone en la base de datos**, mediante políticas RLS. La aplicación no decide qué puede ver cada quien; solo pregunta.
+- **La sesión se guarda localmente** en SQLite (`expo-sqlite/kv-store`) y se refresca sola mientras la app está en primer plano.
+- **La Edge Function es el único punto público sin autenticación**: sirve el expediente de emergencia a quien escanee un QR válido y no vencido.
 
 ---
 
 ## Requisitos
 
-| Herramienta | Para qué | Instalación |
+| Herramienta / cuenta | Para qué | Costo |
 |---|---|---|
-| Node 20+ | Todo | — |
-| **EAS CLI** | Compilar y publicar la app | `npm install -g eas-cli` |
-| **Supabase CLI** | Edge Functions | `npm install -g supabase` |
-| Cuenta de Expo | Builds en la nube | [expo.dev](https://expo.dev) |
-| Cuenta de Google Play | Publicar en Android | 25 USD, pago único |
-| Apple Developer | Publicar en iOS | 99 USD al año |
+| Node 20+ | Todo el tooling | — |
+| EAS CLI (`npm i -g eas-cli`) | Compilar y publicar la app | — |
+| Supabase CLI (`npm i -g supabase`) | Desplegar la Edge Function | — |
+| Cuenta de Expo | Builds en la nube | Plan gratuito alcanza |
+| Google Play Console | Publicar en Android | 25 USD, una vez |
+| Apple Developer Program | Publicar en iOS | 99 USD al año |
 
-Para Android se puede compilar y distribuir un APK sin cuenta de Play. Para iOS **no hay forma** de instalar en un dispositivo físico sin cuenta de desarrollador.
+Para Android se puede compilar y repartir un **APK sin cuenta de Play**. Para iOS no hay forma de instalar en un dispositivo físico sin cuenta de desarrollador.
 
 ---
 
-# Parte 1 — Backend
+# Parte 1 — Backend (Supabase)
 
-## 1.1 Separá desarrollo de producción
+## 1.1 Proyecto separado para producción
 
-Creá un **proyecto de Supabase distinto** para producción. Es lo más importante de esta sección.
+Creá un **proyecto de Supabase distinto** del que usás para desarrollar.
 
-Con un solo proyecto, cualquier migración que probás en tu máquina toca los datos reales de las personas que usan la aplicación. Y son datos médicos.
-
-| Entorno | Proyecto | `DATABASE_URL` apunta a |
+| Entorno | Proyecto | `DATABASE_URL` |
 |---|---|---|
-| Desarrollo | `integra-dev` | El de desarrollo |
-| Producción | `integra-prod` | El de producción — solo al desplegar |
+| Desarrollo | `integra-dev` | Apunta ahí de forma permanente |
+| Producción | `integra-prod` | Solo mientras se despliega |
+
+Sin esa separación, cualquier migración que probás en tu máquina toca los datos reales de los usuarios — y son datos de salud.
+
+Del proyecto nuevo anotá tres cosas, en **Project Settings**:
+
+- **Project URL** → `https://<ref>.supabase.co`
+- **anon / publishable key** → la que consume la app
+- **Connection string** (modo *Session*) → la `DATABASE_URL` para drizzle
+- **Reference ID** → el `<ref>` que pide la CLI
 
 ## 1.2 Aplicar el esquema
 
-Las migraciones viven en `drizzle/`, no en `supabase/migrations/`. Eso significa que **`supabase db push` no las ve** — hay que aplicarlas con drizzle.
+El esquema se define en `db/schema.ts` y las migraciones generadas viven en `drizzle/` (27 archivos, de `0000` a `0026`). **No están en `supabase/migrations/`, así que `supabase db push` no las ve** — se aplican únicamente con drizzle.
+
+`drizzle.config.ts` lee `DATABASE_URL` desde `.env.local`:
 
 ```bash
 cd integra-app/integra-app
 
-# Apuntá DATABASE_URL al proyecto de producción, temporalmente
+# En .env.local, apuntá DATABASE_URL al proyecto de producción
 npx drizzle-kit migrate
 ```
 
@@ -124,28 +98,40 @@ where table_schema = 'public'
 order by table_name;
 ```
 
+Deben aparecer:
+
+```
+alergias · articulos · citas · citas_resultado · condiciones
+contactos_emergencia · exportaciones_expediente · medicamentos
+mediciones · perfiles · tipo_medicion · tomas
+```
+
+Las migraciones también instalan los **triggers** del sistema: creación automática de perfil al registrarse (`0001`), generación de tomas a partir de un medicamento (`0015`) y normalización de mediciones (`0019`). Si el esquema quedó bien, esos triggers ya están.
+
 > Volvé a apuntar `DATABASE_URL` a desarrollo apenas termines. Un `drizzle-kit push` accidental contra producción no tiene deshacer.
 
 ## 1.3 Verificar las políticas de seguridad
 
-Esto no es opcional. Es lo único que separa el expediente de una persona del de otra.
+RLS es lo único que separa el expediente de una persona del de otra. Las políticas vienen en las migraciones, pero conviene confirmarlas:
 
 ```sql
--- Ninguna tabla debe aparecer acá
+-- Ninguna tabla debe aparecer en este resultado
 select tablename from pg_tables
 where schemaname = 'public' and rowsecurity = false;
 
--- Cada tabla de datos debe tener sus políticas
+-- Revisar que cada tabla tenga sus políticas
 select tablename, policyname, cmd from pg_policies
 where schemaname = 'public'
 order by tablename;
 ```
 
-Todas las tablas deben tener RLS activo. `articulos` es la única con lectura pública; el resto compara `auth.uid()` contra `perfil_id`.
+`articulos` es la única con lectura pública — es contenido informativo. El resto compara `auth.uid()` contra `perfil_id`.
 
-**Probalo de verdad** antes de publicar: creá dos cuentas, cargá un medicamento en cada una, y confirmá desde el panel que ninguna ve los datos de la otra.
+**Probalo de verdad antes de publicar:** creá dos cuentas, cargá un medicamento en cada una y confirmá desde el panel que ninguna ve los datos de la otra.
 
 ## 1.4 Crear el bucket de avatares
+
+Los buckets **no los crean las migraciones de drizzle**. Este bloque se corre una vez, a mano, en cada proyecto nuevo:
 
 ```sql
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -178,31 +164,50 @@ using (
 );
 ```
 
-Los buckets **no se crean con las migraciones de drizzle**. Hay que correr esto a mano en cada proyecto nuevo.
+La app sube cada avatar como `<perfil_id>/<uuid>.jpg`, así que la carpeta raíz siempre es el id del usuario. Por eso las políticas comparan `(storage.foldername(name))[1]` con `auth.uid()`: nadie puede sobrescribir la foto de otro aunque conozca la ruta.
+
+La lectura es pública porque las fotos se muestran por URL directa. El límite de 2 MB y la lista de tipos MIME evitan que el bucket se use para otra cosa.
 
 ## 1.5 Configurar la autenticación
 
-En **Authentication → Providers → Email**:
+### Correo y contraseña
+
+**Authentication → Providers → Email:**
 
 | Ajuste | Producción | Por qué |
 |---|---|---|
 | Confirm email | **Activado** | Sin confirmación, cualquiera se registra con un correo ajeno |
-| Secure email change | Activado | Pide confirmación en las dos direcciones |
-| Minimum password length | 8 o más | — |
+| Secure email change | Activado | Pide confirmación en la dirección vieja y en la nueva |
+| Minimum password length | 8 o más | El default local es 6 |
 
-En **Authentication → URL Configuration**, agregá el esquema de la aplicación a las URL permitidas:
+### URLs de redirección
+
+**Authentication → URL Configuration** — agregá el esquema de la app:
 
 ```
 integra-app://
+integra-app://auth/callback
 ```
 
-Sale de `"scheme": "integra-app"` en `app.json`. Sin eso, los enlaces de confirmación de correo no devuelven al usuario a la aplicación.
+El esquema sale de `"scheme": "integra-app"` en `app.json`, y `auth/callback` es la ruta que arma `makeRedirectUri()` en el login con Google. Sin estas URLs no vuelven ni los enlaces de confirmación de correo ni el flujo de Google.
 
-**Personalizá las plantillas de correo** en Authentication → Email Templates. Las que vienen por defecto dicen "Supabase" y en una aplicación médica eso genera desconfianza.
+### Google
+
+**Authentication → Providers → Google:**
+
+1. En Google Cloud Console, creá las credenciales OAuth del proyecto.
+2. Como *Authorized redirect URI* poné la de Supabase: `https://<ref>.supabase.co/auth/v1/callback`.
+3. Pegá el Client ID y el Client Secret en el panel de Supabase y activá el proveedor.
+
+La app abre el navegador del sistema con `expo-auth-session`, recibe los tokens en `integra-app://auth/callback` y los entrega a `supabase.auth.setSession()`. Esto **solo funciona en builds nativas**, no en Expo Go.
+
+### Plantillas de correo
+
+**Authentication → Email Templates.** Las que vienen por defecto dicen "Supabase". En una app que maneja datos de salud, un correo con marca desconocida se lee como intento de estafa y baja la tasa de confirmación. Personalizalas antes de publicar.
 
 ## 1.6 Desplegar la Edge Function
 
-El proyecto tiene una función en `supabase/functions/expediente/`, que sirve los expedientes compartidos por QR.
+`supabase/functions/expediente/` sirve los expedientes compartidos por QR. Corre con la **service role key**, que le da acceso completo a la base, y valida por su cuenta el token, la vigencia y las secciones que el usuario decidió compartir.
 
 ```bash
 cd integra-app/integra-app
@@ -212,89 +217,88 @@ supabase link --project-ref <ref-de-produccion>
 supabase functions deploy expediente
 ```
 
-El `<ref-de-produccion>` es el identificador del proyecto, visible en Project Settings → General.
+La función está declarada en `supabase/config.toml` con **`verify_jwt = false`**: es intencional y necesario, porque quien escanea el QR —personal de emergencia, típicamente— no tiene cuenta en Integra. La autorización la hace la propia función contra la tabla `exportaciones_expediente`.
 
-Las funciones reciben `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` automáticamente. Si necesitás otras variables:
+`SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` se inyectan solas. Para cualquier otra variable:
 
 ```bash
 supabase secrets set NOMBRE=valor
 supabase secrets list
 ```
 
-Verificá que responde:
+Verificá que responde — el token va **en la ruta**, no como parámetro:
 
 ```bash
-curl -i "https://<ref>.supabase.co/functions/v1/expediente?codigo=prueba" \
-  -H "apikey: <clave-anon>"
+curl -i "https://<ref>.supabase.co/functions/v1/expediente/<token>"
 ```
+
+Un token inexistente debe devolver error, no un expediente vacío con `200`.
 
 ---
 
 # Parte 2 — Aplicación móvil
 
-## 2.1 Vincular el proyecto con EAS
+## 2.1 Estado de la configuración
 
-```bash
-cd integra-app/integra-app
-
-eas login
-eas init
-```
-
-`eas init` agrega un `extra.eas.projectId` a `app.json`. **Ese identificador se versiona** — es lo que conecta el código con tu proyecto en expo.dev.
-
-## 2.2 Crear `eas.json`
-
-En la raíz de `integra-app/integra-app/`:
+El proyecto ya está vinculado a EAS. En `app.json`:
 
 ```json
-{
-  "cli": {
-    "version": ">= 12.0.0",
-    "appVersionSource": "remote"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "channel": "development"
-    },
-    "preview": {
-      "distribution": "internal",
-      "channel": "preview",
-      "android": {
-        "buildType": "apk"
-      }
-    },
-    "production": {
-      "autoIncrement": true,
-      "channel": "production",
-      "android": {
-        "buildType": "app-bundle"
-      }
-    }
-  },
-  "submit": {
-    "production": {}
-  }
+"extra": { "eas": { "projectId": "6907c350-776e-493c-b66f-8ffb0e054226" } }
+```
+
+Ese identificador **se versiona en git**: es lo que conecta el código con el proyecto en expo.dev. Si trabajás sobre un proyecto de Expo distinto, corré `eas init` de nuevo; si no, no lo toques.
+
+```bash
+eas login
+eas whoami
+```
+
+Lo demás ya está resuelto y no requiere acción: los cuatro íconos son PNG (`icon.png`, `adaptive-icon.png`, `splash-icon.png`, `favicon.png`), la tipografía Lexend está registrada con `expo-font` y mapeada en `tailwind.config.js` (`font-lexend`, `font-lexend-bold`, `font-lexend-extrabold`), y `app.json` declara el permiso de Android que la app necesita (`RECORD_AUDIO`).
+
+## 2.2 Antes de la primera build de iOS
+
+`app.json` define `android.package` como `com.mrstevengz.integraapp`, pero el bloque de iOS todavía no tiene identificador. **Sin `bundleIdentifier` no se puede compilar para iOS:**
+
+```json
+"ios": {
+  "supportsTablet": true,
+  "bundleIdentifier": "com.mrstevengz.integraapp"
 }
 ```
 
-Los tres perfiles y para qué sirve cada uno:
+Conviene usar el mismo identificador que Android para no mantener dos nombres del mismo producto. Una vez publicado en la App Store **no se puede cambiar**: cambiarlo equivale a publicar una app nueva, sin los usuarios de la anterior.
 
-| Perfil | Qué produce | Para quién |
+Si solo vas a compilar para Android, este paso no aplica.
+
+## 2.3 Perfiles de build
+
+`eas.json` ya define los tres perfiles:
+
+```json
+{
+  "cli": { "version": ">= 21.0.1", "appVersionSource": "remote" },
+  "build": {
+    "development": { "developmentClient": true, "distribution": "internal" },
+    "preview":     { "distribution": "internal", "android": { "buildType": "apk" } },
+    "production":  { "autoIncrement": true }
+  },
+  "submit": { "production": {} }
+}
+```
+
+| Perfil | Qué produce | Para qué |
 |---|---|---|
-| `development` | Cliente de desarrollo con el depurador | Vos, mientras programás |
-| `preview` | APK instalable directo | Pruebas con usuarios reales antes de publicar |
+| `development` | Cliente de desarrollo con depurador | Programar con módulos nativos (Google, SQLite, cámara) |
+| `preview` | APK instalable directo | Probar con usuarios reales antes de publicar |
 | `production` | AAB para Play Store, IPA para App Store | Publicación |
 
-**Por qué `apk` en preview y `app-bundle` en producción:** un APK se instala tocándolo, así que sirve para pasárselo a alguien por WhatsApp. Google Play **exige** AAB, que no se puede instalar a mano.
+**Por qué APK en preview y AAB en producción:** un APK se instala tocándolo, así que se puede pasar por WhatsApp a un grupo de prueba. Google Play exige AAB, que no es instalable a mano. Cada formato sirve a una etapa distinta.
 
-**`appVersionSource: "remote"` con `autoIncrement`** hace que EAS lleve la cuenta del número de build. Sin eso tenés que subir `versionCode` y `buildNumber` a mano en cada envío, y olvidarse una vez hace que la tienda rechace el archivo.
+**`appVersionSource: "remote"` con `autoIncrement`** hace que EAS lleve la cuenta del número interno de build. Sin eso habría que subir `versionCode` y `buildNumber` a mano en cada envío, y olvidarlo una vez basta para que la tienda rechace el paquete.
 
-## 2.3 Variables de entorno
+## 2.4 Variables de entorno
 
-Las builds corren **en los servidores de Expo**, donde tu `.env.local` no existe — está en el `.gitignore` y nunca se sube. Hay que registrarlas en EAS:
+Las builds corren **en los servidores de Expo**, donde tu `.env.local` no existe — está en `.gitignore` y nunca se sube. La app necesita exactamente dos variables:
 
 ```bash
 eas env:create --environment production \
@@ -304,23 +308,25 @@ eas env:create --environment production \
 
 eas env:create --environment production \
   --name EXPO_PUBLIC_SUPABASE_KEY \
-  --value "<clave-anon-de-produccion>" \
+  --value "<anon-key-de-produccion>" \
   --visibility plaintext
 
 eas env:list --environment production
 ```
 
-Repetí para `--environment preview` con los valores que corresponda.
+Repetí lo mismo con `--environment preview`, apuntando al proyecto que quieras probar.
 
 ### Por qué `plaintext` y no `secret`
 
-Las variables `EXPO_PUBLIC_*` **quedan incrustadas en el binario en tiempo de compilación**. Cualquiera que descargue el APK las puede leer. Marcarlas como secretas en EAS no las oculta — solo te impide verlas a vos en el panel.
+Las variables `EXPO_PUBLIC_*` **quedan incrustadas en el binario al compilar**. Cualquiera que descargue el APK las puede leer. Marcarlas como secretas en EAS no las oculta del binario; solo te impide verlas a vos en el panel.
 
-Y no es un problema: la clave anónima por sí sola no da acceso a nada. Toda la autorización la imponen las políticas de la base.
+Y no es un problema: la clave anónima por sí sola no da acceso a nada. Toda la autorización la imponen las políticas RLS del punto 1.3. Ese es exactamente el modelo para el que la clave fue diseñada.
 
-> **`DATABASE_URL` no va a EAS. Nunca.** Es una credencial de superusuario y solo la usa `drizzle-kit` desde tu máquina. Si termina en una variable `EXPO_PUBLIC_*`, queda dentro de la aplicación de todos los usuarios y cualquiera puede leer y borrar la base entera.
+> **`DATABASE_URL` nunca va a EAS.** Es una credencial con permisos totales sobre la base y su único uso es `drizzle-kit` desde tu máquina. Si terminara en una variable `EXPO_PUBLIC_*`, quedaría dentro de la app de todos los usuarios y cualquiera podría leer o borrar la base entera.
+>
+> Lo mismo aplica a la **service role key**: vive solo en el entorno de la Edge Function.
 
-## 2.4 Compilar
+## 2.5 Compilar
 
 ```bash
 # APK de prueba
@@ -331,99 +337,107 @@ eas build --platform android --profile production
 eas build --platform ios --profile production
 ```
 
-La primera vez EAS te pregunta por las credenciales de firma. **Dejá que las genere y las guarde él** (`Generate new keystore`). Si perdés el keystore de Android no podés volver a publicar actualizaciones de esa aplicación jamás — hay que subirla como una app nueva, y los usuarios pierden sus instalaciones.
+La primera vez EAS pide las credenciales de firma. **Dejá que las genere y las guarde él** (`Generate new keystore`).
 
-Como `/android` e `/ios` están en el `.gitignore`, EAS ejecuta `prebuild` en cada compilación y genera los proyectos nativos desde `app.json`. Por eso los tres bloqueadores del principio importan: se aplican en ese momento.
+> Si perdés el keystore de Android no podés volver a publicar actualizaciones de esa app: hay que subirla como aplicación nueva y los usuarios existentes quedan varados en la versión vieja. Que EAS lo administre es la forma de no perderlo.
 
-La compilación tarda entre 10 y 25 minutos y el enlace de descarga sale en la consola y en expo.dev.
+Como `/android` e `/ios` están en `.gitignore`, EAS corre `prebuild` en cada compilación y genera los proyectos nativos a partir de `app.json`. Todo lo que declares ahí —íconos, permisos, plugins, esquema— se aplica en ese momento.
 
-## 2.5 Publicar en las tiendas
+La compilación tarda entre 10 y 25 minutos. El enlace de descarga sale en la consola y queda en expo.dev.
+
+## 2.6 Publicar en las tiendas
 
 ```bash
 eas submit --platform android --profile production
 eas submit --platform ios --profile production
 ```
 
-Para Android hace falta una cuenta de servicio de Google Play; EAS te guía la primera vez.
+Para Android hace falta una cuenta de servicio de Google Play; EAS guía el proceso la primera vez.
 
-**Antes del envío**, preparalo en cada consola: descripción, capturas, política de privacidad y clasificación de contenido. Las dos tiendas piden **una URL pública de política de privacidad** y la revisan — para una aplicación que maneja datos médicos es lo primero que miran.
+**Antes del envío**, preparalo en cada consola: descripción, capturas, clasificación de contenido y política de privacidad. Las dos tiendas exigen **una URL pública de política de privacidad** y la revisan; en una app que maneja datos médicos es lo primero que miran.
 
-En el cuestionario de Google Play, declará que la aplicación **recolecta datos de salud** y explicá que se cifran en tránsito y que el usuario puede eliminarlos. Ocultarlo es causa de retiro.
+En el cuestionario de seguridad de datos de Google Play, declará que la app **recolecta datos de salud**, que viajan cifrados y que el usuario puede eliminarlos. Omitirlo es causa de retiro.
 
-## 2.6 Versionado
+## 2.7 Versionado
 
-`app.json` tiene la versión visible para el usuario:
+La versión visible para el usuario está en `app.json`:
 
 ```json
 "version": "1.0.0"
 ```
 
-Subila siguiendo versionado semántico: parche para correcciones, menor para funciones nuevas, mayor para cambios que rompen compatibilidad.
+Subila con versionado semántico: parche para correcciones, menor para funciones nuevas, mayor para cambios que rompen compatibilidad.
 
-El número interno de build (`versionCode` en Android, `buildNumber` en iOS) lo maneja EAS solo gracias a `autoIncrement`. No los pongas en `app.json`.
+El número interno (`versionCode` en Android, `buildNumber` en iOS) lo maneja EAS gracias a `autoIncrement` + `appVersionSource: "remote"`. **No los pongas en `app.json`.**
 
 ---
 
-# Parte 3 — Actualizaciones sin recompilar
+# Parte 3 — Actualizaciones sin recompilar (opcional)
 
-EAS Update permite publicar cambios de JavaScript sin pasar por la revisión de las tiendas. Los usuarios los reciben al abrir la aplicación.
+Hoy el proyecto **no tiene `expo-updates` instalado**, así que cada cambio requiere una build nueva y pasar por revisión de tienda. Si querés habilitar actualizaciones OTA:
 
 ```bash
 npx expo install expo-updates
 eas update:configure
+```
 
+`eas update:configure` agrega un `channel` a cada perfil de `eas.json`. Ese canal es lo que conecta una build con su rama de actualizaciones: una build de `production` solo recibe updates publicadas en el canal `production`.
+
+Después de eso hay que **compilar y publicar una vez más** — las builds anteriores no saben buscar actualizaciones. De ahí en adelante:
+
+```bash
 eas update --branch production --message "Corrige el cálculo de la próxima toma"
 ```
 
-## Qué se puede y qué no
+## Qué se puede actualizar por OTA y qué no
 
-| Se actualiza por OTA | Necesita recompilar y reenviar |
+| Sale por OTA | Necesita recompilar y reenviar |
 |---|---|
 | Pantallas, componentes, estilos | Agregar o quitar un módulo nativo |
 | Lógica de estado y consultas | Cambiar permisos en `app.json` |
 | Textos, validaciones, correcciones | Cambiar ícono, nombre o esquema |
 | Ajustes de NativeWind | Subir la versión del SDK de Expo |
 
-La regla: **si tocaste `app.json`, `package.json` o instalaste algo con `expo install`, hay que recompilar.** Todo lo demás va por OTA.
-
-El `channel` de cada perfil en `eas.json` es lo que conecta una build con su rama de actualizaciones. Una build de `production` solo recibe updates publicadas en el canal `production`.
+La regla práctica: **si tocaste `app.json`, `package.json` o instalaste algo con `expo install`, hay que recompilar.** Todo lo demás va por OTA.
 
 ---
 
 # Lista de verificación de release
 
-**Antes de compilar**
-
-- [ ] Los cuatro íconos son PNG y `app.json` los apunta
-- [ ] `ios.bundleIdentifier` está definido
-- [ ] `tailwind.config.js` apunta a la familia de fuente correcta
-- [ ] `version` subida en `app.json`
-- [ ] `npx tsc --noEmit` sin errores
-- [ ] Variables cargadas en EAS y apuntando a **producción**
-
 **Backend**
 
-- [ ] Migraciones aplicadas en el proyecto de producción
+- [ ] Proyecto de producción creado, separado del de desarrollo
+- [ ] Migraciones aplicadas — las doce tablas presentes
 - [ ] Ninguna tabla con `rowsecurity = false`
 - [ ] Aislamiento probado con dos cuentas reales
 - [ ] Bucket `avatares` creado con sus cuatro políticas
 - [ ] Confirmación de correo activada
-- [ ] `integra-app://` en las URL permitidas
+- [ ] `integra-app://` e `integra-app://auth/callback` en las URLs permitidas
+- [ ] Proveedor de Google configurado con su redirect URI
 - [ ] Plantillas de correo personalizadas
 - [ ] Edge Function `expediente` desplegada y respondiendo
+
+**Antes de compilar**
+
+- [ ] `ios.bundleIdentifier` definido (solo si se compila para iOS)
+- [ ] `version` subida en `app.json`
+- [ ] `npx tsc --noEmit` sin errores
+- [ ] Variables cargadas en EAS y apuntando a **producción**
 
 **Prueba en dispositivo, con la build de `preview`**
 
 - [ ] Registro con correo nuevo y confirmación
-- [ ] Inicio y cierre de sesión repetidos, sin datos cruzados
-- [ ] Alta de medicamento y generación de tomas
+- [ ] Inicio de sesión con Google
+- [ ] Inicio y cierre de sesión repetidos, sin datos cruzados entre cuentas
+- [ ] Alta de medicamento y generación automática de tomas
 - [ ] Marcar, posponer y omitir una dosis
 - [ ] Registrar una medición y ver su gráfica
 - [ ] Crear una cita y registrar su resultado
 - [ ] Subir y cambiar la foto de perfil
-- [ ] Generar el QR de emergencia y el PDF del expediente
-- [ ] **Modo avión**: leer, escribir, reconectar y verificar que sincronizó
-- [ ] Cerrar y abrir la aplicación: los datos persisten
+- [ ] Generar el QR de emergencia y abrirlo desde otro dispositivo
+- [ ] Exportar el PDF del expediente
+- [ ] Revocar una exportación y confirmar que el QR deja de funcionar
+- [ ] Cerrar y abrir la aplicación: la sesión y los datos persisten
 
 **Publicación**
 
@@ -436,21 +450,45 @@ El `channel` de cada perfil en `eas.json` es lo que conecta una build con su ram
 
 # Marcha atrás
 
-**Una actualización OTA que salió mal:**
+**Una build que salió mal.** En Play Console se detiene el despliegue y se promueve la versión anterior. En App Store Connect se retira de la venta y se reenvía la anterior. Es lento: la revisión de Apple puede tardar días.
+
+**Una actualización OTA que salió mal** (si tenés `expo-updates` habilitado):
 
 ```bash
 eas update:list --branch production
 eas update:republish --group <id-de-la-version-anterior>
 ```
 
-Es inmediato, sin revisión de tienda. Por eso conviene publicar por OTA todo lo que se pueda.
+Es inmediato y no pasa por revisión. Por eso conviene sacar por OTA todo lo que se pueda.
 
-**Una build que salió mal:** en Play Console se detiene el despliegue y se promueve la versión anterior. En App Store Connect se retira del venta y se reenvía la anterior. Es lento — la revisión de Apple puede tardar días.
-
-**Una migración que salió mal:** no hay deshacer automático. Por eso importa tanto revisar el `.sql` generado antes de aplicarlo, y tener respaldos activos. Supabase los hace a diario en los planes pagos; en el gratuito **no hay respaldos automáticos** y una migración destructiva es irreversible.
+**Una migración que salió mal.** No hay deshacer automático. Por eso importa revisar el `.sql` generado antes de aplicarlo y tener respaldos. Supabase respalda a diario en los planes pagos; **en el plan gratuito no hay respaldos automáticos** y una migración destructiva es irreversible.
 
 Antes de cualquier migración con `DROP` o `ALTER COLUMN` en producción, sacá un respaldo manual:
 
 ```bash
 supabase db dump --project-ref <ref> -f respaldo-$(date +%F).sql
 ```
+
+---
+
+# Referencia rápida
+
+```bash
+# --- Base de datos ---
+npx drizzle-kit generate          # generar migración tras editar db/schema.ts
+npx drizzle-kit migrate           # aplicar migraciones pendientes
+supabase db dump --project-ref <ref> -f respaldo.sql
+
+# --- Edge Function ---
+supabase link --project-ref <ref>
+supabase functions deploy expediente
+supabase functions logs expediente
+
+# --- Aplicación ---
+eas env:list --environment production
+eas build --platform android --profile preview
+eas build --platform all --profile production
+eas submit --platform android --profile production
+eas build:list                    # historial y enlaces de descarga
+```
+
